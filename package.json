@@ -1,0 +1,26 @@
+{
+  "name": "telegram-charts",
+  "version": "1.0.0",
+  "description": "Charts for telegram",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "npm run dev -- --watch",
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gebeto/telegram-charts.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gebeto/telegram-charts/issues"
+  },
+  "homepage": "https://github.com/gebeto/telegram-charts#readme",
+  "dependencies": {
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
+  }
+}
