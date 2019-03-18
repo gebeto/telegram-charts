@@ -1,12 +1,38 @@
-import ChartsData from './chart_data.json';
+import ChartsData from '../assets/chart_data.json';
 
 
-const el = document.createElement('canvas');
-document.body.appendChild(el);
-el.width = 1000;
-el.height = 300;
+const createCanvas = (width, height) => {
+	const canvas = document.createElement('canvas');
+	document.body.appendChild(canvas);
+	canvas.width = width;
+	canvas.height = height;
+	const ctx = canvas.getContext('2d');
+	ctx.translate(0, canvas.height);
+	ctx.scale(1, -1);
+	return [canvas, ctx];
+}
 
-const flatMax = (arr) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1))));
+const memoMax = (() => {
+	const memoKeys = [];
+	const memoValues = [];
+	return (arr) => {
+		let res = null;
+		const indexOf = memoKeys.indexOf(arr);
+		if (indexOf > -1) {
+			res = memoValues[indexOf];
+		} else {
+			res = [Math.max.apply(null, arr.slice(1))];
+			memoKeys.push(arr);
+			memoValues.push(res);
+		}
+		return res;
+	}
+})();
+
+const maxHeightForColumns = (arr) => {
+	return Math.max.apply(null, arr.map(set => memoMax(set)));
+}
+
 
 class Chart {
 	constructor(data, canvas) {
@@ -45,14 +71,40 @@ class Chart {
 	}
 }
 
+const withData = (fun, data) => (...args) => fun(data, ...args);
+const withCtx = (fun, ctx) => (...args) => fun(ctx, ...args);
 
+const drawColumn = (ctx, x, y, width, height, data, colIndex) => {
+	ctx.beginPath();
+	ctx.moveTo(x + 0, y + cy[o][1]);
+	for (let i = 2; i < cx.length; i++) {
+		ctx.lineTo(x + i * sWidth, y + cy[o][i] * sHeight);
+	}
+	ctx.strokeStyle = data.colors[cy[o][0]];
+	ctx.stroke();
+}
 
+const drawChart = (ctx, data, x, y, width, height) => {
+	const [cx, ...cy] = data.columns;
+	const maxSegmentsY = maxHeightForColumns(cy);
+	const maxSegmentsX = cx.length;
+	const sWidth = width / (maxSegmentsX - 1);
+	const sHeight = height / maxSegmentsY;
+	ctx.fillRect(x, y, width, height);
+	for (let o in cy) {
+		ctx.beginPath();
+		ctx.moveTo(x + 0, y + cy[o][1]);
+		for (let i = 2; i < cx.length; i++) {
+			ctx.lineTo(x + i * sWidth, y + cy[o][i] * sHeight);
+		}
+		ctx.strokeStyle = data.colors[cy[o][0]];
+		ctx.stroke();
+	}
+}
 
+const chartData = ChartsData[0];
+const [ canvas, ctx ] = createCanvas(1000, 500);
 
-const c = ChartsData[0];
-console.log(c);
-
-const chart = new Chart(c, el);
-
-console.log(chart);
-chart.render();
+const dc = withData(withCtx(drawChart, ctx), chartData);
+dc(50, 50, 900, 400);
+// drawChart(ctx, chartData, 50, 50, 900, 400);
