@@ -81,6 +81,7 @@ const createPoly = (data, index) => {
 	poly.setAttribute('stroke', data.colors[name]);
 	poly.setAttribute('fill', 'none');
 	poly.setAttribute('stroke-width', '3');
+	poly.setAttribute('vector-effect', 'non-scaling-stroke');
 
 	const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	g.setAttribute('style', 'transition: transform 0.4s, opacity 0.2s;')
@@ -88,8 +89,6 @@ const createPoly = (data, index) => {
 
 	const updatePoints = () => {
 		const points = [];
-		// 10
-		// 100
 		const sw = WIDTH / (range[1] - range[0] - 1);
 		for (let i = 0; i + range[0] < range[1]; i++) {
 			points.push(`${i * sw},${rest[i + range[0]]}`);
@@ -107,28 +106,21 @@ const createPoly = (data, index) => {
 			g.setAttribute('opacity', '1');
 			g.setAttribute('transform', 'scale(1, 1)');
 		},
-		rangeFrom: (rf) => {
-			range[0] = rf;
-		},
-		rangeTo: (rt) => {
-			range[1] = rt;
-		},
-		update: () => {
-			updatePoints();
-		}
 	};
 }
 
 const chartData = ChartsData[0];
 
 const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-svgElement.setAttribute('width', '1000px');
-svgElement.setAttribute('height', '500px');
-svgElement.setAttribute('viewBox', '0 0 1000 500');
+svgElement.setAttribute('width', `${WIDTH}px`);
+svgElement.setAttribute('height', `${HEIGHT}px`);
+svgElement.setAttribute('viewBox', `0 0 ${WIDTH} ${HEIGHT}`);
+svgElement.setAttribute('preserveAspectRatio', 'none');
+svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
 
 // Rotate
 const g1 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-g1.setAttribute('transform', 'translate(0, 500)');
+g1.setAttribute('transform', `translate(0, ${HEIGHT})`);
 
 const g2 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 g2.setAttribute('transform', 'scale(1, -1)');
@@ -152,23 +144,19 @@ window.p = poly1;
 
 
 
-
-
-
-
-
-
-
 const values = {
 	scale: 1000,
 	x: 0,
 };
 const changeView = () => {
 	console.log(values.scale)
-	const x = 1000 - values.scale - values.x;
-	const y = (1000 - values.scale) / 2;
+	const x = values.x;
+	const y = 0;
+	// const x = 1000 - values.scale - values.x;
+	// const y = (1000 - values.scale) / 2;
 	const width = values.scale;
-	const height = values.scale / 2;
+	// const height = values.scale / 2;
+	const height = HEIGHT;
 	svgElement.setAttribute('viewBox', `${x} ${y} ${width} ${height}`)
 }
 
@@ -179,6 +167,7 @@ document.getElementById('range-scale').addEventListener('input', (e) => {
 	changeView();
 	document.getElementById('range-x').setAttribute('min', values.scale)
 });
+
 document.getElementById('range-x').addEventListener('input', (e) => {
 	console.log(e.target.value);
 	values.x = 1000 - parseInt(e.target.value);
