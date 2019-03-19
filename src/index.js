@@ -3,72 +3,35 @@ import ChartsData from '../assets/chart_data.json';
 const WIDTH = 1000;
 const HEIGHT = 500;
 
-const createCanvas = (width, height) => {
-	const canvas = document.createElement('canvas');
-	document.body.appendChild(canvas);
-	canvas.width = width;
-	canvas.height = height;
-	const ctx = canvas.getContext('2d');
-	ctx.translate(0, canvas.height);
-	ctx.scale(1, -1);
-	return [canvas, ctx];
-}
 
-const memoMax = (() => {
-	const memoKeys = [];
-	const memoValues = [];
-	return (arr) => {
-		let res = null;
-		const indexOf = memoKeys.indexOf(arr);
-		if (indexOf > -1) {
-			res = memoValues[indexOf];
-		} else {
-			res = [Math.max.apply(null, arr.slice(1))];
-			memoKeys.push(arr);
-			memoValues.push(res);
+const createSVG = () => {
+	const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+	svgElement.setAttribute('width', `${WIDTH}px`);
+	svgElement.setAttribute('height', `${HEIGHT}px`);
+	svgElement.setAttribute('viewBox', `0 0 ${WIDTH} ${HEIGHT}`);
+	svgElement.setAttribute('preserveAspectRatio', 'none');
+	svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+
+	// Rotate
+	const g1 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+	g1.setAttribute('transform', `translate(0, ${HEIGHT})`);
+
+	const g2 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+	g2.setAttribute('transform', 'scale(1, -1)');
+
+	g1.appendChild(g2);
+	svgElement.appendChild(g1);
+
+	return {
+		element: svgElement,
+		addPoly: (el) => {
+			g2.appendChild(el)
 		}
-		return res;
-	}
-})();
-
-const maxHeightForColumns = (arr) => {
-	return Math.max.apply(null, arr.map(set => memoMax(set)));
+	};
 }
 
 
-const withData = (fun, data) => (...args) => fun(data, ...args);
-const withCtx = (fun, ctx) => (...args) => fun(ctx, ...args);
-
-const drawColumn = (ctx, x, y, width, height, data, colIndex) => {
-	ctx.beginPath();
-	ctx.moveTo(x + 0, y + cy[o][1]);
-	for (let i = 2; i < cx.length; i++) {
-		ctx.lineTo(x + i * sWidth, y + cy[o][i] * sHeight);
-	}
-	ctx.strokeStyle = data.colors[cy[o][0]];
-	ctx.stroke();
-}
-
-const drawChart = (ctx, data, x, y, width, height) => {
-	const [cx, ...cy] = data.columns;
-	const maxSegmentsY = maxHeightForColumns(cy);
-	const maxSegmentsX = cx.length;
-	const sWidth = width / (maxSegmentsX - 1);
-	const sHeight = height / maxSegmentsY;
-	ctx.fillRect(x, y, width, height);
-	for (let o in cy) {
-		ctx.beginPath();
-		ctx.moveTo(x + 0, y + cy[o][1]);
-		for (let i = 2; i < cx.length; i++) {
-			ctx.lineTo(x + i * sWidth, y + cy[o][i] * sHeight);
-		}
-		ctx.strokeStyle = data.colors[cy[o][0]];
-		ctx.stroke();
-	}
-}
-
-
-const createPoly = (data, index) => {
+const createPoly = (data, index, opts) => {
 	const points = [];
 	const [name, ...rest] = data.columns[index];
 	const range = [0, rest.length];
@@ -80,7 +43,7 @@ const createPoly = (data, index) => {
 	poly.setAttribute('points', points.join(' '));
 	poly.setAttribute('stroke', data.colors[name]);
 	poly.setAttribute('fill', 'none');
-	poly.setAttribute('stroke-width', '3');
+	poly.setAttribute('stroke-width', opts.sw || '2');
 	poly.setAttribute('vector-effect', 'non-scaling-stroke');
 
 	const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -106,40 +69,29 @@ const createPoly = (data, index) => {
 			g.setAttribute('opacity', '1');
 			g.setAttribute('transform', 'scale(1, 1)');
 		},
+		clone: () => {
+			return g.cloneNode(true);
+		}
 	};
 }
 
 const chartData = ChartsData[0];
 
-const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-svgElement.setAttribute('width', `${WIDTH}px`);
-svgElement.setAttribute('height', `${HEIGHT}px`);
-svgElement.setAttribute('viewBox', `0 0 ${WIDTH} ${HEIGHT}`);
-svgElement.setAttribute('preserveAspectRatio', 'none');
-svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+const svg = createSVG();
+document.body.appendChild(svg.element);
 
-// Rotate
-const g1 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-g1.setAttribute('transform', `translate(0, ${HEIGHT})`);
-
-const g2 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-g2.setAttribute('transform', 'scale(1, -1)');
-
-g1.appendChild(g2);
-svgElement.appendChild(g1);
-
-document.body.appendChild(svgElement);
-
-const poly1 = createPoly(chartData, 1);
-window.p = poly1;
-g2.appendChild(poly1.element);
-const poly2 = createPoly(chartData, 2);
-g2.appendChild(poly2.element);
-window.p = poly1;
+const poly1 = createPoly(chartData, 1, {});
+const poly2 = createPoly(chartData, 2, {});
+svg.addPoly(poly1.element);
+svg.addPoly(poly2.element);
 
 
-
-
+const preview = createSVG();
+document.body.appendChild(preview.element);
+const ppoly1 = createPoly(chartData, 1, {sw: 1});
+const ppoly2 = createPoly(chartData, 2, {sw: 1});
+preview.addPoly(ppoly1.element);
+preview.addPoly(ppoly2.element);
 
 
 
@@ -157,7 +109,7 @@ const changeView = () => {
 	const width = values.scale;
 	// const height = values.scale / 2;
 	const height = HEIGHT;
-	svgElement.setAttribute('viewBox', `${x} ${y} ${width} ${height}`)
+	svg.element.setAttribute('viewBox', `${x} ${y} ${width} ${height}`)
 }
 
 
