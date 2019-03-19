@@ -1,7 +1,5 @@
 import ChartsData from '../assets/chart_data.json';
 
-const WIDTH = 1000;
-const HEIGHT = 500;
 
 const createCanvas = (width, height) => {
 	const canvas = document.createElement('canvas');
@@ -104,92 +102,9 @@ const drawChart = (ctx, data, x, y, width, height) => {
 	}
 }
 
-
-const createPoly = (data, index) => {
-	const points = [];
-	const [name, ...rest] = data.columns[index];
-	const sw = WIDTH / (rest.length - 1);
-	for (let i = 0; i < rest.length; i++) {
-		points.push(`${i * sw},${rest[i]}`);
-	}
-	const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-	poly.setAttribute('points', points.join(' '));
-	poly.setAttribute('stroke', data.colors[name]);
-	poly.setAttribute('fill', 'none');
-	poly.setAttribute('stroke-width', '3');
-
-	const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-	g.setAttribute('style', 'transition: transform 0.4s, opacity 0.2s;')
-	g.appendChild(poly);
-
-	return {
-		element: g,
-		hide: () => {
-			g.setAttribute('opacity', '0');
-			g.setAttribute('transform', 'scale(1, 0)');
-		},
-		show: () => {
-			g.setAttribute('opacity', '1');
-			g.setAttribute('transform', 'scale(1, 1)');
-		},
-	};
-}
-
 const chartData = ChartsData[0];
+const [ canvas, ctx ] = createCanvas(1000, 500);
 
-const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-svgElement.setAttribute('width', '1000px');
-svgElement.setAttribute('height', '500px');
-svgElement.setAttribute('viewBox', '0 0 1000 500');
-
-// Rotate
-const g1 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-g1.setAttribute('transform', 'translate(0, 500)');
-
-const g2 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-g2.setAttribute('transform', 'scale(1, -1)');
-
-g1.appendChild(g2);
-svgElement.appendChild(g1);
-
-document.body.appendChild(svgElement);
-
-const poly1 = createPoly(chartData, 1);
-g2.appendChild(poly1.element);
-const poly2 = createPoly(chartData, 2);
-g2.appendChild(poly2.element);
-window.p = poly1;
-
-
-const values = {
-	scale: 1000,
-	x: 0,
-};
-const changeView = () => {
-	console.log(values.scale)
-	const x = 1000 - values.scale - values.x;
-	const y = (1000 - values.scale) / 2;
-	const width = values.scale;
-	const height = values.scale / 2;
-	svgElement.setAttribute('viewBox', `${x} ${y} ${width} ${height}`)
-}
-
-
-document.getElementById('range-scale').addEventListener('input', (e) => {
-	console.log(e.target.value);
-	values.scale = parseInt(e.target.value);
-	changeView();
-	document.getElementById('range-x').setAttribute('min', values.scale)
-});
-document.getElementById('range-x').addEventListener('input', (e) => {
-	console.log(e.target.value);
-	values.x = 1000 - parseInt(e.target.value);
-	changeView();
-});
-
-// const [ canvas, ctx ] = createCanvas(1000, 500);
-
-// const dc = withData(withCtx(drawChart, ctx), chartData);
-// dc(50, 50, 900, 400);
+const dc = withData(withCtx(drawChart, ctx), chartData);
+dc(50, 50, 900, 400);
 // drawChart(ctx, chartData, 50, 50, 900, 400);
-
