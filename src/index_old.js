@@ -8,6 +8,21 @@ el.height = 300;
 
 const flatMax = (arr) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1))));
 
+
+class Column {
+	constructor(data, index) {
+		this.data = data;
+		this.index = index;
+
+		this.maxHeight
+	}
+
+	get height() {
+
+	}
+}
+
+
 class Chart {
 	constructor(data, canvas) {
 		this.data = data;
@@ -39,7 +54,7 @@ class Chart {
 	}
 
 	render() {
-		this.ctx.fillRect(0, 0,100,100)
+		// this.ctx.fillRect(0, 0,100,100)
 		this.drawRow(this.dataSets[0]);
 		this.drawRow(this.dataSets[1]);
 	}

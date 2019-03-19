@@ -108,6 +108,7 @@ const drawChart = (ctx, data, x, y, width, height) => {
 const createPoly = (data, index) => {
 	const points = [];
 	const [name, ...rest] = data.columns[index];
+	const range = [0, rest.length];
 	const sw = WIDTH / (rest.length - 1);
 	for (let i = 0; i < rest.length; i++) {
 		points.push(`${i * sw},${rest[i]}`);
@@ -122,6 +123,17 @@ const createPoly = (data, index) => {
 	g.setAttribute('style', 'transition: transform 0.4s, opacity 0.2s;')
 	g.appendChild(poly);
 
+	const updatePoints = () => {
+		const points = [];
+		// 10
+		// 100
+		const sw = WIDTH / (range[1] - range[0] - 1);
+		for (let i = 0; i + range[0] < range[1]; i++) {
+			points.push(`${i * sw},${rest[i + range[0]]}`);
+		}
+		poly.setAttribute('points', points.join(' '));
+	}
+
 	return {
 		element: g,
 		hide: () => {
@@ -132,6 +144,15 @@ const createPoly = (data, index) => {
 			g.setAttribute('opacity', '1');
 			g.setAttribute('transform', 'scale(1, 1)');
 		},
+		rangeFrom: (rf) => {
+			range[0] = rf;
+		},
+		rangeTo: (rt) => {
+			range[1] = rt;
+		},
+		update: () => {
+			updatePoints();
+		}
 	};
 }
 
@@ -155,10 +176,24 @@ svgElement.appendChild(g1);
 document.body.appendChild(svgElement);
 
 const poly1 = createPoly(chartData, 1);
+window.p = poly1;
 g2.appendChild(poly1.element);
 const poly2 = createPoly(chartData, 2);
 g2.appendChild(poly2.element);
 window.p = poly1;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 const values = {
@@ -186,10 +221,3 @@ document.getElementById('range-x').addEventListener('input', (e) => {
 	values.x = 1000 - parseInt(e.target.value);
 	changeView();
 });
-
-// const [ canvas, ctx ] = createCanvas(1000, 500);
-
-// const dc = withData(withCtx(drawChart, ctx), chartData);
-// dc(50, 50, 900, 400);
-// drawChart(ctx, chartData, 50, 50, 900, 400);
-

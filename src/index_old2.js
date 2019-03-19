@@ -59,7 +59,7 @@ class Chart {
 		for (let i = 1; i < this.segmentsCount; i++) {
 			ctx.lineTo(i * this.segWidth, this.maxHeight - ds[i]);
 		}
-		ctx.lineWidth = 2;
+		ctx.lineWidth = 10;
 		ctx.strokeStyle = this.data.colors[name];
 		ctx.stroke();
 	}
@@ -71,14 +71,14 @@ class Chart {
 	}
 }
 
-const withData = (fun, data) => (...args) => fun(data, ...args);
-const withCtx = (fun, ctx) => (...args) => fun(ctx, ...args);
+const bindParam = (fun, param) => fun.bind(null, param);
 
-const drawColumn = (ctx, x, y, width, height, data, colIndex) => {
+const drawColumn = (ctx, data, x, y, width, height, colIndex) => {
+	const [cx, ...cy] = data.columns;
 	ctx.beginPath();
-	ctx.moveTo(x + 0, y + cy[o][1]);
+	ctx.moveTo(x + 0, y + cy[colIndex][1]);
 	for (let i = 2; i < cx.length; i++) {
-		ctx.lineTo(x + i * sWidth, y + cy[o][i] * sHeight);
+		ctx.lineTo(x + i * sWidth, y + cy[colIndex][i] * sHeight);
 	}
 	ctx.strokeStyle = data.colors[cy[o][0]];
 	ctx.stroke();
@@ -92,19 +92,21 @@ const drawChart = (ctx, data, x, y, width, height) => {
 	const sHeight = height / maxSegmentsY;
 	ctx.fillRect(x, y, width, height);
 	for (let o in cy) {
-		ctx.beginPath();
-		ctx.moveTo(x + 0, y + cy[o][1]);
-		for (let i = 2; i < cx.length; i++) {
-			ctx.lineTo(x + i * sWidth, y + cy[o][i] * sHeight);
-		}
-		ctx.strokeStyle = data.colors[cy[o][0]];
-		ctx.stroke();
+		dcol(x, y, width, height, o);
+		// ctx.beginPath();
+		// ctx.moveTo(x + 0, y + cy[o][1]);
+		// for (let i = 2; i < cx.length; i++) {
+		// 	ctx.lineTo(x + i * sWidth, y + cy[o][i] * sHeight);
+		// }
+		// ctx.strokeStyle = data.colors[cy[o][0]];
+		// ctx.stroke();
 	}
 }
 
 const chartData = ChartsData[0];
 const [ canvas, ctx ] = createCanvas(1000, 500);
-
-const dc = withData(withCtx(drawChart, ctx), chartData);
+ctx.lineWidth = 2;
+const dc = bindParam(bindParam(drawChart, ctx), chartData);
+const dcol = bindParam(bindParam(drawColumn, ctx), chartData);
 dc(50, 50, 900, 400);
 // drawChart(ctx, chartData, 50, 50, 900, 400);
