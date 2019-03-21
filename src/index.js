@@ -79,29 +79,29 @@ const Chart = (data, canvas, ccanvas) => {
 	const cw = ccanvas.width;
 
 	let p1 = segmentsCount / 1000;
-	let lastMax = maxHeight;
-	let anim = 0;
-	let inc = 0;
+	let percentage = segments.length;
+	let offset = 0;
 
-	_this.updateSegmentsToDraw = (percentage) => {
+	_this.updateOffsetSegmentsToDraw = (offs) => {
+		offset = offs;
+		_this.updateSegmentsToDraw();
+	};
+	_this.updatePercentageSegmentsToDraw = (perc) => {
+		percentage = perc;
+		_this.updateSegmentsToDraw();
+	};
+
+	_this.updateSegmentsToDraw = () => {
 		const segmentsToDraw_raw = p1 * percentage;
 		chartDat.segmentsToDraw = Math.round(segmentsToDraw_raw);
 		const newMinHeight = flatMin(dataSets, 0, chartDat.segmentsToDraw);
 		const newMaxHeight = flatMax(dataSets, 0, chartDat.segmentsToDraw);
-		if (lastMax !== newMaxHeight) {
-			const mmm = lastMax - newMaxHeight;
-			inc = lastMax - newMaxHeight > 0 ? -1 : 1;
-			console.log(mmm, inc);
-			lastMax = newMaxHeight;
-		}
 		chartDat.normH = normalize(newMinHeight, newMaxHeight);
 		chartDat.normW = normalize(0, segmentsToDraw_raw - 1);
-	}
+	};
 
 	const drawDataset = (dataset, ctx, { segmentsToDraw, normW, normH }, x, y, w, h) => {
 		const [name, ...ds] = dataset;
-		if (anim === 0) inc = 0;
-		anim += inc;
 		ctx.beginPath();
 		ctx.moveTo(x + normW(0) * w, y + h - normH(ds[0]) * h);
 		for (let i = 1; i < segmentsToDraw; i++) {
@@ -148,7 +148,14 @@ const rangeX = document.querySelector('#range-x')
 rangeS.addEventListener('input', (e) => {
 	const value = parseInt(e.target.value);
 	// console.log(value);
-	chart.updateSegmentsToDraw(value);
+	chart.updatePercentageSegmentsToDraw(value);
+	// chart.render();
+});
+
+rangeX.addEventListener('input', (e) => {
+	const value = parseInt(e.target.value);
+	// console.log(value);
+	chart.updateOffsetSegmentsToDraw(value);
 	// chart.render();
 });
 
