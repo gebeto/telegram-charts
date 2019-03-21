@@ -1,74 +1,160 @@
 import ChartsData from '../assets/chart_data.json';
 
+function debounce(f, ms) {
+	let timer = null;
+
+	return function (...args) {
+		const onComplete = () => {
+			f.apply(this, args);
+			timer = null;
+		}
+
+		if (timer) {
+			clearTimeout(timer);
+		}
+
+		timer = setTimeout(onComplete, ms);
+	};
+}
+
 function normalize(min, max) {
-    const delta = max - min;
-    const memo = {};
-    return (val) => {
-    	if (!memo[val]) {
-    		memo[val] = (val - min) / delta;
-    	}
-    	return memo[val];
-    };
+	const delta = max - min;
+	const memo = {};
+	return (val) => {
+		if (!memo[val]) {
+			memo[val] = (val - min) / delta;
+		}
+		return memo[val];
+	};
+}
+
+function lerp(position, targetPosition) {
+	return position + (targetPosition - position) * 0.2;
 }
 
 
 const el = document.createElement('canvas');
 document.body.appendChild(el);
 el.width = 1000;
-el.height = 300;
+el.height = 500;
+const cel = document.createElement('canvas');
+document.body.appendChild(cel);
+cel.width = 1000;
+cel.height = 100;
 
-const flatMax = (arr) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1))));
-const flatMin = (arr) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1))));
+const flatMax = (arr, offset, count) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1 + offset, count))));
+const flatMin = (arr, offset, count) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1 + offset, count))));
 
 
-class Chart {
-	constructor(data, canvas) {
-		this.data = data;
-		const [segments, ...coords] = this.data.columns;
-		this.segments = segments;
-		this.dataSets = coords;
+const Chart = (data, canvas, ccanvas) => {
+	const _this = {};
 
-		this.canvas = canvas;
-		this.ctx = canvas.getContext('2d');
+	const [segments, ...dataSets] = data.columns;
+	const ctx = canvas.getContext('2d');
+	const cctx = ccanvas.getContext('2d');
 
-		this.segmentsCount = this.segments.length - 1;
-		this.maxHeight = flatMax(this.dataSets);
-		this.minHeight = flatMin(this.dataSets);
-		this.normH = normalize(this.minHeight, this.maxHeight);
-		this.normW = normalize(0, this.segmentsCount - 1);
+	const segmentsCount = segments.length - 1;
+	const maxHeight = flatMax(dataSets, 0, segments.length);
+	const minHeight = flatMin(dataSets, 0, segments.length);
+	let segmentsToDraw = segmentsCount;
+	let normH = normalize(minHeight, maxHeight);
+	let normW = normalize(0, segmentsToDraw - 1);
+
+	const initialDat = {
+		segmentsToDraw,
+		normH,
+		normW,
+	};
+
+	const chartDat = {
+		segmentsToDraw,
+		normH,
+		normW,
 	}
 
-	drawRow(dataset) {
-		const [name, ...ds] = dataset;
-		const ctx = this.ctx;
-		const h = this.canvas.height;
-		const w = this.canvas.width;
+	const h = canvas.height;
+	const w = canvas.width;
 
-		ctx.beginPath();
-		ctx.moveTo(this.normW(0) * w, h - this.normH(ds[0]) * h);
-		for (let i = 1; i < this.segmentsCount; i++) {
-			ctx.lineTo(this.normW(i) * w, h - this.normH(ds[i]) * h );
+	const ch = ccanvas.height;
+	const cw = ccanvas.width;
+
+	let p1 = segmentsCount / 1000;
+	let lastMax = maxHeight;
+	let anim = 0;
+	let inc = 0;
+
+	_this.updateSegmentsToDraw = (percentage) => {
+		const segmentsToDraw_raw = p1 * percentage;
+		chartDat.segmentsToDraw = Math.round(segmentsToDraw_raw);
+		const newMinHeight = flatMin(dataSets, 0, chartDat.segmentsToDraw);
+		const newMaxHeight = flatMax(dataSets, 0, chartDat.segmentsToDraw);
+		if (lastMax !== newMaxHeight) {
+			const mmm = lastMax - newMaxHeight;
+			inc = lastMax - newMaxHeight > 0 ? -1 : 1;
+			console.log(mmm, inc);
+			lastMax = newMaxHeight;
 		}
-		ctx.lineWidth = 2;
-		ctx.strokeStyle = this.data.colors[name];
+		chartDat.normH = normalize(newMinHeight, newMaxHeight);
+		chartDat.normW = normalize(0, segmentsToDraw_raw - 1);
+	}
+
+	const drawDataset = (dataset, ctx, { segmentsToDraw, normW, normH }, x, y, w, h) => {
+		const [name, ...ds] = dataset;
+		if (anim === 0) inc = 0;
+		anim += inc;
+		ctx.beginPath();
+		ctx.moveTo(x + normW(0) * w, y + h - normH(ds[0]) * h);
+		for (let i = 1; i < segmentsToDraw; i++) {
+			const Y = y + h - normH(ds[i]) * h;
+			const X = x + normW(i) * w;
+			ctx.lineTo(X, Y);
+		}
+		ctx.strokeStyle = data.colors[name];
 		ctx.stroke();
 	}
 
-	render() {
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		for (let i = 0; i < this.dataSets.length; i++) {
-			this.drawRow(this.dataSets[i]);
-		}
+	_this.drawRow = (dataset) => {
+		ctx.lineWidth = 2;
+		drawDataset(dataset, ctx, chartDat, 0, 0, w, h);
+
+		cctx.lineWidth = 1;
+		drawDataset(dataset, cctx, initialDat, 0, 0, cw, ch);
+		cctx.lineWidth = 3;
+		cctx.strokeStyle = 'rgba(0,0,0,0.1)'
+		cctx.strokeRect(0, 434, 1000, 66);
+		cctx.fillRect(0, 434, 20, 66)
 	}
+
+	_this.render = () => {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		for (let i = 0; i < dataSets.length; i++) {
+			_this.drawRow(dataSets[i]);
+		}
+	};
+
+	return _this;
 }
 
 
 
-const c = ChartsData[0];
-const chart = new Chart(c, el);
+const c = ChartsData[4];
+const chart = Chart(c, el, cel);
 chart.render();
+const rangeS = document.querySelector('#range-scale')
+const rangeX = document.querySelector('#range-x')
 
-// (function loop() {
-// 	chart.render();
-// 	requestAnimationFrame(loop);
-// })();
+
+
+rangeS.addEventListener('input', (e) => {
+	const value = parseInt(e.target.value);
+	// console.log(value);
+	chart.updateSegmentsToDraw(value);
+	// chart.render();
+});
+
+(function loop() {
+	chart.render();
+	requestAnimationFrame(loop);
+})();
+
+
