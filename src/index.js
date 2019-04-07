@@ -21,13 +21,17 @@ const flatMin = (arr) => Math.min.apply(null, arr.map(set => Math.min.apply(null
 
 
 
+
+
+
 function Chart(data) {
 	// Init canvas
+	let bounds, w, h;
 	const canvas = document.createElement('canvas');
 	document.body.appendChild(canvas);
-	let w = canvas.width = canvas.getBoundingClientRect().width;
-	let h = canvas.height = 450;
 	const ctx = canvas.getContext('2d');
+	ctx.lineJoin = 'bevel';
+	ctx.lineCap = 'butt';
 
 	// Init data
 	const colors = data.colors;
@@ -39,9 +43,14 @@ function Chart(data) {
 	const normY = normalize(minHeight, maxHeight);
 	const normX = normalize(0, xs.length - 1);
 
-	function updateRelative() {
-		w = canvas.width = canvas.getBoundingClientRect().width;
-		h = canvas.height = 300;
+	const control = {
+		range: [0, 1],
+	};
+
+	function updateCanvasSize() {
+		bounds = canvas.getBoundingClientRect();
+		w = canvas.width = bounds.width;
+		h = canvas.height = 450;
 	}
 
 	function drawLine(data, x, y, width, height) {
@@ -56,20 +65,77 @@ function Chart(data) {
 		ctx.stroke();
 	}
 
-	function drawChart() {
+	function drawLineRange(data, x, y, width, height) {
+		const scale = control.range[1] - control.range[0];
+		const xs = width * control.range[0];
+		const xNew = x - xs / scale;
+		const widthNew = width / scale;
+		drawLine(data, xNew, y, widthNew, height);
+	}
+
+
+	function drawChart(x, y, width, height) {
 		for (let i = 0; i < ys.length; i++ ) {
-			drawLine(ys[i], 0, 0, w, 320);
-			drawLine(ys[i], 0, 400, w, 46);
-			ctx.fillRect(0, 325, w, 10);
+			drawLineRange(ys[i], x, y, width, height);
 		}
 	}
 
-	drawChart();
+	function drawControl(x, y, width, height) {
+		for (let i = 0; i < ys.length; i++ ) {
+			drawLine(ys[i], x + 7, y + 3, width - 14, height - 6);
+		}
 
-	window.addEventListener('resize', () => {
-		updateRelative();
-		drawChart();
-	});
+		const xs = x + width * control.range[0];
+		const xe = x + width * control.range[1];
+		const ww = width * (control.range[1] - control.range[0]);
+
+		ctx.save();
+		ctx.fillStyle = "#C4D6EA";
+		ctx.beginPath();
+		const controlWidth = 14;
+		const controlWidth2 = controlWidth * 2;
+		const controlPipaWidth = (controlWidth - 2) / 2;
+		ctx.rect(xs + controlWidth, y, ww - controlWidth2, 1);
+		ctx.rect(xs + controlWidth, y + height - 1, ww - controlWidth2, 1);
+		ctx.fill();
+
+
+		ctx.beginPath();
+		ctx.moveTo(xs + controlWidth, y);
+		ctx.lineTo(xs + controlWidth, y + height);
+		ctx.arcTo(xs, y + height, xs, y + height - controlWidth, controlWidth / 2);
+		ctx.arcTo(xs, y, xs + controlWidth, y, controlWidth / 2);
+		ctx.lineTo(xs, y);
+		ctx.closePath();
+		ctx.fill();
+
+		ctx.beginPath();
+		ctx.moveTo(xe - controlWidth, y);
+		ctx.lineTo(xe - controlWidth, y + height);
+		ctx.arcTo(xe, y + height, xe, y + height - controlWidth, controlWidth / 2);
+		ctx.arcTo(xe, y, xe - controlWidth, y, controlWidth / 2);
+		ctx.closePath();
+		ctx.fill();
+
+		ctx.restore();
+
+		ctx.save();
+		ctx.beginPath();
+		ctx.fillStyle = '#FFFFFF';
+		ctx.rect(xs + controlPipaWidth, y + 15, 2, height - 30);
+		ctx.rect(xe - controlPipaWidth, y + 15, -2, height - 30);
+		ctx.fill();
+		ctx.restore();
+	}
+
+	function render() {
+		updateCanvasSize();
+		drawChart(0, 0, w, 390);
+		drawControl(0, 400, w, 50);
+	}
+
+	window.addEventListener('resize', render);
+	render();
 }
 
 
@@ -79,24 +145,9 @@ function Chart(data) {
 fetch('assets/chart_data.json').then(res => res.json()).then(ChartsData => {
 	const chart = Chart(ChartsData[1]);
 
-	(function loop() {
-		// chart.render();
-		requestAnimationFrame(loop);
-	})();
 
-	// const norm1000 = normalize(0, 1000);
-	// document.getElementById('range-x').addEventListener('input', (e) => {
-	// 	const value = parseInt(e.target.value);
-	// 	chart.setRange1(norm1000(value));
-	// })
-	// document.getElementById('range-scale').addEventListener('input', (e) => {
-	// 	const value = parseInt(e.target.value);
-	// 	chart.setRange2(norm1000(value));
-	// })
-
-	// window.addEventListener('resize', () => {
-	// 	el.width = el.getBoundingClientRect().width;
-	// 	cel.width = cel.getBoundingClientRect().width;
-	// 	chart.updateSize();
-	// });
+	// (function loop() {
+		
+	// 	requestAnimationFrame(loop);
+	// })();
 });
