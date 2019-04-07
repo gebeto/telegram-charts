@@ -12,8 +12,8 @@ export default (...args) => {
 			sourceMap: 'inline',
 		},
 		plugins: [
-			// serve(),			// index.html should be in root of project
-			// livereload()
+			serve(),			// index.html should be in root of project
+			livereload()
 		]
 	}
 }

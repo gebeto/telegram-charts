@@ -1,5 +1,3 @@
-
-
 class Animated {
 	constructor(value, duration) {
         this.fromValue = value;

@@ -5,11 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch:w": "npm run dev -- --watch",
+    "watch": "npm run dev -- --watch",
     "dev": "webpack --mode development",
-    "build:w": "webpack --mode production",
-    "watch": "rollup -c -w",
-    "build": "rollup -c"
+    "serve": "webpack-dev-server --mode development",
+    "build": "webpack --mode production"
   },
   "repository": {
     "type": "git",
@@ -21,13 +20,13 @@
     "url": "https://github.com/gebeto/telegram-charts/issues"
   },
   "homepage": "https://github.com/gebeto/telegram-charts#readme",
-  "dependencies": {
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "rollup": "^1.9.0",
-    "rollup-plugin-livereload": "^1.0.0",
-    "rollup-plugin-serve": "^1.0.1"
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "babel-loader": "^8.0.5",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.2.1"
   }
 }
