@@ -8,150 +8,99 @@
 
 	function normalize(min, max) {
 		const delta = max - min;
-		return (val, scale = 1) => {
-			// if (!memo[val]) {
-			// 	memo[val] = (val - min) / delta;
-			// }
-			// return memo[val];
-			return scale === 0 ? 0 : (val - min) / delta / scale;
+		const memo = {};
+		return (val) => {
+			if (!memo[val]) {
+				memo[val] = (val - min) / delta;
+			}
+			return memo[val];
 		};
 	}
 
 
-	const el = document.createElement('canvas');
-	document.body.appendChild(el);
-	el.width = el.getBoundingClientRect().width;
-	el.height = 300;
-
-	const cel = document.createElement('canvas');
-	document.body.appendChild(cel);
-	cel.width = cel.getBoundingClientRect().width;
-	cel.height = 60;
+	const flatMax = (arr) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1))));
+	const flatMin = (arr) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1))));
 
 
-	const flatMax = (arr, offset, count) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1 + offset, count))));
-	const flatMin = (arr, offset, count) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1 + offset, count))));
 
-
-	const Chart = (data, canvas, ccanvas) => {
-		const _this = {};
-
-		const [segments, ...dataSets] = data.columns;
+	function Chart(data) {
+		// Init canvas
+		const canvas = document.createElement('canvas');
+		document.body.appendChild(canvas);
+		let w = canvas.width = canvas.getBoundingClientRect().width;
+		let h = canvas.height = 450;
 		const ctx = canvas.getContext('2d');
-		const cctx = ccanvas.getContext('2d');
 
-		const segmentsCount = segments.length - 1;
-		const maxHeight = flatMax(dataSets, 0, segments.length);
-		const minHeight = flatMin(dataSets, 0, segments.length);
-		let segmentsToDraw = segmentsCount;
-		let normH = normalize(minHeight, maxHeight);
-		let normW = normalize(0, segmentsToDraw - 1);
+		// Init data
+		const colors = data.colors;
+		const names = data.names;
+		const types = data.types;
+		const [[xkey, ...xs], ...ys] = data.columns;
+		const maxHeight = flatMax(ys);
+		const minHeight = flatMin(ys);
+		const normY = normalize(minHeight, maxHeight);
+		const normX = normalize(0, xs.length - 1);
 
-		const initialDat = {
-			segmentsToDraw,
-			normH,
-			normW,
-		};
+		function updateRelative() {
+			w = canvas.width = canvas.getBoundingClientRect().width;
+			h = canvas.height = 300;
+		}
 
-		const chartDat = {
-			segmentsToDraw,
-			normH,
-			normW,
-		};
-
-		let range = [0, 1];
-
-		let h = canvas.height;
-		let w = canvas.width;
-		let ch = ccanvas.height;
-		let cw = ccanvas.width;
-
-		_this.updateSize = () => {
-			h = canvas.height;
-			w = canvas.width;
-
-			ch = ccanvas.height;
-			cw = ccanvas.width;
-
-			_this.render();
-		};
-
-
-
-		const drawDataset = (dataset, ctx, { segmentsToDraw, normW, normH }, x, y, w, h) => {
-			const [name, ...ds] = dataset;
-			const calcForX = (index) => normW(index, range[1] - range[0]) * w;
-
+		function drawLine(data, x, y, width, height) {
+			const [key, ...items] = data;
 			ctx.beginPath();
-			ctx.moveTo(x + calcForX(0), y + h - normH(ds[0]) * h);
-			for (let i = 1; i < segmentsToDraw; i++) {
-				const Y = y + h - normH(ds[i]) * h;
-				const X = x + calcForX(i);
-				const XOff = segmentsToDraw * calcForX(range[0]);
-				ctx.lineTo(X - XOff, Y);
+			ctx.moveTo(x + 0, y + height - normY(items[0]) * height);
+			for (let i = 1; i < items.length; i++) {
+				ctx.lineTo(x + normX(i) * width, y + height - normY(items[i]) * height);
 			}
-			ctx.strokeStyle = data.colors[name];
-			ctx.stroke();
-		};
-
-		_this.setRange1 = (newRange) => {
-			range[0] = newRange;
-		};
-		_this.setRange2 = (newRange) => {
-			range[1] = newRange;
-		};
-
-		_this.drawRow = (dataset) => {
 			ctx.lineWidth = 2;
-			drawDataset(dataset, ctx, chartDat, 0, 0, w, h);
+			ctx.strokeStyle = colors[key];
+			ctx.stroke();
+		}
 
-			cctx.lineWidth = 1;
-			drawDataset(dataset, cctx, initialDat, 0, 0, cw, ch);
-			cctx.lineWidth = 3;
-			cctx.strokeStyle = 'rgba(0,0,0,0.1)';
-			cctx.strokeRect(0, 434, 1000, 66);
-			cctx.fillRect(0, 434, 20, 66);
-
-		};
-
-		_this.render = () => {
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			cctx.clearRect(0, 0, ccanvas.width, ccanvas.height);
-			for (let i = 0; i < dataSets.length; i++) {
-				_this.drawRow(dataSets[i]);
+		function drawChart() {
+			for (let i = 0; i < ys.length; i++ ) {
+				drawLine(ys[i], 0, 0, w, 320);
+				drawLine(ys[i], 0, 400, w, 46);
+				ctx.fillRect(0, 325, w, 10);
 			}
-		};
+		}
 
-		return _this;
-	};
+		drawChart();
+
+		window.addEventListener('resize', () => {
+			updateRelative();
+			drawChart();
+		});
+	}
+
+
 
 
 
 	fetch('assets/chart_data.json').then(res => res.json()).then(ChartsData => {
-		const c = ChartsData[1];
-		const chart = Chart(c, el, cel);
-		chart.render();
+		const chart = Chart(ChartsData[1]);
 
 		(function loop() {
-			chart.render();
+			// chart.render();
 			requestAnimationFrame(loop);
 		})();
 
-		const norm1000 = normalize(0, 1000);
-		document.getElementById('range-x').addEventListener('input', (e) => {
-			const value = parseInt(e.target.value);
-			chart.setRange1(norm1000(value));
-		});
-		document.getElementById('range-scale').addEventListener('input', (e) => {
-			const value = parseInt(e.target.value);
-			chart.setRange2(norm1000(value));
-		});
+		// const norm1000 = normalize(0, 1000);
+		// document.getElementById('range-x').addEventListener('input', (e) => {
+		// 	const value = parseInt(e.target.value);
+		// 	chart.setRange1(norm1000(value));
+		// })
+		// document.getElementById('range-scale').addEventListener('input', (e) => {
+		// 	const value = parseInt(e.target.value);
+		// 	chart.setRange2(norm1000(value));
+		// })
 
-		window.addEventListener('resize', () => {
-			el.width = el.getBoundingClientRect().width;
-			cel.width = cel.getBoundingClientRect().width;
-			chart.updateSize();
-		});
+		// window.addEventListener('resize', () => {
+		// 	el.width = el.getBoundingClientRect().width;
+		// 	cel.width = cel.getBoundingClientRect().width;
+		// 	chart.updateSize();
+		// });
 	});
 
 }());
