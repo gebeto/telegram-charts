@@ -4,7 +4,7 @@ const DRAG_END = 2;
 const DRAG_ALL = 3;
 
 
-export default function ControlsDrawer({ctx, canvasBounds, control, drawLine, ys}) {
+export default function ControlsDrawer({ctx, config, canvasBounds, control, drawLine, ys}) {
 	let xs = 0;
 	let xe = 0;
 	let ww = xe - xs;
@@ -66,6 +66,9 @@ export default function ControlsDrawer({ctx, canvasBounds, control, drawLine, ys
 	function onMouseMove(e) {
 		if (!mouseMode) return;
 
+		config.needRender = true;
+		// console.log('NEED RENDER')
+
 		// console.log('MODE');
 		mouse.newX = (e.clientX - canvasBounds.left);
 		mouse.newY = (e.clientY - canvasBounds.top);
@@ -87,8 +90,10 @@ export default function ControlsDrawer({ctx, canvasBounds, control, drawLine, ys
 			const normNew = control.updateRangeWithNormalCanvas(mouse.x);
 			const diff = (norm - normNew);
 			if (oldRange[0] + diff >= 0 && oldRange[1] + diff <= 1) {
-				control.updateRange(0, oldRange[0] + diff);
-				control.updateRange(1, oldRange[1] + diff);
+				control.updateRanges(oldRange[0] + diff, oldRange[1] + diff);
+
+				// control.updateRange(0, oldRange[0] + diff);
+				// control.updateRange(1, oldRange[1] + diff);
 			}
 		}
 	}
@@ -100,9 +105,6 @@ export default function ControlsDrawer({ctx, canvasBounds, control, drawLine, ys
 	}
 	function onTouchMove(e) {
 		onMouseMove(e.touches[0]);
-		if (mouseMode !== NONE) {
-			e.preventDefault();
-		}
 	}
 
 	document.addEventListener('mousedown', onMouseDown);

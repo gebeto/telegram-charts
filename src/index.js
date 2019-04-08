@@ -34,6 +34,9 @@ const flatMin = (arr) => Math.min.apply(null, arr.map(set => Math.min.apply(null
 
 
 function Chart(data) {
+	const config = {
+		needRender: true,
+	};
 	// Init canvas
 	let bounds = {}, w, h, normCanvas;
 	const canvas = document.createElement('canvas');
@@ -62,6 +65,10 @@ function Chart(data) {
 				control.range[index] = value;
 			}
 		},
+		updateRanges: function updateRanges(start, end) {
+			control.range[0] = start;
+			control.range[1] = end;
+		},
 		updateRangeWithNormalCanvas: function updateRangeWithNormalCanvas(xPos) {
 			return normCanvas(xPos);
 		},
@@ -78,9 +85,9 @@ function Chart(data) {
 		h = canvas.height = CANVAS_HEIGHT;
 	}
 
-	const drawLine = LineDrawer({ ctx, normX, normY, colors });
-	const drawControl = ControlsDrawer({ ctx, canvasBounds: bounds, control, drawLine: drawLine, ys });
-	const drawChart = LineChartDrawer({ ctx, control, drawLine: drawLineRange, ys });
+	const drawLine = LineDrawer({ config, ctx, normX, normY, colors });
+	const drawControl = ControlsDrawer({ config, ctx, canvasBounds: bounds, control, drawLine: drawLine, ys });
+	const drawChart = LineChartDrawer({ config, ctx, control, drawLine: drawLineRange, ys });
 	
 	function drawLineRange(data, x, y, width, height) {
 		const scale = control.range[1] - control.range[0];
@@ -91,10 +98,13 @@ function Chart(data) {
 	}
 
 	function render() {
+		// if (!config.needRender) return;
 		updateCanvasSize();
 		ctx.clearRect(0, 0, w, h);
 		drawChart(0, 0, w, CANVAS_HEIGHT - 60);
 		drawControl(0, CANVAS_HEIGHT - 50, w, 50);
+		// config.needRender = false;
+		// console.log('rendering')
 	}
 
 	window.addEventListener('resize', render);
@@ -111,20 +121,17 @@ function Chart(data) {
 
 
 fetch('assets/chart_data.json').then(res => res.json()).then(ChartsData => {
-	const chart = Chart(ChartsData[0]);
-	const normControl = normalizeMemo(0, 1000);
-
-	document.querySelector('#range-start').addEventListener('input', (e) => {
-		const value = parseInt(e.target.value);
-		chart.updateRange(0, normControl(value));
-	});
-	document.querySelector('#range-end').addEventListener('input', (e) => {
-		const value = parseInt(e.target.value);
-		chart.updateRange(1, normControl(value));
+	// const charts = ChartsData.slice(0, 2).map(data => {
+	const charts = ChartsData.map(data => {
+		const chart = Chart(data);
+		const normControl = normalizeMemo(0, 1000);
+		return chart;
 	});
 
 	(function loop() {
-		chart.render();
+		charts.forEach(chart => {
+			chart.render();
+		});
 		requestAnimationFrame(loop);
 	})();
 });
