@@ -1,8 +1,9 @@
-export default function YAxis({ ctx, normX, normY, colors }) {
+export default function YAxis({ control, ctx, normX, normY, colors }) {
 	const partsCount = 7;
 	
 	return function drawYAxis(min, max, x, y, width, height) {
 		const part = height / partsCount;
+		const partNumber = (max - min) / partsCount;
 
 		ctx.save();
 		ctx.beginPath();
@@ -12,7 +13,7 @@ export default function YAxis({ ctx, normX, normY, colors }) {
 		for (let i = 0; i < partsCount; i++) {
 			ctx.moveTo(x, y + height - i * part);
 			ctx.lineTo(x + width, y + height - i * part);
-			ctx.fillText('10', x + 3, y + height - i * part - 5)
+			ctx.fillText(partNumber * i, x + 3, y + height - i * part - 5)
 		}
 
 		ctx.lineWidth = 1;

@@ -98,8 +98,8 @@ function Chart(data) {
 		h = canvas.height = CANVAS_HEIGHT;
 	}
 
-	const drawYAxis = YAxisDrawer({ ctx, normX, normY, colors });
-	const drawXAxis = XAxisDrawer({ ctx, normX, normY, colors });
+	const drawYAxis = YAxisDrawer({ control, ctx, normX, normY, colors });
+	const drawXAxis = XAxisDrawer({ control, ctx, normX, normY, colors });
 	const drawLine = LineDrawer({ config, ctx, normX, normY, colors });
 	const drawDots = DotsDrawer({ config, ctx, normX, normY, colors });
 	const drawXAxisRange = withRange(control.range, drawXAxis);
