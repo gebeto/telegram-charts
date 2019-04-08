@@ -4,6 +4,8 @@ import ControlsDrawer from './Drawers/Controls';
 import LineDrawer from './Drawers/Line';
 import DotsDrawer from './Drawers/Dots';
 import LineChartDrawer from './Drawers/LineChart';
+import YAxisDrawer from './Drawers/YAxis';
+import XAxisDrawer from './Drawers/XAxis';
 
 let time = Date.now();
 
@@ -96,21 +98,26 @@ function Chart(data) {
 		h = canvas.height = CANVAS_HEIGHT;
 	}
 
+	const drawYAxis = YAxisDrawer({ ctx, normX, normY, colors });
+	const drawXAxis = XAxisDrawer({ ctx, normX, normY, colors });
 	const drawLine = LineDrawer({ config, ctx, normX, normY, colors });
 	const drawDots = DotsDrawer({ config, ctx, normX, normY, colors });
+	const drawXAxisRange = withRange(control.range, drawXAxis);
 	const drawLineRange = withRange(control.range, drawLine);
 	const drawDotsRange = withRange(control.range, drawDots);
 	const drawControl = ControlsDrawer({ config, ctx, canvasBounds: bounds, control, drawLine: drawLine, ys });
 	const drawChart = LineChartDrawer({
-		config, ctx, control, ys,
+		config, ctx, control, ys, xs,
 		drawLine: drawLineRange,
 		drawDots: drawDotsRange,
+		drawXAxis: drawXAxisRange,
 	});
 
 	function render() {
 		updateCanvasSize();
 		ctx.clearRect(0, 0, w, h);
-		drawChart(0, 0, w, CANVAS_HEIGHT - 60);
+		drawYAxis(minHeight, maxHeight, 10, 0, w, CANVAS_HEIGHT - 80);
+		drawChart(0, 0, w, CANVAS_HEIGHT - 80);
 		drawControl(0, CANVAS_HEIGHT - 50, w, 50);
 	}
 
