@@ -43,8 +43,18 @@ function Chart(data) {
 	const normX = normalize(0, xs.length - 1);
 
 	const control = {
-		range: [0.3, 1],
+		range: [0.1, 0.9],
+		updateRange: function updateRange(index, value) {
+			const secIndex = index === 0 ? 1 : 0;
+
+			if (index === 0 && value < control.range[1] - 0.1) {
+				control.range[index] = value;
+			} else if (index === 1 && value > control.range[0] + 0.1) {
+				control.range[index] = value;
+			}
+		}
 	};
+
 
 	function updateCanvasSize() {
 		bounds = canvas.getBoundingClientRect();
@@ -52,9 +62,9 @@ function Chart(data) {
 		h = canvas.height = 450;
 	}
 
-	const drawLine = LineDrawer(ctx, normX, normY, colors);
-	const drawControl = ControlsDrawer(ctx, control, drawLine, ys);
-	const drawChart = LineChartDrawer(ctx, control, drawLineRange, ys);
+	const drawLine = LineDrawer({ ctx, normX, normY, colors });
+	const drawControl = ControlsDrawer({ ctx, control, drawLine: drawLine, ys });
+	const drawChart = LineChartDrawer({ ctx, control, drawLine: drawLineRange, ys });
 	
 	function drawLineRange(data, x, y, width, height) {
 		const scale = control.range[1] - control.range[0];
@@ -66,12 +76,18 @@ function Chart(data) {
 
 	function render() {
 		updateCanvasSize();
+		ctx.clearRect(0, 0, w, h);
 		drawChart(0, 0, w, 390);
 		drawControl(0, 400, w, 50);
 	}
 
 	window.addEventListener('resize', render);
 	render();
+
+	return {
+		updateRange: control.updateRange,
+		render: render,
+	};
 }
 
 
@@ -80,10 +96,19 @@ function Chart(data) {
 
 fetch('assets/chart_data.json').then(res => res.json()).then(ChartsData => {
 	const chart = Chart(ChartsData[1]);
+	const normControl = normalize(0, 1000);
 
+	document.querySelector('#range-start').addEventListener('input', (e) => {
+		const value = parseInt(e.target.value);
+		chart.updateRange(0, normControl(value));
+	});
+	document.querySelector('#range-end').addEventListener('input', (e) => {
+		const value = parseInt(e.target.value);
+		chart.updateRange(1, normControl(value));
+	});
 
-	// (function loop() {
-		
-	// 	requestAnimationFrame(loop);
-	// })();
+	(function loop() {
+		chart.render();
+		requestAnimationFrame(loop);
+	})();
 });

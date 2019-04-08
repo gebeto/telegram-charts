@@ -1,4 +1,4 @@
-export default function Line(ctx, normX, normY, colors) {
+export default function Line({ ctx, normX, normY, colors }) {
 	return function drawLine(data, x, y, width, height) {
 		const [key, ...items] = data;
 		ctx.beginPath();
