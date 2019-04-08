@@ -1,4 +1,6 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
 	entry: path.resolve(__dirname, 'src/index.js'),
@@ -12,13 +14,25 @@ module.exports = {
 			{
 				test: /\.jsx?/,
 				loader: 'babel-loader',
+			},
+			{
+				test: /\.json/,
+				use: [{
+					loader: 'file-loader',
+					options: {
+						name: '[path][name].[ext]',
+					}
+				}],
+
 			}
 		]
 	},
 
-	devServer: {
-		contentBase: path.join(__dirname),
-		compress: true,
-		port: 5000
-	}
+	// devServer: {
+	// 	contentBase: path.join(__dirname, 'dist'),
+	// 	watchContentBase: true,
+
+	// 	compress: true,
+	// 	port: 5000,
+	// },
 }

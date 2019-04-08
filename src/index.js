@@ -34,10 +34,20 @@ const flatMax = (arr) => Math.max.apply(null, arr.map(set => Math.max.apply(null
 const flatMin = (arr) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1))));
 
 
+function withRange(range, draw) {
+	return function drawRange(data, x, y, width, height) {
+		const scale = range[1] - range[0];
+		const xs = width * range[0];
+		const xNew = x - xs / scale;
+		const widthNew = width / scale;
+		draw(data, xNew, y, widthNew, height);
+	}
+}
+
+
 function Chart(data) {
-	const config = {
-		needRender: true,
-	};
+	const config = {};
+
 	// Init canvas
 	let bounds = {}, w, h, normCanvas;
 	const canvas = document.createElement('canvas');
@@ -66,7 +76,7 @@ function Chart(data) {
 				control.range[index] = value;
 			}
 		},
-		updateRanges: function updateRanges(start, end) {
+		updateFullRange: function updateFullRange(start, end) {
 			control.range[0] = start;
 			control.range[1] = end;
 		},
@@ -88,37 +98,20 @@ function Chart(data) {
 
 	const drawLine = LineDrawer({ config, ctx, normX, normY, colors });
 	const drawDots = DotsDrawer({ config, ctx, normX, normY, colors });
+	const drawLineRange = withRange(control.range, drawLine);
+	const drawDotsRange = withRange(control.range, drawDots);
 	const drawControl = ControlsDrawer({ config, ctx, canvasBounds: bounds, control, drawLine: drawLine, ys });
 	const drawChart = LineChartDrawer({
 		config, ctx, control, ys,
 		drawLine: drawLineRange,
-		// drawDots: drawDotsRange,
 		drawDots: drawDotsRange,
 	});
-	
-	function drawLineRange(data, x, y, width, height) {
-		const scale = control.range[1] - control.range[0];
-		const xs = width * control.range[0];
-		const xNew = x - xs / scale;
-		const widthNew = width / scale;
-		drawLine(data, xNew, y, widthNew, height);
-	}
-	function drawDotsRange(data, x, y, width, height) {
-		const scale = control.range[1] - control.range[0];
-		const xs = width * control.range[0];
-		const xNew = x - xs / scale;
-		const widthNew = width / scale;
-		drawDots(data, xNew, y, widthNew, height);
-	}
 
 	function render() {
-		// if (!config.needRender) return;
 		updateCanvasSize();
 		ctx.clearRect(0, 0, w, h);
 		drawChart(0, 0, w, CANVAS_HEIGHT - 60);
 		drawControl(0, CANVAS_HEIGHT - 50, w, 50);
-		// config.needRender = false;
-		// console.log('rendering')
 	}
 
 	window.addEventListener('resize', render);

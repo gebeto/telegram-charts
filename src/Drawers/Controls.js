@@ -66,10 +66,6 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 	function onMouseMove(e) {
 		if (!mouseMode) return;
 
-		config.needRender = true;
-		// console.log('NEED RENDER')
-
-		// console.log('MODE');
 		mouse.newX = (e.clientX - canvasBounds.left);
 		mouse.newY = (e.clientY - canvasBounds.top);
 
@@ -89,16 +85,27 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 		} else {
 			const normNew = control.updateRangeWithNormalCanvas(mouse.x);
 			const diff = (norm - normNew);
+			// console.log(diff, oldRange[0], oldRange[1]);
 			if (oldRange[0] + diff >= 0 && oldRange[1] + diff <= 1) {
-				control.updateRanges(oldRange[0] + diff, oldRange[1] + diff);
-
-				// control.updateRange(0, oldRange[0] + diff);
-				// control.updateRange(1, oldRange[1] + diff);
+				control.updateFullRange(oldRange[0] + diff, oldRange[1] + diff);
+			} else {
+				// if (diff + oldRange[1] > 1) {
+				// 	let diff = 1 - oldRange[1];
+				// 	control.updateFullRange(oldRange[0] + diff, oldRange[1] + diff);
+				// } else if (diff + oldRange[0] < 0) {
+				// 	let diff = 0 - oldRange[0];
+				// 	// console.log(oldRange[0])
+				// 	control.updateFullRange(oldRange[0] + diff, oldRange[1] + diff);
+				// }
+				// console.log(diff + oldRange[0])
+				// control.updateFullRange(oldRange[0] + diff, oldRange[1] + diff);
 			}
 		}
 	}
 
-	function onMouseUp(e) { mouseMode = NONE; }
+	function onMouseUp(e) {
+		mouseMode = NONE;
+	}
 
 	function onTouchDown(e) {
 		onMouseDown(e.touches[0]);
