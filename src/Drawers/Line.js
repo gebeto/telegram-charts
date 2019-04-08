@@ -8,6 +8,7 @@ export default function Line({ ctx, normX, normY, colors }) {
 		}
 		ctx.lineWidth = 2;
 		ctx.strokeStyle = colors[key];
+		ctx.lineJoin = 'round';
 		ctx.stroke();
 	}
 }

@@ -7,7 +7,7 @@ import LineChartDrawer from './Drawers/LineChart';
 let time = Date.now();
 
 const CANVAS_HEIGHT = 450;
-
+const PIXEL_RATIO = window.devicePixelRatio;
 
 
 function normalizeMemo(min, max) {
@@ -39,8 +39,7 @@ function Chart(data) {
 	const canvas = document.createElement('canvas');
 	document.body.appendChild(canvas);
 	const ctx = canvas.getContext('2d');
-	ctx.lineJoin = 'bevel';
-	ctx.lineCap = 'butt';
+	ctx.scale(PIXEL_RATIO, PIXEL_RATIO);
 
 	// Init data
 	const colors = data.colors;
