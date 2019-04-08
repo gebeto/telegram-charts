@@ -6,8 +6,11 @@ import LineChartDrawer from './Drawers/LineChart';
 
 let time = Date.now();
 
+const CANVAS_HEIGHT = 450;
 
-function normalize(min, max) {
+
+
+function normalizeMemo(min, max) {
 	const delta = max - min;
 	const memo = {};
 	return (val) => {
@@ -18,6 +21,13 @@ function normalize(min, max) {
 	};
 }
 
+function normalize(min, max) {
+	const delta = max - min;
+	return (val) => {
+		return (val - min) / delta;
+	};
+}
+
 
 const flatMax = (arr) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1))));
 const flatMin = (arr) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1))));
@@ -25,7 +35,7 @@ const flatMin = (arr) => Math.min.apply(null, arr.map(set => Math.min.apply(null
 
 function Chart(data) {
 	// Init canvas
-	let bounds, w, h;
+	let bounds = {}, w, h, normCanvas;
 	const canvas = document.createElement('canvas');
 	document.body.appendChild(canvas);
 	const ctx = canvas.getContext('2d');
@@ -39,8 +49,8 @@ function Chart(data) {
 	const [[xkey, ...xs], ...ys] = data.columns;
 	const maxHeight = flatMax(ys);
 	const minHeight = flatMin(ys);
-	const normY = normalize(minHeight, maxHeight);
-	const normX = normalize(0, xs.length - 1);
+	const normY = normalizeMemo(minHeight, maxHeight);
+	const normX = normalizeMemo(0, xs.length - 1);
 
 	const control = {
 		range: [0.1, 0.9],
@@ -52,18 +62,25 @@ function Chart(data) {
 			} else if (index === 1 && value > control.range[0] + 0.1) {
 				control.range[index] = value;
 			}
-		}
+		},
+		updateRangeWithNormalCanvas: function updateRangeWithNormalCanvas(xPos) {
+			return normCanvas(xPos);
+		},
 	};
 
 
 	function updateCanvasSize() {
-		bounds = canvas.getBoundingClientRect();
+		const newBounds = canvas.getBoundingClientRect();
+		for (let key in newBounds) {
+			bounds[key] = newBounds[key];
+		};
+		normCanvas = normalizeMemo(0, bounds.width);
 		w = canvas.width = bounds.width;
-		h = canvas.height = 450;
+		h = canvas.height = CANVAS_HEIGHT;
 	}
 
 	const drawLine = LineDrawer({ ctx, normX, normY, colors });
-	const drawControl = ControlsDrawer({ ctx, control, drawLine: drawLine, ys });
+	const drawControl = ControlsDrawer({ ctx, canvasBounds: bounds, control, drawLine: drawLine, ys });
 	const drawChart = LineChartDrawer({ ctx, control, drawLine: drawLineRange, ys });
 	
 	function drawLineRange(data, x, y, width, height) {
@@ -77,8 +94,8 @@ function Chart(data) {
 	function render() {
 		updateCanvasSize();
 		ctx.clearRect(0, 0, w, h);
-		drawChart(0, 0, w, 390);
-		drawControl(0, 400, w, 50);
+		drawChart(0, 0, w, CANVAS_HEIGHT - 60);
+		drawControl(0, CANVAS_HEIGHT - 50, w, 50);
 	}
 
 	window.addEventListener('resize', render);
@@ -95,8 +112,8 @@ function Chart(data) {
 
 
 fetch('assets/chart_data.json').then(res => res.json()).then(ChartsData => {
-	const chart = Chart(ChartsData[1]);
-	const normControl = normalize(0, 1000);
+	const chart = Chart(ChartsData[0]);
+	const normControl = normalizeMemo(0, 1000);
 
 	document.querySelector('#range-start').addEventListener('input', (e) => {
 		const value = parseInt(e.target.value);
