@@ -2,6 +2,7 @@ import Animated from './Animated';
 
 import ControlsDrawer from './Drawers/Controls';
 import LineDrawer from './Drawers/Line';
+import DotsDrawer from './Drawers/Dots';
 import LineChartDrawer from './Drawers/LineChart';
 
 let time = Date.now();
@@ -86,8 +87,14 @@ function Chart(data) {
 	}
 
 	const drawLine = LineDrawer({ config, ctx, normX, normY, colors });
+	const drawDots = DotsDrawer({ config, ctx, normX, normY, colors });
 	const drawControl = ControlsDrawer({ config, ctx, canvasBounds: bounds, control, drawLine: drawLine, ys });
-	const drawChart = LineChartDrawer({ config, ctx, control, drawLine: drawLineRange, ys });
+	const drawChart = LineChartDrawer({
+		config, ctx, control, ys,
+		drawLine: drawLineRange,
+		// drawDots: drawDotsRange,
+		drawDots: drawDotsRange,
+	});
 	
 	function drawLineRange(data, x, y, width, height) {
 		const scale = control.range[1] - control.range[0];
@@ -95,6 +102,13 @@ function Chart(data) {
 		const xNew = x - xs / scale;
 		const widthNew = width / scale;
 		drawLine(data, xNew, y, widthNew, height);
+	}
+	function drawDotsRange(data, x, y, width, height) {
+		const scale = control.range[1] - control.range[0];
+		const xs = width * control.range[0];
+		const xNew = x - xs / scale;
+		const widthNew = width / scale;
+		drawDots(data, xNew, y, widthNew, height);
 	}
 
 	function render() {
