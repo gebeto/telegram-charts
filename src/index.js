@@ -121,8 +121,8 @@ function Chart(data) {
 
 
 fetch('assets/chart_data.json').then(res => res.json()).then(ChartsData => {
-	// const charts = ChartsData.slice(0, 2).map(data => {
-	const charts = ChartsData.map(data => {
+	const charts = ChartsData.slice(0, 1).map(data => {
+	// const charts = ChartsData.map(data => {
 		const chart = Chart(data);
 		const normControl = normalizeMemo(0, 1000);
 		return chart;
