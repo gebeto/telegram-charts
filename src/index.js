@@ -1,4 +1,4 @@
-import Animated from './Animated';
+import Animator from './Animator';
 
 import LineLayerDrawer from './Drawers/Layers/Line';
 import DotsLayerDrawer from './Drawers/Layers/Dots';
@@ -10,29 +10,12 @@ import LineChartDrawer from './Drawers/LineChart';
 
 import Mouse from './Mouse';
 
+import { normalize, normalizeMemo } from './utils';
+
 let time = Date.now();
 
 const CANVAS_HEIGHT = 450;
 const PIXEL_RATIO = window.devicePixelRatio;
-
-
-function normalizeMemo(min, max) {
-	const delta = max - min;
-	const memo = {};
-	return (val) => {
-		if (!memo[val]) {
-			memo[val] = (val - min) / delta;
-		}
-		return memo[val];
-	};
-}
-
-function normalize(min, max) {
-	const delta = max - min;
-	return (val) => {
-		return (val - min) / delta;
-	};
-}
 
 
 const flatMax = (arr) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1))));
@@ -49,19 +32,29 @@ function drawingWithRange(range, draw) {
 	}
 }
 
+// const themes = {
+// 	day: {
+
+// 	},
+// 	night: {
+
+// 	},
+// };
+
+// let THEME = themes.day;
 
 function Chart(data) {
-
 	// Init canvas
 	let bounds = {}, w, h, normCanvas;
+	const canvas = document.createElement('canvas');
+	document.body.appendChild(canvas);
+	const ctx = canvas.getContext('2d');
+
 	const config = {
 		mouse: Mouse({
 			canvasBounds: bounds
 		}),
 	};
-	const canvas = document.createElement('canvas');
-	document.body.appendChild(canvas);
-	const ctx = canvas.getContext('2d');
 
 	// Init data
 	const colors = data.colors;

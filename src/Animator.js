@@ -1,14 +1,14 @@
-class Animated {
+export default class Animated {
 	constructor(value, duration) {
-        this.fromValue = value;
-        this.toValue = value;
-        this.value = value;
-        this.startTime = 0;
-        this.duration = duration;
-        this.delay = 0;
+		this.fromValue = value;
+		this.toValue = value;
+		this.value = value;
+		this.startTime = 0;
+		this.duration = duration;
+		this.delay = 0;
 	}
 
-	animate(toValue) {
+	play(toValue) {
 		this.startTime = time;
 		this.toValue = toValue;
 		this.fromValue = this.value;
@@ -24,6 +24,3 @@ class Animated {
 		return true;
 	}
 }
-
-
-export default Animated;
