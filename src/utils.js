@@ -16,3 +16,6 @@ export function normalize(min, max) {
 		return (val - min) / delta;
 	};
 }
+
+export const flatMax = (arr) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1))));
+export const flatMin = (arr) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1))));
