@@ -17,8 +17,12 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 	const controlWidthDiv2 = controlWidth / 2;
 	const controlPipaWidth = (controlWidth - 2) / 2;
 
-	const baseClickRange = 14;
 
+
+
+	let mouseMode = NONE;
+	const baseClickRange = 14;
+	let oldRange = [control.range[0], control.range[1]];
 	const controlsBounds = {
 		start: {
 			x: 0,
@@ -34,47 +38,8 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 		},
 	}
 
-	const mouse = {
-		x: 0,
-		y: 0,
-		newX: 0,
-		newY: 0,
-		normNewX: 0,
-		normNewY: 0,
-	}
-
-	let mouseMode = NONE;
-	let oldRange = [control.range[0], control.range[1]];
-	function onMouseDown(e) {
-		mouse.newX = mouse.x = (e.clientX - canvasBounds.left);
-		mouse.newY = mouse.y = (e.clientY - canvasBounds.top);
-		mouse.normNewX = control.normalizeForCanvas(mouse.newX);
-		mouse.normNewY = control.normalizeForCanvas(mouse.newY);
-
-		const clickRange = control.range[1] - control.range[0] < 0.3 ? 0 : baseClickRange;
-		const clickRangeLeft = baseClickRange;
-		const clickRangeRight = baseClickRange;
-
-		const boundsStart = controlsBounds.start;
-		const boundsEnd = controlsBounds.end;
-		oldRange = [control.range[0], control.range[1]];
-		if (mouse.newX > boundsStart.x - clickRangeLeft && mouse.newX < boundsStart.x + boundsStart.width + clickRange && mouse.newY > boundsStart.y - clickRange && mouse.newY < boundsStart.y + boundsStart.height + clickRange) {
-			mouseMode = DRAG_START;
-		} else if (mouse.newX > boundsEnd.x - clickRange && mouse.newX < boundsEnd.x + boundsEnd.width + clickRangeRight && mouse.newY > boundsEnd.y - clickRange && mouse.newY < boundsEnd.y + boundsEnd.height + clickRange) {
-			mouseMode = DRAG_END;
-		} else if (mouse.newX > boundsStart.x + boundsStart.width && mouse.newX < boundsEnd.x && mouse.newY > boundsEnd.y - baseClickRange && mouse.newY < boundsEnd.y + boundsEnd.height + baseClickRange) {
-			mouseMode = DRAG_ALL;
-		}
-	}
-
-	function onMouseMove(e) {
-		console.log(mouse.normNewX);
-		mouse.newX = (e.clientX - canvasBounds.left);
-		mouse.newY = (e.clientY - canvasBounds.top);
-		mouse.normNewX = control.normalizeForCanvas(mouse.newX);
-		mouse.normNewY = control.normalizeForCanvas(mouse.newY);
-
-		if (!mouseMode) return;
+	function mouseMove(mouse) {
+		if (mouseMode === NONE) return;
 
 		const norm = control.normalizeForCanvas(mouse.newX);
 		if (mouseMode === DRAG_START) {
@@ -106,25 +71,30 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 		}
 	}
 
-	function onMouseUp(e) {
+	function mouseDown(mouse) {
+		const clickRange = control.range[1] - control.range[0] < 0.3 ? 0 : baseClickRange;
+		const clickRangeLeft = baseClickRange;
+		const clickRangeRight = baseClickRange;
+
+		const boundsStart = controlsBounds.start;
+		const boundsEnd = controlsBounds.end;
+		oldRange = [control.range[0], control.range[1]];
+		if (mouse.newX > boundsStart.x - clickRangeLeft && mouse.newX < boundsStart.x + boundsStart.width + clickRange && mouse.newY > boundsStart.y - clickRange && mouse.newY < boundsStart.y + boundsStart.height + clickRange) {
+			mouseMode = DRAG_START;
+		} else if (mouse.newX > boundsEnd.x - clickRange && mouse.newX < boundsEnd.x + boundsEnd.width + clickRangeRight && mouse.newY > boundsEnd.y - clickRange && mouse.newY < boundsEnd.y + boundsEnd.height + clickRange) {
+			mouseMode = DRAG_END;
+		} else if (mouse.newX > boundsStart.x + boundsStart.width && mouse.newX < boundsEnd.x && mouse.newY > boundsEnd.y - baseClickRange && mouse.newY < boundsEnd.y + boundsEnd.height + baseClickRange) {
+			mouseMode = DRAG_ALL;
+		}
+	}
+
+	function mouseUp(mouse) {
 		mouseMode = NONE;
 	}
 
-	function onTouchDown(e) {
-		onMouseDown(e.touches[0]);
-	}
-	function onTouchMove(e) {
-		onMouseMove(e.touches[0]);
-	}
-
-	document.addEventListener('mousedown', onMouseDown);
-	document.addEventListener('mousemove', onMouseMove);
-	document.addEventListener('mouseup', onMouseUp);
-
-	document.addEventListener('touchstart', onTouchDown);
-	document.addEventListener('touchmove', onTouchMove, { passive: false });
-	document.addEventListener('touchend', onMouseUp);
-	document.addEventListener('touchcancel', onMouseUp);
+	config.mouse.addMoveListener(mouseMove);
+	config.mouse.addDownListener(mouseDown);
+	config.mouse.addUpListener(mouseUp);
 
 	return function drawControl(x, y, width, height) {
 		const oldWidth = width;

@@ -8,6 +8,8 @@ import XAxisLayerDrawer from './Drawers/Layers/XAxis';
 import ControlsDrawer from './Drawers/Controls';
 import LineChartDrawer from './Drawers/LineChart';
 
+import Mouse from './Mouse';
+
 let time = Date.now();
 
 const CANVAS_HEIGHT = 450;
@@ -49,10 +51,14 @@ function drawingWithRange(range, draw) {
 
 
 function Chart(data) {
-	const config = {};
 
 	// Init canvas
 	let bounds = {}, w, h, normCanvas;
+	const config = {
+		mouse: Mouse({
+			canvasBounds: bounds
+		}),
+	};
 	const canvas = document.createElement('canvas');
 	document.body.appendChild(canvas);
 	const ctx = canvas.getContext('2d');
