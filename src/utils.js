@@ -1,3 +1,5 @@
+import Animated from './Utils/Animated';
+
 
 export function normalizeMemo(min, max) {
 	const delta = max - min;
@@ -12,10 +14,47 @@ export function normalizeMemo(min, max) {
 
 export function normalize(min, max) {
 	const delta = max - min;
-	return (val) => {
+	function norm(val) {
 		return (val - min) / delta;
 	};
+	return norm;
+}
+
+export function normalizeAnimated(min, max) {
+	const delta = new Animated(max - min, 300);
+	function norm(val) {
+		return (val - min) / delta.value;
+	};
+	norm.animate = () => delta.update();
+	norm.updateDelta = (min, max) => delta.play(max - min);
+	return norm;
 }
 
 export const flatMax = (arr) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1))));
 export const flatMin = (arr) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1))));
+
+export const flatMaxRange = (arr, start, end) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1 + start, end))));
+export const flatMinRange = (arr, start, end) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1 + start, end))));
+
+export const debounce = (func, delay) => {
+  let inDebounce
+  return function() {
+    const context = this
+    const args = arguments
+    clearTimeout(inDebounce)
+    inDebounce = setTimeout(() => func.apply(context, args), delay)
+  }
+}
+
+export const throttle = (func, limit) => {
+  let inThrottle
+  return function() {
+    const args = arguments
+    const context = this
+    if (!inThrottle) {
+      func.apply(context, args)
+      inThrottle = true
+      setTimeout(() => inThrottle = false, limit)
+    }
+  }
+}

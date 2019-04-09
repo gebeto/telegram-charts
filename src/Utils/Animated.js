@@ -2,7 +2,7 @@ import Globals from '../Globals';
 import AnimationLoop from './AnimationLoop';
 
 
-class Animated {
+export default class Animated {
 	constructor(value, duration) {
 		this.fromValue = value;
 		this.toValue = value;
@@ -18,13 +18,13 @@ class Animated {
 	}
 
 	play(toValue) {
+		console.log('To val', toValue);
 		this.startTime = Globals.time;
 		this.toValue = toValue;
 		this.fromValue = this.value;
 	}
 
 	update() {
-		console.log('asd')
 		if (this.value === this.toValue) return false;
 		var progress = ((Globals.time - this.startTime) - this.delay) / this.duration;
 		if (progress < 0) progress = 0;
@@ -34,9 +34,6 @@ class Animated {
 		return true;
 	}
 }
-
-
-export default Animated;
 
 
 export function ValueAnimator(obj, key, duration) {

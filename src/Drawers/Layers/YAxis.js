@@ -13,7 +13,7 @@ export default function YAxis({ control, ctx, normX, normY, colors }) {
 		for (let i = 0; i < partsCount; i++) {
 			ctx.moveTo(x, y + height - i * part);
 			ctx.lineTo(x + width, y + height - i * part);
-			ctx.fillText(partNumber * i, x + 3, y + height - i * part - 5)
+			ctx.fillText(min + partNumber * i, x + 3, y + height - i * part - 5)
 		}
 
 		ctx.lineWidth = 1;

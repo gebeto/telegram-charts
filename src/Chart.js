@@ -9,7 +9,16 @@ import LineChartDrawer from './Drawers/LineChart';
 import Mouse from './Utils/Mouse';
 
 import Globals from './Globals';
-import { normalize, normalizeMemo, flatMin, flatMax } from './utils';
+import {
+	normalize,
+	normalizeAnimated,
+	normalizeMemo,
+	flatMin,
+	flatMax,
+	flatMinRange,
+	flatMaxRange,
+	throttle
+} from './utils';
 
 
 const CANVAS_HEIGHT = 450;
@@ -26,8 +35,7 @@ function drawingWithRange(range, draw) {
 }
 
 
-
-export default function Chart(data) {
+function Chart(data) {
 	// Init canvas
 	let bounds = {}, w, h, normCanvas;
 	const canvas = document.createElement('canvas');
@@ -35,6 +43,7 @@ export default function Chart(data) {
 	const ctx = canvas.getContext('2d');
 
 	const config = {
+		needToRender: true,
 		mouse: Mouse({
 			canvasBounds: bounds
 		}),
@@ -45,10 +54,31 @@ export default function Chart(data) {
 	const names = data.names;
 	const types = data.types;
 	const [[xkey, ...xs], ...ys] = data.columns;
-	const maxHeight = flatMax(ys);
-	const minHeight = flatMin(ys);
-	const normY = normalizeMemo(minHeight, maxHeight);
-	const normX = normalizeMemo(0, xs.length - 1);
+	const normIndex = normalize(0, xs.length);
+	let maxHeight = flatMax(ys);
+	let minHeight = flatMin(ys);
+
+	const norm = {
+		X: normalizeMemo(0, xs.length - 1),
+		Y: normalizeAnimated(minHeight, maxHeight),
+	};
+	const controlNorm = {
+		X: normalizeMemo(0, xs.length - 1),
+		Y: normalizeMemo(minHeight, maxHeight),
+	};
+
+
+	const updateNorms = throttle(function updateNorms() {
+		const rStart = control.range[0];
+		const rEnd = control.range[1];
+		const startIndex = Math.floor(rStart * xs.length);
+		const endIndex = Math.round(rEnd * xs.length + 1);
+
+		maxHeight = flatMaxRange(ys, startIndex, endIndex);
+		minHeight = flatMinRange(ys, startIndex, endIndex);
+		norm.Y.updateDelta(minHeight, maxHeight);
+	}, 100);
+
 
 	const control = {
 		range: [0.1, 0.9],
@@ -60,10 +90,12 @@ export default function Chart(data) {
 			} else if (index === 1 && value > control.range[0] + 0.1) {
 				control.range[index] = value;
 			}
+			updateNorms();
 		},
 		updateFullRange: function updateFullRange(start, end) {
 			control.range[0] = start;
 			control.range[1] = end;
+			updateNorms();
 		},
 		normalizeForCanvas: function normalizeForCanvas(xPos) {
 			return normCanvas(xPos);
@@ -81,10 +113,12 @@ export default function Chart(data) {
 		h = canvas.height = CANVAS_HEIGHT;
 	}
 
-	const drawYAxis = YAxisLayerDrawer({ config, control, ctx, normX, normY, colors });
-	const drawXAxis = XAxisLayerDrawer({ config, control, ctx, normX, normY, colors });
-	const drawLineLayer = LineLayerDrawer({ config, ctx, normX, normY, colors });
-	const drawDotsLayer = DotsLayerDrawer({ config, ctx, normX, normY, colors });
+	const drawLineControlLayer = LineLayerDrawer({ config, ctx, norm: controlNorm, colors });
+
+	const drawYAxis = YAxisLayerDrawer({ config, control, ctx, norm, colors });
+	const drawXAxis = XAxisLayerDrawer({ config, control, ctx, norm, colors });
+	const drawLineLayer = LineLayerDrawer({ config, ctx, norm, colors });
+	const drawDotsLayer = DotsLayerDrawer({ config, ctx, norm, colors });
 	const drawXAxisLayerRange = drawingWithRange(control.range, drawXAxis);
 	const drawLineLayerRange = drawingWithRange(control.range, drawLineLayer);
 	const drawDotsLayerRange = drawingWithRange(control.range, drawDotsLayer);
@@ -92,7 +126,7 @@ export default function Chart(data) {
 	const drawControl = ControlsDrawer({
 		config, ctx, control, ys,
 		canvasBounds: bounds,
-		drawLineLayer: drawLineLayer,
+		drawLineLayer: drawLineControlLayer,
 	});
 
 	const drawChart = LineChartDrawer({
@@ -103,6 +137,7 @@ export default function Chart(data) {
 	});
 
 	function render() {
+		norm.Y.animate();
 		updateCanvasSize();
 		ctx.clearRect(0, 0, w, h);
 		drawYAxis(minHeight, maxHeight, 10, 0, w, CANVAS_HEIGHT - 80);
@@ -110,8 +145,7 @@ export default function Chart(data) {
 		drawControl(0, CANVAS_HEIGHT - 50, w, 50);
 	}
 
-	window.addEventListener('resize', render);
-	render();
+	window.addEventListener('resize', updateCanvasSize);
 
 	return {
 		updateRange: control.updateRange,
@@ -119,3 +153,6 @@ export default function Chart(data) {
 		control: control,
 	};
 }
+
+
+export default Chart;

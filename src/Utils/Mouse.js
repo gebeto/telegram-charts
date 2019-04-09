@@ -10,6 +10,7 @@ export default function mouseForChart({ canvasBounds }) {
 		newY: 0,
 		normNewX: 0,
 		normNewY: 0,
+		onCanvas: false,
 	}
 
 	function onMouseDown(e) {
@@ -28,6 +29,8 @@ export default function mouseForChart({ canvasBounds }) {
 		mouse.newY = (e.clientY - canvasBounds.top);
 		// mouse.normNewX = control.normalizeForCanvas(mouse.newX);
 		// mouse.normNewY = control.normalizeForCanvas(mouse.newY);
+
+		mouse.onCanvas = mouse.newX < canvasBounds.right && mouse.newX > canvasBounds.left && mouse.newY > canvasBounds.top && mouse.newY < canvasBounds.bottom;
 
 		for (let i = 0; i < moveHandlers.length; i++) {
 			moveHandlers[i](mouse);
