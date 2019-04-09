@@ -82,7 +82,7 @@ function Chart(data) {
 			control.range[0] = start;
 			control.range[1] = end;
 		},
-		updateRangeWithNormalCanvas: function updateRangeWithNormalCanvas(xPos) {
+		normalizeForCanvas: function normalizeForCanvas(xPos) {
 			return normCanvas(xPos);
 		},
 	};

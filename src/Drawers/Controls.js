@@ -39,6 +39,8 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 		y: 0,
 		newX: 0,
 		newY: 0,
+		normNewX: 0,
+		normNewY: 0,
 	}
 
 	let mouseMode = NONE;
@@ -46,6 +48,8 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 	function onMouseDown(e) {
 		mouse.newX = mouse.x = (e.clientX - canvasBounds.left);
 		mouse.newY = mouse.y = (e.clientY - canvasBounds.top);
+		mouse.normNewX = control.normalizeForCanvas(mouse.newX);
+		mouse.normNewY = control.normalizeForCanvas(mouse.newY);
 
 		const clickRange = control.range[1] - control.range[0] < 0.3 ? 0 : baseClickRange;
 		const clickRangeLeft = baseClickRange;
@@ -64,12 +68,15 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 	}
 
 	function onMouseMove(e) {
-		if (!mouseMode) return;
-
+		console.log(mouse.normNewX);
 		mouse.newX = (e.clientX - canvasBounds.left);
 		mouse.newY = (e.clientY - canvasBounds.top);
+		mouse.normNewX = control.normalizeForCanvas(mouse.newX);
+		mouse.normNewY = control.normalizeForCanvas(mouse.newY);
 
-		const norm = control.updateRangeWithNormalCanvas(mouse.newX);
+		if (!mouseMode) return;
+
+		const norm = control.normalizeForCanvas(mouse.newX);
 		if (mouseMode === DRAG_START) {
 			if (norm >= 0) {
 				control.updateRange(0, norm);
@@ -83,7 +90,7 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 				control.updateRange(1, 1);
 			}
 		} else {
-			const normOld = control.updateRangeWithNormalCanvas(mouse.x);
+			const normOld = control.normalizeForCanvas(mouse.x);
 			const diff = (norm - normOld);
 			if (oldRange[0] + diff >= 0 && oldRange[1] + diff <= 1) {
 				control.updateFullRange(oldRange[0] + diff, oldRange[1] + diff);
@@ -120,7 +127,6 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 	document.addEventListener('touchcancel', onMouseUp);
 
 	return function drawControl(x, y, width, height) {
-		// console.log(mouseMode);
 		const oldWidth = width;
 		const oldX = x;
 		width = width - controlWidthMul2;
@@ -130,17 +136,8 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 			drawLineLayer(ys[i], x, y + 3, width, height - 6);
 		}
 
-		// if (mouseMode === DRAG_START) {
-		// 	xs = mouse.newX + controlWidthDiv2;
-		// 	xe = x + width * control.range[1];
-		// } else if (mouseMode === DRAG_END) {
-		// 	xs = x + width * control.range[0];
-		// 	xe = mouse.newX - controlWidthDiv2;
-		// } else {
-		// }
 		xs = x + width * control.range[0];
 		xe = x + width * control.range[1];
-		// const ww = width * (control.range[1] - control.range[0]);
 		ww = xe - xs;
 
 		controlsBounds.start.x = xs - controlWidth;
