@@ -1,11 +1,12 @@
 import Animated from './Animated';
 
+import LineLayerDrawer from './Drawers/Layers/Line';
+import DotsLayerDrawer from './Drawers/Layers/Dots';
+import YAxisLayerDrawer from './Drawers/Layers/YAxis';
+import XAxisLayerDrawer from './Drawers/Layers/XAxis';
+
 import ControlsDrawer from './Drawers/Controls';
-import LineDrawer from './Drawers/Line';
-import DotsDrawer from './Drawers/Dots';
 import LineChartDrawer from './Drawers/LineChart';
-import YAxisDrawer from './Drawers/YAxis';
-import XAxisDrawer from './Drawers/XAxis';
 
 let time = Date.now();
 
@@ -36,7 +37,7 @@ const flatMax = (arr) => Math.max.apply(null, arr.map(set => Math.max.apply(null
 const flatMin = (arr) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1))));
 
 
-function withRange(range, draw) {
+function drawingWithRange(range, draw) {
 	return function drawRange(data, x, y, width, height) {
 		const scale = range[1] - range[0];
 		const xs = width * range[0];
@@ -55,7 +56,6 @@ function Chart(data) {
 	const canvas = document.createElement('canvas');
 	document.body.appendChild(canvas);
 	const ctx = canvas.getContext('2d');
-	ctx.scale(PIXEL_RATIO, PIXEL_RATIO);
 
 	// Init data
 	const colors = data.colors;
@@ -98,19 +98,25 @@ function Chart(data) {
 		h = canvas.height = CANVAS_HEIGHT;
 	}
 
-	const drawYAxis = YAxisDrawer({ control, ctx, normX, normY, colors });
-	const drawXAxis = XAxisDrawer({ control, ctx, normX, normY, colors });
-	const drawLine = LineDrawer({ config, ctx, normX, normY, colors });
-	const drawDots = DotsDrawer({ config, ctx, normX, normY, colors });
-	const drawXAxisRange = withRange(control.range, drawXAxis);
-	const drawLineRange = withRange(control.range, drawLine);
-	const drawDotsRange = withRange(control.range, drawDots);
-	const drawControl = ControlsDrawer({ config, ctx, canvasBounds: bounds, control, drawLine: drawLine, ys });
+	const drawYAxis = YAxisLayerDrawer({ control, ctx, normX, normY, colors });
+	const drawXAxis = XAxisLayerDrawer({ control, ctx, normX, normY, colors });
+	const drawLineLayer = LineLayerDrawer({ config, ctx, normX, normY, colors });
+	const drawDotsLayer = DotsLayerDrawer({ config, ctx, normX, normY, colors });
+	const drawXAxisLayerRange = drawingWithRange(control.range, drawXAxis);
+	const drawLineLayerRange = drawingWithRange(control.range, drawLineLayer);
+	const drawDotsLayerRange = drawingWithRange(control.range, drawDotsLayer);
+
+	const drawControl = ControlsDrawer({
+		config, ctx, control, ys,
+		canvasBounds: bounds,
+		drawLineLayer: drawLineLayer,
+	});
+
 	const drawChart = LineChartDrawer({
 		config, ctx, control, ys, xs,
-		drawLine: drawLineRange,
-		drawDots: drawDotsRange,
-		drawXAxis: drawXAxisRange,
+		drawLineLayer: drawLineLayerRange,
+		drawDotsLayer: drawDotsLayerRange,
+		drawXAxisLayer: drawXAxisLayerRange,
 	});
 
 	function render() {

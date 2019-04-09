@@ -4,7 +4,7 @@ const DRAG_END = 2;
 const DRAG_ALL = 3;
 
 
-export default function ControlsDrawer({ctx, config, canvasBounds, control, drawLine, ys}) {
+export default function ControlsDrawer({ctx, config, canvasBounds, control, drawLineLayer, ys}) {
 	let xs = 0;
 	let xe = 0;
 	let ww = xe - xs;
@@ -53,13 +53,13 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 
 		const boundsStart = controlsBounds.start;
 		const boundsEnd = controlsBounds.end;
+		oldRange = [control.range[0], control.range[1]];
 		if (mouse.newX > boundsStart.x - clickRangeLeft && mouse.newX < boundsStart.x + boundsStart.width + clickRange && mouse.newY > boundsStart.y - clickRange && mouse.newY < boundsStart.y + boundsStart.height + clickRange) {
 			mouseMode = DRAG_START;
 		} else if (mouse.newX > boundsEnd.x - clickRange && mouse.newX < boundsEnd.x + boundsEnd.width + clickRangeRight && mouse.newY > boundsEnd.y - clickRange && mouse.newY < boundsEnd.y + boundsEnd.height + clickRange) {
 			mouseMode = DRAG_END;
 		} else if (mouse.newX > boundsStart.x + boundsStart.width && mouse.newX < boundsEnd.x && mouse.newY > boundsEnd.y - baseClickRange && mouse.newY < boundsEnd.y + boundsEnd.height + baseClickRange) {
 			mouseMode = DRAG_ALL;
-			oldRange = [control.range[0], control.range[1]];
 		}
 	}
 
@@ -83,8 +83,8 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 				control.updateRange(1, 1);
 			}
 		} else {
-			const normNew = control.updateRangeWithNormalCanvas(mouse.x);
-			const diff = (norm - normNew);
+			const normOld = control.updateRangeWithNormalCanvas(mouse.x);
+			const diff = (norm - normOld);
 			if (oldRange[0] + diff >= 0 && oldRange[1] + diff <= 1) {
 				control.updateFullRange(oldRange[0] + diff, oldRange[1] + diff);
 			} else {
@@ -127,7 +127,7 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 		x = x + controlWidth
 
 		for (let i = 0; i < ys.length; i++ ) {
-			drawLine(ys[i], x, y + 3, width, height - 6);
+			drawLineLayer(ys[i], x, y + 3, width, height - 6);
 		}
 
 		// if (mouseMode === DRAG_START) {

@@ -20,10 +20,7 @@
     "url": "https://github.com/gebeto/telegram-charts/issues"
   },
   "homepage": "https://github.com/gebeto/telegram-charts#readme",
-  "dependencies": {
-    "copy-webpack-plugin": "^5.0.2",
-    "html-webpack-plugin": "^3.2.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",

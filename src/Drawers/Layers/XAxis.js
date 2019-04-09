@@ -12,12 +12,10 @@ function memo(fun) {
 	}
 }
 
-function _dateString(timestamp) {
+const dateString = memo(function dateString(timestamp) {
 	const date = new Date(timestamp);
 	return `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`;
-}
-
-const dateString = memo(_dateString);
+});
 
 export default function XAxis({ control, ctx, normX, normY, colors }) {
 	return function drawXAxis(items, x, y, width, height) {
