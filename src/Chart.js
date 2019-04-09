@@ -72,12 +72,12 @@ function Chart(data) {
 		const rStart = control.range[0];
 		const rEnd = control.range[1];
 		const startIndex = Math.floor(rStart * xs.length);
-		const endIndex = Math.round(rEnd * xs.length + 1);
+		const endIndex = Math.round(rEnd * xs.length + 2);
 
-		maxHeight = flatMaxRange(ys, startIndex, endIndex);
 		minHeight = flatMinRange(ys, startIndex, endIndex);
+		maxHeight = flatMaxRange(ys, startIndex, endIndex);
 		norm.Y.updateDelta(minHeight, maxHeight);
-	}, 100);
+	}, 200);
 
 
 	const control = {

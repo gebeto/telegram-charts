@@ -18,7 +18,6 @@ export default class Animated {
 	}
 
 	play(toValue) {
-		console.log('To val', toValue);
 		this.startTime = Globals.time;
 		this.toValue = toValue;
 		this.fromValue = this.value;
