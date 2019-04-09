@@ -1,4 +1,4 @@
-export default function LineChartDrawer({ ctx, control, drawLineLayer, drawDotsLayer, drawXAxisLayer, ys, xs }) {
+export default function LineChartDrawer({ ctx, config, control, drawLineLayer, drawDotsLayer, drawXAxisLayer, ys, xs }) {
 	return function drawChart(x, y, width, height) {
 		drawXAxisLayer(xs, x, y, width, height);
 

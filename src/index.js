@@ -104,8 +104,8 @@ function Chart(data) {
 		h = canvas.height = CANVAS_HEIGHT;
 	}
 
-	const drawYAxis = YAxisLayerDrawer({ control, ctx, normX, normY, colors });
-	const drawXAxis = XAxisLayerDrawer({ control, ctx, normX, normY, colors });
+	const drawYAxis = YAxisLayerDrawer({ config, control, ctx, normX, normY, colors });
+	const drawXAxis = XAxisLayerDrawer({ config, control, ctx, normX, normY, colors });
 	const drawLineLayer = LineLayerDrawer({ config, ctx, normX, normY, colors });
 	const drawDotsLayer = DotsLayerDrawer({ config, ctx, normX, normY, colors });
 	const drawXAxisLayerRange = drawingWithRange(control.range, drawXAxis);
@@ -147,7 +147,7 @@ function Chart(data) {
 
 
 fetch('assets/chart_data.json').then(res => res.json()).then(ChartsData => {
-	const charts = ChartsData.slice(0, 1).map(data => {
+	const charts = ChartsData.slice(3, 4).map(data => {
 	// const charts = ChartsData.map(data => {
 		const chart = Chart(data);
 		const normControl = normalizeMemo(0, 1000);

@@ -17,11 +17,9 @@ const dateString = memo(function dateString(timestamp) {
 	return `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`;
 });
 
-export default function XAxis({ control, ctx, normX, normY, colors }) {
+export default function XAxis({ config, control, ctx, normX, normY, colors }) {
+
 	return function drawXAxis(items, x, y, width, height) {
-		// const range = Math.round((control.range[1] - control.range[0]) * 10);
-		// console.log(range);
-		
 		ctx.save();
 
 		ctx.fillStyle = '#182D3B';

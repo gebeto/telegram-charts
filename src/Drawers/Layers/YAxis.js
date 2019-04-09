@@ -3,7 +3,7 @@ export default function YAxis({ control, ctx, normX, normY, colors }) {
 	
 	return function drawYAxis(min, max, x, y, width, height) {
 		const part = height / partsCount;
-		const partNumber = (max - min) / partsCount;
+		const partNumber = Math.round((max - min) / partsCount);
 
 		ctx.save();
 		ctx.beginPath();
