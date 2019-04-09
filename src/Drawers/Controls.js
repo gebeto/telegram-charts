@@ -1,3 +1,5 @@
+import { PIXEL_RATIO } from '../Globals';
+
 const NONE = 0;
 const DRAG_START = 1;
 const DRAG_END = 2;
@@ -9,10 +11,10 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 	let xe = 0;
 	let ww = xe - xs;
 
-	const pipaH = 36;
+	const pipaH = 36 * PIXEL_RATIO;
 	const pipaH2 = pipaH / 2;
 
-	const controlWidth = 14;
+	const controlWidth = 14 * PIXEL_RATIO;
 	const controlWidthMul2 = controlWidth * 2;
 	const controlWidthDiv2 = controlWidth / 2;
 	const controlPipaWidth = (controlWidth - 2) / 2;
@@ -41,7 +43,7 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 	function mouseMove(mouse) {
 		if (mouseMode === NONE) return;
 
-		const norm = control.normalizeForCanvas(mouse.newX);
+		const norm = control.normalizeForCanvas(mouse.rawNewX);
 		if (mouseMode === DRAG_START) {
 			if (norm >= 0) {
 				control.updateRange(0, norm);
@@ -55,7 +57,7 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 				control.updateRange(1, 1);
 			}
 		} else {
-			const normOld = control.normalizeForCanvas(mouse.x);
+			const normOld = control.normalizeForCanvas(mouse.rawX);
 			const diff = (norm - normOld);
 			if (oldRange[0] + diff >= 0 && oldRange[1] + diff <= 1) {
 				control.updateFullRange(oldRange[0] + diff, oldRange[1] + diff);

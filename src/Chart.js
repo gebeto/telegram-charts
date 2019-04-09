@@ -8,7 +8,15 @@ import LineChartDrawer from './Drawers/LineChart';
 
 import Mouse from './Utils/Mouse';
 
-import Globals from './Globals';
+import G, {
+	PIXEL_RATIO,
+	CANVAS_HEIGHT,
+	CHART_HEIGHT,
+	CONTROL_HEIGHT,
+	BOTTOM_PADDING,
+	FONT,
+} from './Globals';
+
 import {
 	normalize,
 	normalizeAnimated,
@@ -20,9 +28,6 @@ import {
 	throttle
 } from './utils';
 
-
-const CANVAS_HEIGHT = 450;
-const PIXEL_RATIO = window.devicePixelRatio;
 
 function drawingWithRange(range, draw) {
 	return function drawRange(data, x, y, width, height) {
@@ -58,15 +63,8 @@ function Chart(data) {
 	let maxHeight = flatMax(ys);
 	let minHeight = flatMin(ys);
 
-	const norm = {
-		X: normalizeMemo(0, xs.length - 1),
-		Y: normalizeAnimated(minHeight, maxHeight),
-	};
-	const controlNorm = {
-		X: normalizeMemo(0, xs.length - 1),
-		Y: normalizeMemo(minHeight, maxHeight),
-	};
-
+	const norm = { X: normalizeMemo(0, xs.length - 1), Y: normalizeAnimated(minHeight, maxHeight) };
+	const controlNorm = { X: normalizeMemo(0, xs.length - 1), Y: normalizeMemo(minHeight, maxHeight) };
 
 	const updateNorms = throttle(function updateNorms() {
 		const rStart = control.range[0];
@@ -109,7 +107,7 @@ function Chart(data) {
 			bounds[key] = newBounds[key];
 		};
 		normCanvas = normalizeMemo(0, bounds.width);
-		w = canvas.width = bounds.width;
+		w = canvas.width = bounds.width * PIXEL_RATIO;
 		h = canvas.height = CANVAS_HEIGHT;
 	}
 
@@ -140,9 +138,9 @@ function Chart(data) {
 		norm.Y.animate();
 		updateCanvasSize();
 		ctx.clearRect(0, 0, w, h);
-		drawYAxis(minHeight, maxHeight, 10, 0, w, CANVAS_HEIGHT - 80);
-		drawChart(0, 0, w, CANVAS_HEIGHT - 80);
-		drawControl(0, CANVAS_HEIGHT - 50, w, 50);
+		drawYAxis(minHeight, maxHeight, 10, 0, w, CANVAS_HEIGHT - (CONTROL_HEIGHT + BOTTOM_PADDING));
+		drawChart(0, 0, w, CANVAS_HEIGHT - (CONTROL_HEIGHT + BOTTOM_PADDING));
+		drawControl(0, CANVAS_HEIGHT - CONTROL_HEIGHT, w, CONTROL_HEIGHT);
 	}
 
 	window.addEventListener('resize', updateCanvasSize);

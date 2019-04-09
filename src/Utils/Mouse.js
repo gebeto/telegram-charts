@@ -1,3 +1,5 @@
+import { PIXEL_RATIO } from '../Globals';
+
 export default function mouseForChart({ canvasBounds }) {
 	const moveHandlers = [];
 	const downHandlers = [];
@@ -6,18 +8,37 @@ export default function mouseForChart({ canvasBounds }) {
 	const mouse = {
 		x: 0,
 		y: 0,
+		rawX: 0,
+		rawY: 0,
+
 		newX: 0,
 		newY: 0,
-		normNewX: 0,
-		normNewY: 0,
+		rawNewX: 0,
+		rawNewY: 0,
+
 		onCanvas: false,
 	}
 
+	function setCoords(x, y) {
+		mouse.rawX = x;
+		mouse.rawY = y;
+		mouse.x = x * PIXEL_RATIO;
+		mouse.y = y * PIXEL_RATIO;
+		setNewCoords(x, y);
+	}
+
+	function setNewCoords(x, y) {
+		mouse.rawNewX = x;
+		mouse.rawNewY = y;
+		mouse.newX = x * PIXEL_RATIO;
+		mouse.newY = y * PIXEL_RATIO;
+	}
+
 	function onMouseDown(e) {
-		mouse.newX = mouse.x = (e.clientX - canvasBounds.left);
-		mouse.newY = mouse.y = (e.clientY - canvasBounds.top);
-		// mouse.normNewX = control.normalizeForCanvas(mouse.newX);
-		// mouse.normNewY = control.normalizeForCanvas(mouse.newY);
+		setCoords(
+			e.clientX - canvasBounds.left,
+			e.clientY - canvasBounds.top
+		);
 
 		for (let i = 0; i < downHandlers.length; i++) {
 			downHandlers[i](mouse);
@@ -25,12 +46,16 @@ export default function mouseForChart({ canvasBounds }) {
 	}
 
 	function onMouseMove(e) {
-		mouse.newX = (e.clientX - canvasBounds.left);
-		mouse.newY = (e.clientY - canvasBounds.top);
-		// mouse.normNewX = control.normalizeForCanvas(mouse.newX);
-		// mouse.normNewY = control.normalizeForCanvas(mouse.newY);
+		setNewCoords(
+			e.clientX - canvasBounds.left,
+			e.clientY - canvasBounds.top
+		);
 
-		mouse.onCanvas = mouse.newX < canvasBounds.right && mouse.newX > canvasBounds.left && mouse.newY > canvasBounds.top && mouse.newY < canvasBounds.bottom;
+		mouse.onCanvas = 
+			mouse.rawNewY < canvasBounds.right
+			&& mouse.rawNewY > canvasBounds.left
+			&& mouse.rawNewY > canvasBounds.top
+			&& mouse.rawNewY < canvasBounds.bottom;
 
 		for (let i = 0; i < moveHandlers.length; i++) {
 			moveHandlers[i](mouse);
@@ -58,6 +83,7 @@ export default function mouseForChart({ canvasBounds }) {
 	document.addEventListener('touchmove', onTouchMove, { passive: false });
 	document.addEventListener('touchend', onMouseUp);
 	document.addEventListener('touchcancel', onMouseUp);
+	document.addEventListener('selectstart', e => false);
 
 	return {
 		mouse: mouse,

@@ -1,6 +1,8 @@
+import { PIXEL_RATIO, FONT } from '../../Globals';
 const PI2 = Math.PI * 2;
 
-export default function Line({ config, ctx, norm, colors }) {
+
+export default function Dots({ config, ctx, norm, colors }) {
 
 	let mousePosX = 0;
 	let mousePosY = 0;
@@ -13,13 +15,13 @@ export default function Line({ config, ctx, norm, colors }) {
 		const [key, ...items] = data;
 		const chunkSize = norm.X(1) * width;
 		const chunkSizeDiv2 = chunkSize / 2;
-		let lineDrawn = false
-		for (let i = 1; i < items.length; i++) {
+		let lineIsDrawn = false
+		for (let i = 0; i < items.length; i++) {
 			const X = x + norm.X(i) * width;
 			const isX = mousePosX < X + chunkSizeDiv2 && mousePosX > X - chunkSizeDiv2;
 			const isY = mousePosY > y && mousePosY < y + height;
 			if (isX && isY) {
-				if (!lineDrawn) {
+				if (!lineIsDrawn) {
 					ctx.save();
 					ctx.strokeStyle = '#182D3B';
 					ctx.lineWidth = 1;
@@ -30,7 +32,7 @@ export default function Line({ config, ctx, norm, colors }) {
 					ctx.stroke();
 					ctx.restore();
 				}
-				lineDrawn = true;
+				lineIsDrawn = true;
 			} else {
 				continue;
 			}
@@ -39,9 +41,9 @@ export default function Line({ config, ctx, norm, colors }) {
 			ctx.arc(
 				X,
 				y + height - norm.Y(items[i]) * height,
-				4, 0, PI2,
+				4 * PIXEL_RATIO, 0, PI2,
 			);
-			ctx.lineWidth = 2;
+			ctx.lineWidth = 2 * PIXEL_RATIO;
 			ctx.strokeStyle = colors[key];
 			ctx.fillStyle = '#FFF';
 			ctx.fill();
