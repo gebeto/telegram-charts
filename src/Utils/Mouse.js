@@ -1,6 +1,6 @@
 import { PIXEL_RATIO } from '../Globals';
 
-let lastEntered = null;
+// let lastEntered = null;
 
 function createDispatcher(types) {
 	const handlers = {};
@@ -85,10 +85,10 @@ export default function mouseForChart({ canvas, canvasBounds }) {
 	}
 
 	function onMouseEnter(e) {
-		if (lastEntered && lastEntered !== dispatcher && lastEntered.dispatch) {
-			lastEntered.dispatch('leave');
-		}
-		lastEntered = dispatcher;
+		// if (lastEntered && lastEntered !== dispatcher && lastEntered.dispatch) {
+		// 	lastEntered.dispatch('leave');
+		// }
+		// lastEntered = dispatcher;
 		dispatcher.dispatch('enter');
 	}
 
