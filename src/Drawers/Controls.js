@@ -19,11 +19,8 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 	const controlWidthDiv2 = controlWidth / 2;
 	const controlPipaWidth = (controlWidth - 2) / 2;
 
-
-
-
 	let mouseMode = NONE;
-	const baseClickRange = 14;
+	const baseClickRange = 14 * PIXEL_RATIO;
 	let oldRange = [control.range[0], control.range[1]];
 	const controlsBounds = {
 		start: {
@@ -42,6 +39,7 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 
 	function mouseMove(mouse) {
 		if (mouseMode === NONE) return;
+		config.shouldUpdate = true;
 
 		const norm = control.normalizeForCanvas(mouse.rawNewX);
 		if (mouseMode === DRAG_START) {

@@ -42,7 +42,7 @@ function drawingWithRange(range, draw) {
 }
 
 
-function Chart(data) {
+function Chart(data, index) {
 	// Init canvas
 	let bounds = {}, w, h, normCanvas;
 	const canvas = document.createElement('canvas');
@@ -50,9 +50,8 @@ function Chart(data) {
 	const ctx = canvas.getContext('2d');
 
 	const config = {
+		shouldUpdate: true,
 		animator: createAnimator(),
-		forceToRender: false,
-		needToRender: false,
 		mouse: Mouse({
 			canvas: canvas,
 			canvasBounds: bounds,
@@ -61,13 +60,9 @@ function Chart(data) {
 
 	// config.mouse.addListener('enter', () => {
 	// 	console.log('enter');
-	// 	// alert('enter');
-	// 	config.forceToRender = true;
 	// });
 	// config.mouse.addListener('leave', () => {
 	// 	console.log('leave');
-	// 	// alert('leave');
-	// 	config.forceToRender = false;
 	// });
 
 	// Init data
@@ -82,7 +77,7 @@ function Chart(data) {
 	const norm = { X: normalizeMemo(0, xs.length - 1), Y: normalizeAnimated(config.animator, minHeight, maxHeight) };
 	const controlNorm = { X: normalizeMemo(0, xs.length - 1), Y: normalizeMemo(minHeight, maxHeight) };
 
-	const updateNorms = throttle(function updateNorms() {
+	const updateNorms = function updateNorms() {
 		const rStart = control.range[0];
 		const rEnd = control.range[1];
 		const startIndex = Math.floor(rStart * xs.length);
@@ -91,7 +86,7 @@ function Chart(data) {
 		minHeight = flatMinRange(ys, startIndex, endIndex);
 		maxHeight = flatMaxRange(ys, startIndex, endIndex);
 		norm.Y.updateDelta(minHeight, maxHeight);
-	}, 200);
+	};
 
 
 	const control = {
@@ -117,7 +112,7 @@ function Chart(data) {
 	};
 
 
-	function updateCanvasSize() {
+	function updateCanvasSize(e) {
 		const newBounds = canvas.getBoundingClientRect();
 		for (let key in newBounds) {
 			bounds[key] = newBounds[key];
@@ -127,50 +122,55 @@ function Chart(data) {
 		h = canvas.height = CANVAS_HEIGHT;
 	}
 
+	const drawersLayerArgs = { config, control, ctx, norm, colors };
+	const drawersArgs = { config, ctx, control, ys, xs, canvasBounds: bounds };
+
 	const drawLineControlLayer = LineLayerDrawer({ config, ctx, norm: controlNorm, colors });
 
-	const drawYAxis = YAxisLayerDrawer({ config, control, ctx, norm, colors });
-	const drawXAxis = XAxisLayerDrawer({ config, control, ctx, norm, colors });
-	const drawLineLayer = LineLayerDrawer({ config, ctx, norm, colors });
-	const drawDotsLayer = DotsLayerDrawer({ config, ctx, norm, colors });
+	const drawYAxis           = YAxisLayerDrawer(drawersLayerArgs);
+	const drawXAxis           = XAxisLayerDrawer(drawersLayerArgs);
+	const drawLineLayer       = LineLayerDrawer(drawersLayerArgs);
+	const drawDotsLayer       = DotsLayerDrawer(drawersLayerArgs);
 	const drawXAxisLayerRange = drawingWithRange(control.range, drawXAxis);
-	const drawLineLayerRange = drawingWithRange(control.range, drawLineLayer);
-	const drawDotsLayerRange = drawingWithRange(control.range, drawDotsLayer);
+	const drawLineLayerRange  = drawingWithRange(control.range, drawLineLayer);
+	const drawDotsLayerRange  = drawingWithRange(control.range, drawDotsLayer);
 
 	const drawControl = ControlsDrawer({
-		config, ctx, control, ys,
-		canvasBounds: bounds,
+		...drawersArgs,
 		drawLineLayer: drawLineControlLayer,
 	});
 
 	const drawChart = LineChartDrawer({
-		config, ctx, control, ys, xs,
+		...drawersArgs,
 		drawLineLayer: drawLineLayerRange,
 		drawDotsLayer: drawDotsLayerRange,
 		drawXAxisLayer: drawXAxisLayerRange,
 	});
 
-	function render(force) {
-		// if (force) {
-		// 	if (!config.forceToRender && !config.needToRender) {
-		// 		return;
-		// 	}
-		// }
-		updateCanvasSize();
+	function render() {
+		config.animator.updateAnimations();
 		ctx.clearRect(0, 0, w, h);
 		drawYAxis(minHeight, maxHeight, 10, 0, w, CANVAS_HEIGHT - (CONTROL_HEIGHT + BOTTOM_PADDING));
 		drawChart(20, 0, w - 40, CANVAS_HEIGHT - (CONTROL_HEIGHT + BOTTOM_PADDING));
 		drawControl(0, CANVAS_HEIGHT - CONTROL_HEIGHT, w, CONTROL_HEIGHT);
-		config.animator.updateAnimations();
+	}
+
+	function _render(force) {
+		if (true || config.animator.opts.active || config.shouldUpdate) {
+			// console.log('ANIMTIONS', config.animator.opts.active, config.shouldUpdate);
+			render();
+			config.shouldUpdate = false;
+		}
 	}
 
 	window.addEventListener('resize', updateCanvasSize);
+	updateCanvasSize();
 	updateNorms()
-	// render()
+	render()
 
 	return {
 		updateRange: control.updateRange,
-		render: render,
+		render: _render,
 		control: control,
 	};
 }

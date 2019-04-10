@@ -2,6 +2,7 @@ import { PIXEL_RATIO, FONT } from '../../Globals';
 const PI2 = Math.PI * 2;
 
 
+
 export default function Dots({ config, ctx, norm, colors }) {
 
 	let mousePosX = 0;
@@ -14,6 +15,9 @@ export default function Dots({ config, ctx, norm, colors }) {
 		mousePosX = mouse.newX;
 		mousePosY = mouse.newY;
 	});
+
+	const dotRadius = 4 * PIXEL_RATIO;
+	const lineWidth = 2 * PIXEL_RATIO;
 
 	return function drawDots(data, x, y, width, height) {
 		const [key, ...items] = data;
@@ -41,17 +45,20 @@ export default function Dots({ config, ctx, norm, colors }) {
 				continue;
 			}
 
+			ctx.save();
 			ctx.beginPath();
 			ctx.arc(
 				X,
 				y + height - norm.Y(items[i]) * height,
-				4 * PIXEL_RATIO, 0, PI2,
+				dotRadius, 0, PI2,
 			);
-			ctx.lineWidth = 2 * PIXEL_RATIO;
+			ctx.lineWidth = lineWidth;
 			ctx.strokeStyle = colors[key];
 			ctx.fillStyle = '#FFF';
 			ctx.fill();
 			ctx.stroke();
+			ctx.restore();
 		}
+		config.needUpdate = true;
 	}
 }

@@ -1,7 +1,6 @@
 import Globals from '../Globals';
 import AnimationLoop from './AnimationLoop';
 
-let animatorsCount = 0;
 
 export default class Animated {
 	constructor(value, duration) {
@@ -24,7 +23,7 @@ export default class Animated {
 		this.fromValue = this.value;
 	}
 
-	update() {
+	_update() {
 		if (this.value === this.toValue) return false;
 		var progress = ((Globals.time - this.startTime) - this.delay) / this.duration;
 		if (progress < 0) progress = 0;
@@ -37,9 +36,10 @@ export default class Animated {
 
 
 export function createAnimator() {
-	animatorsCount++;
-	console.log('A', animatorsCount)
 	const animations = [];
+	const opts = {
+		active: false,
+	};
 
 	function createAnimation(value, duration) {
 		const animation = new Animated(value, duration)
@@ -56,12 +56,16 @@ export function createAnimator() {
 
 	function updateAnimations() {
 		const count = animations.length;
+		opts.active = false;
 		for (let i = 0; i < count; i++) {
-			animations[i].update();
+			if (animations[i]._update()) {
+				opts.active = true;
+			}
 		}
 	}
 
 	return {
+		opts,
 		createAnimation,
 		removeAnimation,
 		updateAnimations,

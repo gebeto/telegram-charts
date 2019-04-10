@@ -92,10 +92,6 @@ export default function mouseForChart({ canvas, canvasBounds }) {
 		dispatcher.dispatch('enter');
 	}
 
-	// function onMouseLeave(e) {
-	// 	dispatcher.dispatch('leave');
-	// }
-
 	function onMouseUp(e) {
 		dispatcher.dispatch('up');
 	}
