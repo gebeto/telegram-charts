@@ -73,3 +73,14 @@ export function memo(fun) {
 		return memos[arg];
 	}
 }
+
+
+export function drawingWithRange(range, draw) {
+	return function drawRange(data, x, y, width, height) {
+		const scale = range[1] - range[0];
+		const xs = width * range[0];
+		const xNew = x - xs / scale;
+		const widthNew = width / scale;
+		draw(data, xNew, y, widthNew, height);
+	}
+}

@@ -32,17 +32,6 @@ import {
 } from './utils';
 
 
-function drawingWithRange(range, draw) {
-	return function drawRange(data, x, y, width, height) {
-		const scale = range[1] - range[0];
-		const xs = width * range[0];
-		const xNew = x - xs / scale;
-		const widthNew = width / scale;
-		draw(data, xNew, y, widthNew, height);
-	}
-}
-
-
 function Chart(data, index) {
 	// Init canvas
 	let bounds = {}, w, h, normCanvas;
@@ -57,6 +46,8 @@ function Chart(data, index) {
 			canvas: canvas,
 			canvasBounds: bounds,
 		}),
+		maxHeight: 0,
+		minHeight: 0,
 	};
 
 	// config.mouse.addListener('enter', () => {
@@ -71,12 +62,14 @@ function Chart(data, index) {
 	const names = data.names;
 	const types = data.types;
 	const [[xkey, ...xs], ...ys] = data.columns;
-	const normIndex = normalize(0, xs.length);
-	let maxHeight = flatMax(ys);
-	let minHeight = flatMin(ys);
+	config.maxHeight = flatMax(ys);
+	config.minHeight = flatMin(ys);
 
-	const norm = { X: normalizeMemo(0, xs.length - 1), Y: normalizeAnimated(config.animator, minHeight, maxHeight) };
-	const controlNorm = { X: normalizeMemo(0, xs.length - 1), Y: normalizeMemo(minHeight, maxHeight) };
+	const norm = {
+		X: normalizeMemo(0, xs.length - 1),
+		Y: normalizeAnimated(config.animator, config.minHeight, config.maxHeight)
+	};
+	const controlNorm = { X: normalizeMemo(0, xs.length - 1), Y: normalizeMemo(config.minHeight, config.maxHeight) };
 
 	const updateNorms = function updateNorms() {
 		const rStart = control.range[0];
@@ -84,9 +77,9 @@ function Chart(data, index) {
 		const startIndex = Math.floor(rStart * xs.length);
 		const endIndex = Math.round(rEnd * xs.length + 2);
 
-		minHeight = flatMinRange(ys, startIndex, endIndex);
-		maxHeight = flatMaxRange(ys, startIndex, endIndex);
-		norm.Y.updateDelta(minHeight, maxHeight);
+		config.minHeight = flatMinRange(ys, startIndex, endIndex);
+		config.maxHeight = flatMaxRange(ys, startIndex, endIndex);
+		norm.Y.updateDelta(config.minHeight, config.maxHeight);
 
 		config.startIndex = startIndex;
 		config.endIndex = endIndex;
@@ -126,44 +119,20 @@ function Chart(data, index) {
 		h = canvas.height = CANVAS_HEIGHT;
 	}
 
-	const drawersLayerArgs = { config, control, ctx, norm, colors };
-	const drawersArgs = { config, ctx, control, ys, xs, canvasBounds: bounds };
+	const drawersArgs = {
+		config, control, ctx, norm, colors, ys, xs,
+		canvasBounds: bounds,
+	};
 
-	const drawLineControlLayer = LineLayerDrawer({ control, config, ctx, norm: controlNorm, colors });
-
-	const drawYAxis           = YAxisLayerDrawer(drawersLayerArgs);
-	const drawXAxis           = XAxisLayerDrawer(drawersLayerArgs);
-	const drawLineLayer       = LineRangeLayerDrawer(drawersLayerArgs);
-	const drawDotsLayer       = DotsLayerDrawer(drawersLayerArgs);
-	const drawXAxisLayerRange = drawingWithRange(control.range, drawXAxis);
-	const drawLineLayerRange  = drawingWithRange(control.range, drawLineLayer);
-	const drawDotsLayerRange  = drawingWithRange(control.range, drawDotsLayer);
-
-	const drawControl = ControlsDrawer({
-		...drawersArgs,
-		drawLineLayer: drawLineControlLayer,
-	});
-
-	const drawChart = LineChartDrawer({
-		...drawersArgs,
-		drawLineLayer: drawLineLayerRange,
-		drawDotsLayer: drawDotsLayerRange,
-		drawXAxisLayer: drawXAxisLayerRange,
-	});
+	const drawChart = LineChartDrawer(drawersArgs);
+	const drawControl = ControlsDrawer({ ...drawersArgs, norm: controlNorm });
 
 	function render() {
 		config.animator.updateAnimations();
 		ctx.clearRect(0, 0, w, h);
-		drawYAxis(minHeight, maxHeight, 10, 0, w, CANVAS_HEIGHT - (CONTROL_HEIGHT + BOTTOM_PADDING));
-		drawChart(20, 0, w - 40, CANVAS_HEIGHT - (CONTROL_HEIGHT + BOTTOM_PADDING));
+		drawChart(14, 0, w - 28, CANVAS_HEIGHT - CONTROL_HEIGHT - BOTTOM_PADDING);
+		// drawChart(20, 0, w - 40, CANVAS_HEIGHT - (CONTROL_HEIGHT + BOTTOM_PADDING));
 		drawControl(0, CANVAS_HEIGHT - CONTROL_HEIGHT, w, CONTROL_HEIGHT);
-	}
-
-	function _render(force) {
-		if (true || config.animator.opts.active || config.shouldUpdate) {
-			render();
-			config.shouldUpdate = false;
-		}
 	}
 
 	window.addEventListener('resize', updateCanvasSize);
@@ -173,7 +142,7 @@ function Chart(data, index) {
 
 	return {
 		updateRange: control.updateRange,
-		render: _render,
+		render: render,
 		control: control,
 	};
 }

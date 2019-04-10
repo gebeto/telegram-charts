@@ -23,12 +23,14 @@ export default function XAxis({ config, control, ctx, norm, colors }) {
 		ctx.save();
 
 		ctx.fillStyle = '#182D3B';
+		// ctx.fillStyle = 'red';
 		ctx.font = FONT;
 		ctx.textAlign = 'center';
+		ctx.textBaseline = 'top';
 		ctx.globalAlpha = 0.5;
 
 		for (let i = S; i < E; i++) {
-			ctx.fillText(dateString(items[i]), x + norm.X(i) * width, y + height + 14 * PIXEL_RATIO);
+			ctx.fillText(dateString(items[i]), x + norm.X(i) * width, y);
 		}
 
 		ctx.restore();

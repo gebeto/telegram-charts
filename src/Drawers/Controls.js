@@ -1,3 +1,4 @@
+import LineLayerDrawer from './Layers/Line';
 import { PIXEL_RATIO } from '../Globals';
 
 const NONE = 0;
@@ -6,7 +7,10 @@ const DRAG_END = 2;
 const DRAG_ALL = 3;
 
 
-export default function ControlsDrawer({ctx, config, canvasBounds, control, drawLineLayer, ys}) {
+export default function ControlsDrawer(drawersArgs) {
+	const { ctx, config, canvasBounds, control, ys } = drawersArgs;
+	const drawLineLayer = LineLayerDrawer(drawersArgs);
+
 	let xs = 0;
 	let xe = 0;
 	let ww = xe - xs;
@@ -20,7 +24,7 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 	const controlPipaWidth = (controlWidth - 2) / 2;
 
 	let mouseMode = NONE;
-	const baseClickRange = 14 * PIXEL_RATIO;
+	const clickRangeBase = 14 * PIXEL_RATIO;
 	let oldRange = [control.range[0], control.range[1]];
 	const controlsBounds = {
 		start: {
@@ -72,18 +76,18 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 	}
 
 	function mouseDown(mouse) {
-		const clickRange = control.range[1] - control.range[0] < 0.3 ? 0 : baseClickRange;
-		const clickRangeLeft = baseClickRange;
-		const clickRangeRight = baseClickRange;
+		const clickRange = clickRangeBase;
+		const clickRangeStart = clickRangeBase;
+		const clickRangeEnd = clickRangeBase;
 
 		const boundsStart = controlsBounds.start;
 		const boundsEnd = controlsBounds.end;
 		oldRange = [control.range[0], control.range[1]];
-		if (mouse.newX > boundsStart.x - clickRangeLeft && mouse.newX < boundsStart.x + boundsStart.width + clickRange && mouse.newY > boundsStart.y - clickRange && mouse.newY < boundsStart.y + boundsStart.height + clickRange) {
+		if (mouse.newX > boundsStart.x - clickRangeStart && mouse.newX < boundsStart.x + boundsStart.width && mouse.newY > boundsStart.y - clickRangeStart && mouse.newY < boundsStart.y + boundsStart.height + clickRangeStart) {
 			mouseMode = DRAG_START;
-		} else if (mouse.newX > boundsEnd.x - clickRange && mouse.newX < boundsEnd.x + boundsEnd.width + clickRangeRight && mouse.newY > boundsEnd.y - clickRange && mouse.newY < boundsEnd.y + boundsEnd.height + clickRange) {
+		} else if (mouse.newX > boundsEnd.x && mouse.newX < boundsEnd.x + boundsEnd.width + clickRangeEnd && mouse.newY > boundsEnd.y - clickRangeEnd && mouse.newY < boundsEnd.y + boundsEnd.height + clickRangeEnd) {
 			mouseMode = DRAG_END;
-		} else if (mouse.newX > boundsStart.x + boundsStart.width && mouse.newX < boundsEnd.x && mouse.newY > boundsEnd.y - baseClickRange && mouse.newY < boundsEnd.y + boundsEnd.height + baseClickRange) {
+		} else if (mouse.newX > boundsStart.x + boundsStart.width && mouse.newX < boundsEnd.x && mouse.newY > boundsEnd.y - clickRangeBase && mouse.newY < boundsEnd.y + boundsEnd.height + clickRangeBase) {
 			mouseMode = DRAG_ALL;
 		}
 	}
