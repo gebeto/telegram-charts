@@ -15,8 +15,6 @@ function createDispatcher(types) {
 		newY: 0,
 		newXRaw: 0,
 		newYRaw: 0,
-
-		// onCanvas: false,
 	}
 	types.forEach(type => {
 		handlers[type] = [];
@@ -54,7 +52,7 @@ export default function mouseForChart({ canvas, canvasBounds }) {
 		mouse.newXRaw = mouse.xRaw;
 		mouse.newYRaw = mouse.yRaw;
 		mouse.newX = mouse.x;
-		mouse.newY = mouse.y * PIXEL_RATIO;
+		mouse.newY = mouse.y;
 
 		dispatcher.dispatch('down');
 	}
@@ -83,11 +81,11 @@ export default function mouseForChart({ canvas, canvasBounds }) {
 		onMouseMove(e.touches[0]);
 	}
 
-	canvas.addEventListener('mousedown', onMouseDown);
+	document.addEventListener('mousedown', onMouseDown);
 	document.addEventListener('mousemove', onMouseMove);
 	document.addEventListener('mouseup', onMouseUp);
 
-	canvas.addEventListener('touchstart', onTouchDown);
+	document.addEventListener('touchstart', onTouchDown);
 	document.addEventListener('touchmove', onTouchMove, { passive: false });
 	document.addEventListener('touchend', onMouseUp);
 	document.addEventListener('touchcancel', onMouseUp);

@@ -46,7 +46,7 @@ export default function ControlsDrawer(drawersArgs) {
 		config.shouldChartUpdate = true;
 		config.shouldControlUpdate = true;
 
-		const norm = control.normalizeForCanvas(mouse.newXRaw);
+		const norm = control.normalizeForCanvas(mouse.newX);
 		if (mouseMode === DRAG_START) {
 			if (norm >= 0) {
 				control.updateRange(0, norm);
@@ -60,7 +60,7 @@ export default function ControlsDrawer(drawersArgs) {
 				control.updateRange(1, 1);
 			}
 		} else {
-			const normOld = control.normalizeForCanvas(mouse.xRaw);
+			const normOld = control.normalizeForCanvas(mouse.x);
 			const diff = (norm - normOld);
 			if (oldRange[0] + diff >= 0 && oldRange[1] + diff <= 1) {
 				control.updateFullRange(oldRange[0] + diff, oldRange[1] + diff);

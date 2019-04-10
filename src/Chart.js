@@ -34,7 +34,10 @@ import {
 
 function Chart(data, index) {
 	// Init canvas
-	let bounds = {}, w, h, normCanvas;
+	let bounds = {
+		left: 0,
+		top: 0,
+	}, w, h, normCanvas;
 	const canvas = document.createElement('canvas');
 	document.body.appendChild(canvas);
 	const ctx = canvas.getContext('2d');
@@ -104,19 +107,26 @@ function Chart(data, index) {
 		},
 	};
 
-
-	function updateCanvasSize(e) {
+	function updateBounds() {
 		const newBounds = canvas.getBoundingClientRect();
-
         const newWidth = newBounds.width * PIXEL_RATIO;
         const newHeight = newBounds.height * PIXEL_RATIO;
+
+		bounds.width = newWidth;
+		bounds.height = CANVAS_HEIGHT;
+		bounds.left = newBounds.left;
+		bounds.right = newBounds.right;
+		bounds.top = newBounds.top;
+		bounds.bottom = newBounds.bottom;
+		bounds.x = newBounds.x;
+		bounds.y = newBounds.y;
+	}
+
+	function updateCanvasSize(e) {
+        const newWidth = bounds.width;
+        const newHeight = bounds.height;
+        console.log(newWidth, newHeight)
         if (w !== newWidth || h !== newHeight) {
-			config.shouldChartUpdate = true;
-			config.shouldControlUpdate = true;
-        	console.log('resize');
-			for (let key in newBounds) {
-				bounds[key] = newBounds[key];
-			};
 			normCanvas = normalizeMemo(0, bounds.width);
 			w = canvas.width = bounds.width;
 			h = canvas.height = CANVAS_HEIGHT;
@@ -132,13 +142,13 @@ function Chart(data, index) {
 	const drawControl = ControlsDrawer({ ...drawersArgs, norm: controlNorm });
 
 	function render(force) {
-		updateCanvasSize();
+		updateBounds();
 		const an = config.animator.updateAnimations();
 		if (an) config.shouldChartUpdate = true;
 
 		if (config.shouldChartUpdate) {
 			config.shouldChartUpdate = false;
-			console.log('aniimated', config.shouldChartUpdate);
+			console.log('animated', config.shouldChartUpdate);
 			ctx.clearRect(0, 0, w, CANVAS_HEIGHT - CONTROL_HEIGHT - BOTTOM_PADDING);
 			drawChart(14, 0, w - 28, CANVAS_HEIGHT - CONTROL_HEIGHT - BOTTOM_PADDING);
 		}
@@ -151,11 +161,10 @@ function Chart(data, index) {
 	}
 
 	window.addEventListener('resize', updateCanvasSize);
+	updateBounds();
 	updateCanvasSize();
 	updateNorms()
 	render()
-
-	config.mouse.addListener('down', console.log);
 
 	return {
 		updateRange: control.updateRange,
