@@ -31,7 +31,7 @@ export function normalizeAnimated(animator, min, max) {
 		newMax = max;
 		newMin.play(min);
 		delta.play(max - min);
-	}
+	};
 	return norm;
 }
 

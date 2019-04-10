@@ -16,10 +16,9 @@ const dateString = memo(function dateString(timestamp) {
 export default function XAxis({ config, control, ctx, norm, colors }) {
 
 	return function drawXAxis(items, x, y, width, height) {
-		// const range = control.range[1] - control.range[0];
 		const count = items.length;
-		// const shown = Math.round(count * range);
-		// const normi = normalize(0, count);
+		const S = config.startIndex;
+		const E = config.endIndex;
 
 		ctx.save();
 
@@ -28,7 +27,7 @@ export default function XAxis({ config, control, ctx, norm, colors }) {
 		ctx.textAlign = 'center';
 		ctx.globalAlpha = 0.5;
 
-		for (let i = 0; i < count; i++) {
+		for (let i = S; i < E; i++) {
 			ctx.fillText(dateString(items[i]), x + norm.X(i) * width, y + height + 14 * PIXEL_RATIO);
 		}
 

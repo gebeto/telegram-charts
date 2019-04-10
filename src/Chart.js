@@ -1,6 +1,7 @@
 import Animated, { createAnimator } from './Utils/Animated';
 
 import LineLayerDrawer from './Drawers/Layers/Line';
+import LineRangeLayerDrawer from './Drawers/Layers/LineRange';
 import DotsLayerDrawer from './Drawers/Layers/Dots';
 import YAxisLayerDrawer from './Drawers/Layers/YAxis';
 import XAxisLayerDrawer from './Drawers/Layers/XAxis';
@@ -86,6 +87,9 @@ function Chart(data, index) {
 		minHeight = flatMinRange(ys, startIndex, endIndex);
 		maxHeight = flatMaxRange(ys, startIndex, endIndex);
 		norm.Y.updateDelta(minHeight, maxHeight);
+
+		config.startIndex = startIndex;
+		config.endIndex = endIndex;
 	};
 
 
@@ -125,11 +129,11 @@ function Chart(data, index) {
 	const drawersLayerArgs = { config, control, ctx, norm, colors };
 	const drawersArgs = { config, ctx, control, ys, xs, canvasBounds: bounds };
 
-	const drawLineControlLayer = LineLayerDrawer({ config, ctx, norm: controlNorm, colors });
+	const drawLineControlLayer = LineLayerDrawer({ control, config, ctx, norm: controlNorm, colors });
 
 	const drawYAxis           = YAxisLayerDrawer(drawersLayerArgs);
 	const drawXAxis           = XAxisLayerDrawer(drawersLayerArgs);
-	const drawLineLayer       = LineLayerDrawer(drawersLayerArgs);
+	const drawLineLayer       = LineRangeLayerDrawer(drawersLayerArgs);
 	const drawDotsLayer       = DotsLayerDrawer(drawersLayerArgs);
 	const drawXAxisLayerRange = drawingWithRange(control.range, drawXAxis);
 	const drawLineLayerRange  = drawingWithRange(control.range, drawLineLayer);
@@ -157,7 +161,6 @@ function Chart(data, index) {
 
 	function _render(force) {
 		if (true || config.animator.opts.active || config.shouldUpdate) {
-			// console.log('ANIMTIONS', config.animator.opts.active, config.shouldUpdate);
 			render();
 			config.shouldUpdate = false;
 		}
