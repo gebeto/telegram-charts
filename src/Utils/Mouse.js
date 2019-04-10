@@ -1,10 +1,10 @@
 import { PIXEL_RATIO } from '../Globals';
 
-export default function mouseForChart({ canvasBounds }) {
-	const moveHandlers = [];
-	const downHandlers = [];
-	const upHandlers = [];
+let lastEntered = null;
 
+function createDispatcher(types) {
+	const handlers = {};
+	const dispatchers = {};
 	const mouse = {
 		x: 0,
 		y: 0,
@@ -18,6 +18,32 @@ export default function mouseForChart({ canvasBounds }) {
 
 		onCanvas: false,
 	}
+	types.forEach(type => {
+		handlers[type] = [];
+		dispatchers[type] = function(mouse) {
+			for (let i = 0; i < handlers[type].length; i++) {
+				handlers[type][i](mouse);
+			}
+		}
+	});
+	return {
+		mouse: mouse,
+		addListener(type, handler) {
+			handlers[type].push(handler);
+		},
+		dispatch(type) {
+			if (dispatchers[type]) {
+				dispatchers[type](mouse);
+			} else {
+				throw Error("Unknown event");
+			}
+		}
+	}
+}
+
+export default function mouseForChart({ canvas, canvasBounds }) {
+	const dispatcher = createDispatcher(['move', 'enter', 'leave', 'down', 'up']);
+	const mouse = dispatcher.mouse;
 
 	function setCoords(x, y) {
 		mouse.rawX = x;
@@ -40,9 +66,7 @@ export default function mouseForChart({ canvasBounds }) {
 			e.clientY - canvasBounds.top
 		);
 
-		for (let i = 0; i < downHandlers.length; i++) {
-			downHandlers[i](mouse);
-		}
+		dispatcher.dispatch('down');
 	}
 
 	function onMouseMove(e) {
@@ -57,15 +81,23 @@ export default function mouseForChart({ canvasBounds }) {
 			&& mouse.rawNewY > canvasBounds.top
 			&& mouse.rawNewY < canvasBounds.bottom;
 
-		for (let i = 0; i < moveHandlers.length; i++) {
-			moveHandlers[i](mouse);
-		}
+		dispatcher.dispatch('move');
 	}
 
-	function onMouseUp(e) {
-		for (let i = 0; i < upHandlers.length; i++) {
-			upHandlers[i](mouse);
+	function onMouseEnter(e) {
+		if (lastEntered && lastEntered !== dispatcher && lastEntered.dispatch) {
+			lastEntered.dispatch('leave');
 		}
+		lastEntered = dispatcher;
+		dispatcher.dispatch('enter');
+	}
+
+	// function onMouseLeave(e) {
+	// 	dispatcher.dispatch('leave');
+	// }
+
+	function onMouseUp(e) {
+		dispatcher.dispatch('up');
 	}
 
 	function onTouchDown(e) {
@@ -78,6 +110,8 @@ export default function mouseForChart({ canvasBounds }) {
 	document.addEventListener('mousedown', onMouseDown);
 	document.addEventListener('mousemove', onMouseMove);
 	document.addEventListener('mouseup', onMouseUp);
+	canvas.addEventListener('mouseenter', onMouseEnter);
+	canvas.addEventListener('touchstart', onMouseEnter);
 
 	document.addEventListener('touchstart', onTouchDown);
 	document.addEventListener('touchmove', onTouchMove, { passive: false });
@@ -87,14 +121,6 @@ export default function mouseForChart({ canvasBounds }) {
 
 	return {
 		mouse: mouse,
-		addMoveListener(handler) {
-			moveHandlers.push(handler);
-		},
-		addDownListener(handler) {
-			downHandlers.push(handler);
-		},
-		addUpListener(handler) {
-			upHandlers.push(handler);
-		},
+		addListener: dispatcher.addListener,
 	};
 }

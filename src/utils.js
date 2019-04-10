@@ -22,17 +22,12 @@ export function normalize(min, max) {
 
 export function normalizeAnimated(min, max) {
 	let newMax = min;
-	const newMin = new Animated(min, 300);
-	const delta = new Animated(max - min, 300);
+	const newMin = Animated.createAnimation(min, 300);
+	const delta = Animated.createAnimation(max - min, 300);
 	function norm(val) {
 		return (val - newMin.value) / delta.value;
 	};
-	norm.animate = () => {
-		newMin.update();
-		delta.update();
-	};
 	norm.updateDelta = (min, max) => {
-		// newMin = min;
 		newMax = max;
 		newMin.play(min);
 		delta.play(max - min);

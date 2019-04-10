@@ -3,6 +3,28 @@ import AnimationLoop from './AnimationLoop';
 
 
 export default class Animated {
+	static animations = [];
+
+	static createAnimation(value, duration) {
+		const animation = new Animated(value, duration)
+		Animated.animations.push(animation);
+		return animation;
+	}
+
+	static removeAnimation(animation) {
+		const index = Animated.animations.indexOf(animation);
+		if (index > -1) {
+			Animated.animations.splice(index, 1);
+		}
+	}
+
+	static updateAnimations() {
+		const count = Animated.animations.length;
+		for (let i = 0; i < count; i++) {
+			Animated.animations[i].update();
+		}
+	}
+
 	constructor(value, duration) {
 		this.fromValue = value;
 		this.toValue = value;
@@ -38,14 +60,14 @@ export default class Animated {
 export function ValueAnimator(obj, key, duration) {
 	const animated = new Animated(obj[key], duration);
 
-	function loop() {
-		const res = animated.update();
-		if (animated.started && !animated.ended) {
-			obj[key] = animated.value;
-		}
-	}
+	// function loop() {
+	// 	// const res = animated.update();
+	// 	if (animated.started && !animated.ended) {
+	// 		obj[key] = animated.value;
+	// 	}
+	// }
 
-	AnimationLoop.add(loop);
+	// AnimationLoop.add(loop);
 
 	return animated;
 }

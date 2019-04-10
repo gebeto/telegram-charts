@@ -94,9 +94,9 @@ export default function ControlsDrawer({ctx, config, canvasBounds, control, draw
 		mouseMode = NONE;
 	}
 
-	config.mouse.addMoveListener(mouseMove);
-	config.mouse.addDownListener(mouseDown);
-	config.mouse.addUpListener(mouseUp);
+	config.mouse.addListener('move', mouseMove);
+	config.mouse.addListener('down', mouseDown);
+	config.mouse.addListener('up', mouseUp);
 
 	return function drawControl(x, y, width, height) {
 		const oldWidth = width;

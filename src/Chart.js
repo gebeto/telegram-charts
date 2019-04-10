@@ -1,3 +1,5 @@
+import Animated from './Utils/Animated';
+
 import LineLayerDrawer from './Drawers/Layers/Line';
 import DotsLayerDrawer from './Drawers/Layers/Dots';
 import YAxisLayerDrawer from './Drawers/Layers/YAxis';
@@ -48,11 +50,24 @@ function Chart(data) {
 	const ctx = canvas.getContext('2d');
 
 	const config = {
-		needToRender: true,
+		forceToRender: false,
+		needToRender: false,
 		mouse: Mouse({
-			canvasBounds: bounds
+			canvas: canvas,
+			canvasBounds: bounds,
 		}),
 	};
+
+	// config.mouse.addListener('enter', () => {
+	// 	console.log('enter');
+	// 	// alert('enter');
+	// 	config.forceToRender = true;
+	// });
+	// config.mouse.addListener('leave', () => {
+	// 	console.log('leave');
+	// 	// alert('leave');
+	// 	config.forceToRender = false;
+	// });
 
 	// Init data
 	const colors = data.colors;
@@ -134,16 +149,21 @@ function Chart(data) {
 		drawXAxisLayer: drawXAxisLayerRange,
 	});
 
-	function render() {
-		norm.Y.animate();
+	function render(force) {
+		// if (!force) {
+		// 	if (!config.forceToRender && !config.needToRender) return;
+		// }
 		updateCanvasSize();
 		ctx.clearRect(0, 0, w, h);
 		drawYAxis(minHeight, maxHeight, 10, 0, w, CANVAS_HEIGHT - (CONTROL_HEIGHT + BOTTOM_PADDING));
 		drawChart(20, 0, w - 40, CANVAS_HEIGHT - (CONTROL_HEIGHT + BOTTOM_PADDING));
 		drawControl(0, CANVAS_HEIGHT - CONTROL_HEIGHT, w, CONTROL_HEIGHT);
+		Animated.updateAnimations();
 	}
 
 	window.addEventListener('resize', updateCanvasSize);
+	updateNorms()
+	render(true);
 
 	return {
 		updateRange: control.updateRange,

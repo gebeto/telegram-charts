@@ -6,7 +6,11 @@ export default function Dots({ config, ctx, norm, colors }) {
 
 	let mousePosX = 0;
 	let mousePosY = 0;
-	config.mouse.addMoveListener((mouse) => {
+	config.mouse.addListener('move', (mouse) => {
+		mousePosX = mouse.newX;
+		mousePosY = mouse.newY;
+	});
+	config.mouse.addListener('down', (mouse) => {
 		mousePosX = mouse.newX;
 		mousePosY = mouse.newY;
 	});
