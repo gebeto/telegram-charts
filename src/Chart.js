@@ -1,4 +1,4 @@
-import Animated from './Utils/Animated';
+import Animated, { createAnimator } from './Utils/Animated';
 
 import LineLayerDrawer from './Drawers/Layers/Line';
 import DotsLayerDrawer from './Drawers/Layers/Dots';
@@ -50,6 +50,7 @@ function Chart(data) {
 	const ctx = canvas.getContext('2d');
 
 	const config = {
+		animator: createAnimator(),
 		forceToRender: false,
 		needToRender: false,
 		mouse: Mouse({
@@ -78,7 +79,7 @@ function Chart(data) {
 	let maxHeight = flatMax(ys);
 	let minHeight = flatMin(ys);
 
-	const norm = { X: normalizeMemo(0, xs.length - 1), Y: normalizeAnimated(minHeight, maxHeight) };
+	const norm = { X: normalizeMemo(0, xs.length - 1), Y: normalizeAnimated(config.animator, minHeight, maxHeight) };
 	const controlNorm = { X: normalizeMemo(0, xs.length - 1), Y: normalizeMemo(minHeight, maxHeight) };
 
 	const updateNorms = throttle(function updateNorms() {
@@ -150,20 +151,22 @@ function Chart(data) {
 	});
 
 	function render(force) {
-		// if (!force) {
-		// 	if (!config.forceToRender && !config.needToRender) return;
+		// if (force) {
+		// 	if (!config.forceToRender && !config.needToRender) {
+		// 		return;
+		// 	}
 		// }
 		updateCanvasSize();
 		ctx.clearRect(0, 0, w, h);
 		drawYAxis(minHeight, maxHeight, 10, 0, w, CANVAS_HEIGHT - (CONTROL_HEIGHT + BOTTOM_PADDING));
 		drawChart(20, 0, w - 40, CANVAS_HEIGHT - (CONTROL_HEIGHT + BOTTOM_PADDING));
 		drawControl(0, CANVAS_HEIGHT - CONTROL_HEIGHT, w, CONTROL_HEIGHT);
-		Animated.updateAnimations();
+		config.animator.updateAnimations();
 	}
 
 	window.addEventListener('resize', updateCanvasSize);
 	updateNorms()
-	render(true);
+	// render()
 
 	return {
 		updateRange: control.updateRange,

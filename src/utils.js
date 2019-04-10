@@ -20,10 +20,10 @@ export function normalize(min, max) {
 	return norm;
 }
 
-export function normalizeAnimated(min, max) {
+export function normalizeAnimated(animator, min, max) {
 	let newMax = min;
-	const newMin = Animated.createAnimation(min, 300);
-	const delta = Animated.createAnimation(max - min, 300);
+	const newMin = animator.createAnimation(min, 300);
+	const delta = animator.createAnimation(max - min, 300);
 	function norm(val) {
 		return (val - newMin.value) / delta.value;
 	};

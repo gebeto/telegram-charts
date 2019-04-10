@@ -1,30 +1,9 @@
 import Globals from '../Globals';
 import AnimationLoop from './AnimationLoop';
 
+let animatorsCount = 0;
 
 export default class Animated {
-	static animations = [];
-
-	static createAnimation(value, duration) {
-		const animation = new Animated(value, duration)
-		Animated.animations.push(animation);
-		return animation;
-	}
-
-	static removeAnimation(animation) {
-		const index = Animated.animations.indexOf(animation);
-		if (index > -1) {
-			Animated.animations.splice(index, 1);
-		}
-	}
-
-	static updateAnimations() {
-		const count = Animated.animations.length;
-		for (let i = 0; i < count; i++) {
-			Animated.animations[i].update();
-		}
-	}
-
 	constructor(value, duration) {
 		this.fromValue = value;
 		this.toValue = value;
@@ -53,6 +32,39 @@ export default class Animated {
 		var ease = -progress * (progress - 2);
 		this.value = this.fromValue + (this.toValue - this.fromValue) * ease;
 		return true;
+	}
+}
+
+
+export function createAnimator() {
+	animatorsCount++;
+	console.log('A', animatorsCount)
+	const animations = [];
+
+	function createAnimation(value, duration) {
+		const animation = new Animated(value, duration)
+		animations.push(animation);
+		return animation;
+	}
+
+	function removeAnimation(animation) {
+		const index = animations.indexOf(animation);
+		if (index > -1) {
+			animations.splice(index, 1);
+		}
+	}
+
+	function updateAnimations() {
+		const count = animations.length;
+		for (let i = 0; i < count; i++) {
+			animations[i].update();
+		}
+	}
+
+	return {
+		createAnimation,
+		removeAnimation,
+		updateAnimations,
 	}
 }
 
