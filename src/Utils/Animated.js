@@ -56,12 +56,14 @@ export function createAnimator() {
 
 	function updateAnimations() {
 		const count = animations.length;
-		opts.active = false;
+		let isActive = false;
 		for (let i = 0; i < count; i++) {
 			if (animations[i]._update()) {
-				opts.active = true;
+				isActive = true;
 			}
 		}
+		opts.active = isActive;
+		return isActive;
 	}
 
 	return {

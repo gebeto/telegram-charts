@@ -24,7 +24,7 @@ export default function LineChartDrawer(drawersArgs) {
 		// ctx.fillRect(x, y, width, height);
 		const Y = y + chartPadding;
 		drawXAxisLayer(xs, x, y + height - XAxisSize, width, XAxisSize);
-		drawYAxisLayer(config.minHeight, config.maxHeight, x, Y, width, height - XAxisSize - chartPadding);
+		drawYAxisLayer(config.minHeight, config.maxHeight, x, Y, width, height - XAxisSize - chartPadding - chartPadding);
 
 		for (let i = 0; i < ys.length; i++ ) {
 			drawLineLayer(ys[i], x, Y, width, height - XAxisSize - chartPadding - chartPadding);

@@ -8,15 +8,15 @@ function createDispatcher(types) {
 	const mouse = {
 		x: 0,
 		y: 0,
-		rawX: 0,
-		rawY: 0,
+		xRaw: 0,
+		yRaw: 0,
 
 		newX: 0,
 		newY: 0,
-		rawNewX: 0,
-		rawNewY: 0,
+		newXRaw: 0,
+		newYRaw: 0,
 
-		onCanvas: false,
+		// onCanvas: false,
 	}
 	types.forEach(type => {
 		handlers[type] = [];
@@ -45,50 +45,30 @@ export default function mouseForChart({ canvas, canvasBounds }) {
 	const dispatcher = createDispatcher(['move', 'enter', 'leave', 'down', 'up']);
 	const mouse = dispatcher.mouse;
 
-	function setCoords(x, y) {
-		mouse.rawX = x;
-		mouse.rawY = y;
-		mouse.x = x * PIXEL_RATIO;
-		mouse.y = y * PIXEL_RATIO;
-		setNewCoords(x, y);
-	}
-
-	function setNewCoords(x, y) {
-		mouse.rawNewX = x;
-		mouse.rawNewY = y;
-		mouse.newX = x * PIXEL_RATIO;
-		mouse.newY = y * PIXEL_RATIO;
-	}
-
 	function onMouseDown(e) {
-		setCoords(
-			e.clientX - canvasBounds.left,
-			e.clientY - canvasBounds.top
-		);
+		mouse.xRaw = e.clientX - canvasBounds.left;
+		mouse.yRaw = e.clientY - canvasBounds.top;
+		mouse.x = mouse.xRaw * PIXEL_RATIO;
+		mouse.y = mouse.yRaw * PIXEL_RATIO;
+
+		mouse.newXRaw = mouse.xRaw;
+		mouse.newYRaw = mouse.yRaw;
+		mouse.newX = mouse.x;
+		mouse.newY = mouse.y * PIXEL_RATIO;
 
 		dispatcher.dispatch('down');
 	}
 
 	function onMouseMove(e) {
-		setNewCoords(
-			e.clientX - canvasBounds.left,
-			e.clientY - canvasBounds.top
-		);
-
-		mouse.onCanvas = 
-			mouse.rawNewY < canvasBounds.right
-			&& mouse.rawNewY > canvasBounds.left
-			&& mouse.rawNewY > canvasBounds.top
-			&& mouse.rawNewY < canvasBounds.bottom;
+		mouse.newXRaw = e.clientX - canvasBounds.left;
+		mouse.newYRaw = e.clientY - canvasBounds.top;
+		mouse.newX = mouse.newXRaw * PIXEL_RATIO;
+		mouse.newY = mouse.newYRaw * PIXEL_RATIO;
 
 		dispatcher.dispatch('move');
 	}
 
 	function onMouseEnter(e) {
-		// if (lastEntered && lastEntered !== dispatcher && lastEntered.dispatch) {
-		// 	lastEntered.dispatch('leave');
-		// }
-		// lastEntered = dispatcher;
 		dispatcher.dispatch('enter');
 	}
 
@@ -103,13 +83,11 @@ export default function mouseForChart({ canvas, canvasBounds }) {
 		onMouseMove(e.touches[0]);
 	}
 
-	document.addEventListener('mousedown', onMouseDown);
+	canvas.addEventListener('mousedown', onMouseDown);
 	document.addEventListener('mousemove', onMouseMove);
 	document.addEventListener('mouseup', onMouseUp);
-	canvas.addEventListener('mouseenter', onMouseEnter);
-	canvas.addEventListener('touchstart', onMouseEnter);
 
-	document.addEventListener('touchstart', onTouchDown);
+	canvas.addEventListener('touchstart', onTouchDown);
 	document.addEventListener('touchmove', onTouchMove, { passive: false });
 	document.addEventListener('touchend', onMouseUp);
 	document.addEventListener('touchcancel', onMouseUp);

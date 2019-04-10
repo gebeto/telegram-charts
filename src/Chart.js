@@ -40,22 +40,18 @@ function Chart(data, index) {
 	const ctx = canvas.getContext('2d');
 
 	const config = {
-		shouldUpdate: true,
+		index: index,
+		shouldChartUpdate: true,
+		shouldControlUpdate: true,
 		animator: createAnimator(),
 		mouse: Mouse({
+			config: config,
 			canvas: canvas,
 			canvasBounds: bounds,
 		}),
 		maxHeight: 0,
 		minHeight: 0,
 	};
-
-	// config.mouse.addListener('enter', () => {
-	// 	console.log('enter');
-	// });
-	// config.mouse.addListener('leave', () => {
-	// 	console.log('leave');
-	// });
 
 	// Init data
 	const colors = data.colors;
@@ -111,12 +107,20 @@ function Chart(data, index) {
 
 	function updateCanvasSize(e) {
 		const newBounds = canvas.getBoundingClientRect();
-		for (let key in newBounds) {
-			bounds[key] = newBounds[key];
-		};
-		normCanvas = normalizeMemo(0, bounds.width);
-		w = canvas.width = bounds.width * PIXEL_RATIO;
-		h = canvas.height = CANVAS_HEIGHT;
+
+        const newWidth = newBounds.width * PIXEL_RATIO;
+        const newHeight = newBounds.height * PIXEL_RATIO;
+        if (w !== newWidth || h !== newHeight) {
+			config.shouldChartUpdate = true;
+			config.shouldControlUpdate = true;
+        	console.log('resize');
+			for (let key in newBounds) {
+				bounds[key] = newBounds[key];
+			};
+			normCanvas = normalizeMemo(0, bounds.width);
+			w = canvas.width = bounds.width;
+			h = canvas.height = CANVAS_HEIGHT;
+        }
 	}
 
 	const drawersArgs = {
@@ -127,18 +131,31 @@ function Chart(data, index) {
 	const drawChart = LineChartDrawer(drawersArgs);
 	const drawControl = ControlsDrawer({ ...drawersArgs, norm: controlNorm });
 
-	function render() {
-		config.animator.updateAnimations();
-		ctx.clearRect(0, 0, w, h);
-		drawChart(14, 0, w - 28, CANVAS_HEIGHT - CONTROL_HEIGHT - BOTTOM_PADDING);
-		// drawChart(20, 0, w - 40, CANVAS_HEIGHT - (CONTROL_HEIGHT + BOTTOM_PADDING));
-		drawControl(0, CANVAS_HEIGHT - CONTROL_HEIGHT, w, CONTROL_HEIGHT);
+	function render(force) {
+		updateCanvasSize();
+		const an = config.animator.updateAnimations();
+		if (an) config.shouldChartUpdate = true;
+
+		if (config.shouldChartUpdate) {
+			config.shouldChartUpdate = false;
+			console.log('aniimated', config.shouldChartUpdate);
+			ctx.clearRect(0, 0, w, CANVAS_HEIGHT - CONTROL_HEIGHT - BOTTOM_PADDING);
+			drawChart(14, 0, w - 28, CANVAS_HEIGHT - CONTROL_HEIGHT - BOTTOM_PADDING);
+		}
+
+		if (config.shouldControlUpdate) {
+			config.shouldControlUpdate = false;
+			ctx.clearRect(0, CANVAS_HEIGHT - CONTROL_HEIGHT, w, CONTROL_HEIGHT);
+			drawControl(0, CANVAS_HEIGHT - CONTROL_HEIGHT, w, CONTROL_HEIGHT);
+		}
 	}
 
 	window.addEventListener('resize', updateCanvasSize);
 	updateCanvasSize();
 	updateNorms()
 	render()
+
+	config.mouse.addListener('down', console.log);
 
 	return {
 		updateRange: control.updateRange,
