@@ -13,8 +13,7 @@ export default function XAxis({ config, control, ctx, norm, colors }) {
 
 		ctx.save();
 
-		ctx.fillStyle = '#182D3B';
-		// ctx.fillStyle = 'red';
+		ctx.fillStyle = '#182D3B'
 		ctx.font = FONT;
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'top';

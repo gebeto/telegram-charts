@@ -9,24 +9,26 @@ import { createPopup, createElement } from './Popup';
 
 
 import {
-	PIXEL_RATIO,
-	CANVAS_HEIGHT,
-	CHART_HEIGHT,
 	CONTROL_HEIGHT,
+	CANVAS_HEIGHT,
+	SIDES_PADDING,
+	SIDES_PADDING2,
+	CHART_HEIGHT,
+	PIXEL_RATIO,
 	MONTH_NAMES,
 	DAY_NAMES,
 	FONT,
 } from './Globals';
 
 import {
-	normalize,
 	normalizeAnimated,
 	normalizeMemo,
-	flatMin,
-	flatMax,
 	flatMinRange,
 	flatMaxRange,
-	throttle
+	normalize,
+	flatMin,
+	flatMax,
+	throttle,
 } from './utils';
 
 
@@ -73,7 +75,7 @@ function Chart(data, index) {
 	const colors = data.colors;
 	const names = data.names;
 	const types = data.types;
-	data.columns[0] = data.columns[0].map(dateString)
+	data.columns[0] = data.columns[0].map(el => el.length ? el : dateString(el))
 	const [[xkey, ...xs], ...ys] = data.columns;
 	config.maxHeight = flatMax(ys);
 	config.minHeight = flatMin(ys);
@@ -92,8 +94,8 @@ function Chart(data, index) {
 	const updateNorms = function updateNorms() {
 		const rStart = control.range[0];
 		const rEnd = control.range[1];
-		const startIndex = Math.floor(rStart * xs.length);
-		const endIndex = Math.round(rEnd * xs.length + 2);
+		const startIndex = Math.round(rStart * xs.length);
+		const endIndex = Math.round(rEnd * xs.length);
 
 		config.minHeight = flatMinRange(ys, startIndex, endIndex);
 		config.maxHeight = flatMaxRange(ys, startIndex, endIndex);
@@ -169,15 +171,14 @@ function Chart(data, index) {
 
 		if (config.shouldChartUpdate) {
 			config.shouldChartUpdate = false;
-			// console.log('animated', config.shouldChartUpdate);
 			ctx.clearRect(0, 0, w, CANVAS_HEIGHT - CONTROL_HEIGHT);
-			drawChart(14, 0, w - 28, CANVAS_HEIGHT - CONTROL_HEIGHT);
+			drawChart(SIDES_PADDING, 0, w - SIDES_PADDING2, CANVAS_HEIGHT - CONTROL_HEIGHT);
 		}
 
 		if (config.shouldControlUpdate) {
 			config.shouldControlUpdate = false;
 			ctx.clearRect(0, CANVAS_HEIGHT - CONTROL_HEIGHT, w, CONTROL_HEIGHT);
-			drawControl(0, CANVAS_HEIGHT - CONTROL_HEIGHT, w, CONTROL_HEIGHT);
+			drawControl(SIDES_PADDING, CANVAS_HEIGHT - CONTROL_HEIGHT, w - SIDES_PADDING2, CONTROL_HEIGHT);
 		}
 	}
 

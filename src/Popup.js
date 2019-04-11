@@ -36,17 +36,15 @@ export function createPopup(container, data, ys) {
 	const publicInterface = {
 		element: popup,
 		update(index) {
-			console.log(ys);
 			popup.innerHMTL = `
 				${createPopupHeader()}
 				${createPopupItem('hello', '10000')}
 			`;
 		},
 		show(index) {
-			console.log(index, ys);
 			const curr = ys.map(y => createPopupItem(data.colors[y[0]], data.names[y[0]], y[index + 1]));
 			popup.innerHTML = `
-				${createPopupHeader(data.columns[0][index].dateString)}
+				${createPopupHeader(data.columns[0][index + 1].dateString)}
 				${curr.join('')}
 			`;
 			popup.style.opacity = 1;

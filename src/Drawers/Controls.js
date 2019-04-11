@@ -108,6 +108,11 @@ export default function ControlsDrawer(drawersArgs) {
 	config.mouse.addListener('up', mouseUp);
 
 	return function drawControl(x, y, width, height) {
+		// ctx.save();
+		// ctx.fillStyle = 'green';
+		// ctx.fillRect(x, y, width, height);
+		// ctx.restore();
+		
 		const oldWidth = width;
 		const oldX = x;
 		width = width - controlWidthMul2;
@@ -134,6 +139,7 @@ export default function ControlsDrawer(drawersArgs) {
 		// Fill unactive part
 		ctx.save();
 		ctx.globalAlpha = 0.6;
+		ctx.fillStyle = "red";
 		ctx.fillStyle = "#E2EEF9";
 
 		ctx.beginPath();
@@ -147,8 +153,8 @@ export default function ControlsDrawer(drawersArgs) {
 		ctx.beginPath();
 		ctx.moveTo(xe + 1, y);
 		ctx.lineTo(xe + 1, y + height);
-		ctx.arcTo(oldWidth, y + height, oldWidth, y + height - controlWidth, controlWidth / 2);
-		ctx.arcTo(oldWidth, y, xe, y, controlWidth / 2);
+		ctx.arcTo(oldX + oldWidth, y + height, oldX + oldWidth, y + height - controlWidth, controlWidth / 2);
+		ctx.arcTo(oldX + oldWidth, y, xe, y, controlWidth / 2);
 		ctx.closePath();
 		ctx.fill();
 
@@ -168,10 +174,11 @@ export default function ControlsDrawer(drawersArgs) {
 
 		// Start range
 		ctx.beginPath();
-		ctx.moveTo(xs, y);
-		ctx.lineTo(xs, y + height);
-		ctx.arcTo(xs - controlWidth, y + height, xs - controlWidth, y + height - controlWidth, controlWidth / 2);
-		ctx.arcTo(xs - controlWidth, y, xs, y, controlWidth / 2);
+		const xxxs = xs;
+		ctx.moveTo(xxxs, y);
+		ctx.lineTo(xxxs, y + height);
+		ctx.arcTo(xxxs - controlWidth, y + height, xxxs - controlWidth, y + height - controlWidth, controlWidth / 2);
+		ctx.arcTo(xxxs - controlWidth, y, xxxs, y, controlWidth / 2);
 		ctx.closePath();
 		ctx.fill();
 
