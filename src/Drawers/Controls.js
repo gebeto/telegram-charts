@@ -23,7 +23,8 @@ export default function ControlsDrawer(drawersArgs) {
 	const controlWidth = 14 * PIXEL_RATIO;
 	const controlWidthMul2 = controlWidth * 2;
 	const controlWidthDiv2 = controlWidth / 2;
-	const controlPipaWidth = (controlWidth - 2) / 2;
+	const controlPipaWidth = 2 * PIXEL_RATIO;
+	const controlPipaPos = (controlWidth - controlPipaWidth) / 2;
 
 	let mouseMode = NONE;
 	const clickRangeBase = 14 * PIXEL_RATIO;
@@ -188,8 +189,8 @@ export default function ControlsDrawer(drawersArgs) {
 		ctx.save();
 		ctx.beginPath();
 		ctx.fillStyle = "#FFFFFF";
-		ctx.rect(xs - controlPipaWidth, y + pipaH2, -2, height - pipaH);
-		ctx.rect(xe + controlPipaWidth, y + pipaH2, 2, height - pipaH);
+		ctx.rect(xs - controlPipaPos, y + pipaH2, -controlPipaWidth, height - pipaH);
+		ctx.rect(xe + controlPipaPos, y + pipaH2, controlPipaWidth, height - pipaH);
 		ctx.fill();
 		ctx.restore();
 	}
