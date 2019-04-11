@@ -1,5 +1,5 @@
 import LineLayerDrawer from './Layers/Line';
-import { PIXEL_RATIO } from '../Globals';
+import { PIXEL_RATIO, SIDES_PADDING } from '../Globals';
 
 const NONE = 0;
 const DRAG_START = 1;

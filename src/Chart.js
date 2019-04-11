@@ -94,8 +94,6 @@ function Chart(data, index) {
 	function updateNorms() {
 		const rStart = control.range[0];
 		const rEnd = control.range[1];
-		// const startIndex = Math.floor(rStart * xs.length);
-		// const endIndex = Math.round(rEnd * xs.length);
 		const startIndexRaw = rStart * xs.length - 1;
 		const startIndex = startIndexRaw < 0 ? 0 : Math.floor(startIndexRaw);
 		const endIndexRaw = rEnd * xs.length + 3;
@@ -134,8 +132,8 @@ function Chart(data, index) {
 
 	function updateBounds() {
 		const newBounds = canvas.getBoundingClientRect();
-        const newWidth = newBounds.width * PIXEL_RATIO;
-        const newHeight = newBounds.height * PIXEL_RATIO;
+		const newWidth = newBounds.width * PIXEL_RATIO;
+		const newHeight = newBounds.height * PIXEL_RATIO;
 
 		bounds.width = newWidth;
 		bounds.height = CANVAS_HEIGHT;
@@ -145,19 +143,14 @@ function Chart(data, index) {
 		bounds.bottom = newBounds.bottom;
 		bounds.x = newBounds.x;
 		bounds.y = newBounds.y;
-	}
 
-	function updateCanvasSize(e) {
-		config.shouldChartUpdate = true;
-		config.shouldControlUpdate = true;
-        const newWidth = bounds.width;
-        const newHeight = bounds.height;
-        console.log(newWidth, newHeight)
-        if (w !== newWidth || h !== newHeight) {
-			normCanvas = normalizeMemo(0, bounds.width);
+		if (w !== newWidth || h !== newHeight) {
+			config.shouldChartUpdate = true;
+			config.shouldControlUpdate = true;
+			normCanvas = normalizeMemo(SIDES_PADDING2, bounds.width - SIDES_PADDING2);
 			w = canvas.width = bounds.width;
 			h = canvas.height = CANVAS_HEIGHT;
-        }
+		}
 	}
 
 	const drawersArgs = {
@@ -186,9 +179,8 @@ function Chart(data, index) {
 		}
 	}
 
-	window.addEventListener('resize', updateCanvasSize);
+	window.addEventListener('resize', updateBounds);
 	updateBounds();
-	updateCanvasSize();
 	updateNorms()
 	render()
 
