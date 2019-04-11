@@ -4,19 +4,38 @@ import Animated from './Utils/Animated';
 export function normalizeMemo(min, max) {
 	const delta = max - min;
 	const memo = {};
-	return (val) => {
+
+	function norm(val) {
 		if (!memo[val]) {
 			memo[val] = (val - min) / delta;
 		}
 		return memo[val];
-	};
+	}
+
+	norm.de = function denorm(val) {
+		return val * delta + min;
+	}
+
+	norm.data = {
+		delta: delta,
+		min: min,
+		max: max,
+	}
+
+	return norm;
 }
 
 export function normalize(min, max) {
 	const delta = max - min;
+
 	function norm(val) {
 		return (val - min) / delta;
 	};
+
+	norm.de = function denorm(val) {
+		return val * delta + min;
+	}
+
 	return norm;
 }
 

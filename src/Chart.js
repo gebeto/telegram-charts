@@ -16,7 +16,6 @@ import G, {
 	CANVAS_HEIGHT,
 	CHART_HEIGHT,
 	CONTROL_HEIGHT,
-	BOTTOM_PADDING,
 	FONT,
 } from './Globals';
 
@@ -68,7 +67,10 @@ function Chart(data, index) {
 		X: normalizeMemo(0, xs.length - 1),
 		Y: normalizeAnimated(config.animator, config.minHeight, config.maxHeight)
 	};
-	const controlNorm = { X: normalizeMemo(0, xs.length - 1), Y: normalizeMemo(config.minHeight, config.maxHeight) };
+	const controlNorm = {
+		X: normalizeMemo(0, xs.length - 1),
+		Y: normalizeMemo(config.minHeight, config.maxHeight)
+	};
 
 	const updateNorms = function updateNorms() {
 		const rStart = control.range[0];
@@ -149,8 +151,8 @@ function Chart(data, index) {
 		if (config.shouldChartUpdate) {
 			config.shouldChartUpdate = false;
 			console.log('animated', config.shouldChartUpdate);
-			ctx.clearRect(0, 0, w, CANVAS_HEIGHT - CONTROL_HEIGHT - BOTTOM_PADDING);
-			drawChart(14, 0, w - 28, CANVAS_HEIGHT - CONTROL_HEIGHT - BOTTOM_PADDING);
+			ctx.clearRect(0, 0, w, CANVAS_HEIGHT - CONTROL_HEIGHT);
+			drawChart(14, 0, w - 28, CANVAS_HEIGHT - CONTROL_HEIGHT);
 		}
 
 		if (config.shouldControlUpdate) {

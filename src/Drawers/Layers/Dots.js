@@ -1,57 +1,63 @@
+import { throttle } from '../../utils';
 import { PIXEL_RATIO, FONT } from '../../Globals';
 const PI2 = Math.PI * 2;
 
 
 
 export default function Dots({ config, ctx, norm, colors }) {
-
-	let mousePosX = 0;
-	let mousePosY = 0;
-	config.mouse.addListener('move', (mouse) => {
-		mousePosX = mouse.newX;
-		mousePosY = mouse.newY;
-	});
-	config.mouse.addListener('down', (mouse) => {
-		mousePosX = mouse.newX;
-		mousePosY = mouse.newY;
-	});
-
+	const mouse = config.mouse.mouse;
 	const dotRadius = 4 * PIXEL_RATIO;
 	const lineWidth = 2 * PIXEL_RATIO;
 
+	let currentWidth = 0;
+	let currentHeight = 0;
+	let currentX = 0;
+	let currentY = 0;
+	let count = 0;
+	let chunkSize = norm.X(1) * currentWidth;
+
+	let currentIndexOld = -1;
+	let currentIndex = -1;
+
+	config.mouse.addListener('move', (mouse) => {
+		currentIndexOld = currentIndex;
+		if (mouse.newY > currentY && mouse.newY < currentY + currentHeight) {
+			currentIndex = count - Math.round((currentWidth + currentX - mouse.newX) / chunkSize + 1);
+		} else {
+			currentIndex = -1;
+		}
+
+		if (currentIndexOld !== currentIndex) {
+			config.shouldChartUpdate = true;
+		}
+	});
+
 	return function drawDots(data, x, y, width, height) {
+		currentWidth = width;
+		currentHeight = height;
+		currentX = x;
+		currentY = y;
+
 		const [key, ...items] = data;
-		const chunkSize = norm.X(1) * width;
+		count = items.length;
+		chunkSize = norm.X(1) * width;
 		const chunkSizeDiv2 = chunkSize / 2;
-		let lineIsDrawn = false
-		for (let i = 0; i < items.length; i++) {
-			const X = x + norm.X(i) * width;
-			const isX = mousePosX < X + chunkSizeDiv2 && mousePosX > X - chunkSizeDiv2;
-			const isY = mousePosY > y && mousePosY < y + height;
-			if (isX && isY) {
-				if (!lineIsDrawn) {
-					ctx.save();
-					ctx.strokeStyle = '#182D3B';
-					ctx.lineWidth = 1;
-					ctx.globalAlpha = 0.1;
-					ctx.beginPath();
-					ctx.moveTo(X, y);
-					ctx.lineTo(X, y + height);
-					ctx.stroke();
-					ctx.restore();
-				}
-				lineIsDrawn = true;
-			} else {
-				continue;
-			}
+
+		if (currentIndex > -1 && currentIndex < count) {
+			const X = x + norm.X(currentIndex) * width;
+			ctx.save();
+			ctx.strokeStyle = '#182D3B';
+			ctx.lineWidth = 1;
+			ctx.globalAlpha = 0.1;
+			ctx.beginPath();
+			ctx.moveTo(X, y);
+			ctx.lineTo(X, y + height);
+			ctx.stroke();
+			ctx.restore();
 
 			ctx.save();
 			ctx.beginPath();
-			ctx.arc(
-				X,
-				y + height - norm.Y(items[i]) * height,
-				dotRadius, 0, PI2,
-			);
+			ctx.arc(X, y + height - norm.Y(items[currentIndex]) * height, dotRadius, 0, PI2);
 			ctx.lineWidth = lineWidth;
 			ctx.strokeStyle = colors[key];
 			ctx.fillStyle = '#FFF';
@@ -59,6 +65,5 @@ export default function Dots({ config, ctx, norm, colors }) {
 			ctx.stroke();
 			ctx.restore();
 		}
-		config.needUpdate = true;
 	}
 }
