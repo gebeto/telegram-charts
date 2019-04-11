@@ -99,9 +99,9 @@ function Chart(data, index) {
 		const endIndexRaw = rEnd * xs.length + 3;
 		const endIndex = endIndexRaw > xs.length ? xs.length : Math.round(endIndexRaw);
 
-		config.minHeight = flatMinRange(ys, startIndex, endIndex + 1);
-		config.maxHeight = flatMaxRange(ys, startIndex, endIndex + 1);
-		norm.Y.updateDelta(config.minHeight, config.maxHeight + 1);
+		config.minHeight = flatMinRange(ys, startIndex, endIndex - 1);
+		config.maxHeight = flatMaxRange(ys, startIndex, endIndex - 1);
+		norm.Y.updateDelta(config.minHeight, config.maxHeight);
 
 		config.startIndex = startIndex;
 		config.endIndex = endIndex;
