@@ -9,7 +9,9 @@ const DRAG_ALL = 3;
 
 export default function ControlsDrawer(drawersArgs) {
 	const { ctx, config, canvasBounds, control, ys } = drawersArgs;
-	const drawLineLayer = LineLayerDrawer(drawersArgs);
+	const drawLineLayer = LineLayerDrawer(drawersArgs, {
+		lineWidth: 1,
+	});
 
 	let xs = 0;
 	let xe = 0;

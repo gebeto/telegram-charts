@@ -1,6 +1,8 @@
-import G, { PIXEL_RATIO } from '../../Globals';
+import { PIXEL_RATIO } from '../../Globals';
 
-export default function Line({ config, control, ctx, norm, colors }) {
+export default function Line({ config, control, ctx, norm, colors }, opts = {}) {
+	const lineWidth = (opts.lineWidth || 2) * PIXEL_RATIO;
+
 	return function drawLine(data, x, y, width, height) {
 		const [key, ...items] = data;
 		ctx.save();
@@ -11,7 +13,7 @@ export default function Line({ config, control, ctx, norm, colors }) {
 			const Y = y + height - norm.Y(items[i]) * height;
 			ctx.lineTo(X, Y);
 		}
-		ctx.lineWidth = 2 * PIXEL_RATIO;
+		ctx.lineWidth = lineWidth;
 		ctx.strokeStyle = colors[key];
 		ctx.lineJoin = 'round';
 		ctx.stroke();

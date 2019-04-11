@@ -11,7 +11,7 @@ import LineChartDrawer from './Drawers/LineChart';
 
 import Mouse from './Utils/Mouse';
 
-import G, {
+import {
 	PIXEL_RATIO,
 	CANVAS_HEIGHT,
 	CHART_HEIGHT,
@@ -125,6 +125,8 @@ function Chart(data, index) {
 	}
 
 	function updateCanvasSize(e) {
+		config.shouldChartUpdate = true;
+		config.shouldControlUpdate = true;
         const newWidth = bounds.width;
         const newHeight = bounds.height;
         console.log(newWidth, newHeight)
@@ -145,8 +147,8 @@ function Chart(data, index) {
 
 	function render(force) {
 		updateBounds();
-		const an = config.animator.updateAnimations();
-		if (an) config.shouldChartUpdate = true;
+		const isActiveAnimations = config.animator.updateAnimations();
+		if (isActiveAnimations) config.shouldChartUpdate = true;
 
 		if (config.shouldChartUpdate) {
 			config.shouldChartUpdate = false;

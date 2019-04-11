@@ -20,10 +20,10 @@ export default function LineChartDrawer(drawersArgs) {
 	const drawDotsLayer  = drawingWithRange(control.range, DotsLayerDrawer(drawersArgs));
 
 	return function drawChart(x, y, width, height) {
-		ctx.save();
-		ctx.fillStyle = 'green';
-		ctx.fillRect(x, y, width, height);
-		ctx.restore();
+		// ctx.save();
+		// ctx.fillStyle = 'green';
+		// ctx.fillRect(x, y, width, height);
+		// ctx.restore();
 
 		const HEIGHT = height - BOTTOM_PADDING
 

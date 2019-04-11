@@ -4,16 +4,8 @@ import Globals from '../Globals';
 function createAnimationLoop() {
 	const animationHandlers = [];
 
-	function loop(loopTime) {
-		Globals.time = loopTime
-		for (let i = 0; i < animationHandlers.length; i++) {
-			animationHandlers[i](loopTime);
-		}
-		requestAnimationFrame(loop);
-	};
-	requestAnimationFrame(loop);
-
-	return {
+	const publicInterface = {
+		time: 0,
 		add(handler) {
 			animationHandlers.push(handler);
 		},
@@ -23,7 +15,18 @@ function createAnimationLoop() {
 				animationHandlers.splice(index, 1);
 			}
 		},
-	}
+	};
+
+	function loop(loopTime) {
+		publicInterface.time = loopTime;
+		for (let i = 0; i < animationHandlers.length; i++) {
+			animationHandlers[i](loopTime);
+		}
+		requestAnimationFrame(loop);
+	};
+	requestAnimationFrame(loop);
+
+	return publicInterface;
 }
 
 
