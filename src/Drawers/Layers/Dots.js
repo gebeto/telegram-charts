@@ -1,7 +1,5 @@
 import { throttle } from '../../utils';
-import { PIXEL_RATIO, FONT } from '../../Globals';
-const PI2 = Math.PI * 2;
-
+import { PIXEL_RATIO, FONT, PI2 } from '../../Globals';
 
 
 export default function Dots({ config, ctx, norm, colors }) {

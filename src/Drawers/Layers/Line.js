@@ -1,5 +1,6 @@
 import { PIXEL_RATIO } from '../../Globals';
 
+
 export default function Line({ config, control, ctx, norm, colors }, opts = {}) {
 	const lineWidth = (opts.lineWidth || 2) * PIXEL_RATIO;
 
