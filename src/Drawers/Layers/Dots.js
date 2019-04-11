@@ -19,7 +19,7 @@ export default function Dots({ config, ctx, norm, colors }) {
 
 	const popup = config.popup;
 
-	config.mouse.addListener('move', (mouse, e) => {
+	const handleOver = (mouse, e) => {
 		if (e.target !== ctx.canvas) return;
 
 		currentIndexOld = currentIndex;
@@ -37,9 +37,12 @@ export default function Dots({ config, ctx, norm, colors }) {
 			config.shouldChartUpdate = true;
 
 			const popupBounds = popup.getBoundingClientRect();
-			popup.style.left = `${mouse.newX - popupBounds.width / 2}px`;
+			popup.style.left = `${mouse.newX / PIXEL_RATIO - popupBounds.width / 2}px`;
 		}
-	});
+	};
+
+	config.mouse.addListener('move', handleOver);
+	config.mouse.addListener('down', handleOver);
 
 	return function drawDots(data, x, y, width, height) {
 		currentWidth = width;
