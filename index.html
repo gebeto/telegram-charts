@@ -19,12 +19,6 @@
 			-webkit-touch-callout: none;
 		}
 
-		@media (max-width: 500px) {
-			body {
-				font-size: 0.8em;
-			}
-		}
-
 		.chart {
 			position: relative;
 			width: 100%;
@@ -66,6 +60,7 @@
 		.chart__popup-header-title {
 			display: table-cell;
 			text-align: left;
+			min-width: 10em;
 		}
 		.chart__popup-header-icon {
 			display: table-cell;
@@ -87,6 +82,16 @@
 			display: table-cell;
 			text-align: right;
 			font-weight: bold;
+		}
+
+		@media (max-width: 500px) {
+			body {
+				font-size: 0.8em;
+			}
+
+			.chart__popup-header-icon {
+				min-width: 2em;
+			}
 		}
 	</style>
 </head>

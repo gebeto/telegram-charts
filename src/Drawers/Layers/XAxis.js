@@ -1,20 +1,11 @@
 import { memo, normalize } from '../../utils';
 import {
-	MONTH_NAMES,
-	DAY_NAMES,
 	FONT,
 	PIXEL_RATIO
 } from '../../Globals';
 
 
-const dateString = memo(function dateString(timestamp) {
-	const date = new Date(timestamp);
-	return `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`;
-});
-
-
 export default function XAxis({ config, control, ctx, norm, colors }) {
-
 	return function drawXAxis(items, x, y, width, height) {
 		const count = items.length;
 		const S = config.startIndex;
@@ -30,7 +21,7 @@ export default function XAxis({ config, control, ctx, norm, colors }) {
 		ctx.globalAlpha = 0.5;
 
 		for (let i = S; i < E; i++) {
-			ctx.fillText(dateString(items[i]), x + norm.X(i) * width, y);
+			ctx.fillText(items[i].dayString, x + norm.X(i) * width, y);
 		}
 
 		ctx.restore();

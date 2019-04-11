@@ -32,12 +32,14 @@ export default function Dots({ config, ctx, norm, colors }) {
 			currentIndexOld = currentIndex;
 			if (mouse.newY > currentY && mouse.newY < currentY + currentHeight) {
 				currentIndex = count - Math.round((currentWidth + currentX - mouse.newX) / chunkSize + 1);
-				popup.style.opacity = 1;
-				popup.style.visibility = 'visible';
+				// popup.style.opacity = 1;
+				// popup.style.visibility = 'visible';
+				popup.show(currentIndex);
 			} else {
 				currentIndex = -1;
-				popup.style.opacity = 0;
-				popup.style.visibility = 'hidden';
+				// popup.style.opacity = 0;
+				// popup.style.visibility = 'hidden';
+				popup.hide();
 			}
 		}
 
@@ -46,8 +48,8 @@ export default function Dots({ config, ctx, norm, colors }) {
 			config.shouldChartUpdate = true;
 
 			if (currentIndex !== -1) {
-				const popupBounds = popup.getBoundingClientRect();
-				popup.style.left = `${mouse.newX / PIXEL_RATIO - popupBounds.width / 2}px`;
+				const popupBounds = popup.element.getBoundingClientRect();
+				popup.element.style.left = `${mouse.newX / PIXEL_RATIO - popupBounds.width / 2}px`;
 			}
 		}
 	};

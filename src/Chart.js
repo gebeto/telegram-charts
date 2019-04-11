@@ -1,23 +1,20 @@
-import Animated, { createAnimator } from './Utils/Animated';
-
-import LineLayerDrawer from './Drawers/Layers/Line';
-import LineRangeLayerDrawer from './Drawers/Layers/LineRange';
-import DotsLayerDrawer from './Drawers/Layers/Dots';
-import YAxisLayerDrawer from './Drawers/Layers/YAxis';
-import XAxisLayerDrawer from './Drawers/Layers/XAxis';
+import { memo } from './utils';
+import Mouse from './Utils/Mouse';
+import { createAnimator } from './Utils/Animated';
 
 import ControlsDrawer from './Drawers/Controls';
 import LineChartDrawer from './Drawers/LineChart';
 
-import Mouse from './Utils/Mouse';
+import { createPopup, createElement } from './Popup';
 
-import arrow from './arrow.svg';
 
 import {
 	PIXEL_RATIO,
 	CANVAS_HEIGHT,
 	CHART_HEIGHT,
 	CONTROL_HEIGHT,
+	MONTH_NAMES,
+	DAY_NAMES,
 	FONT,
 } from './Globals';
 
@@ -33,14 +30,17 @@ import {
 } from './utils';
 
 
-function createElement(parent, elementTag, className) {
-	const element = document.createElement(elementTag);
-	element.className = className;
-	if (parent) {
-		parent.appendChild(element);
-	}
-	return element;
-}
+function dateString(timestamp) {
+	const date = new Date(timestamp);
+	return {
+		dayString: `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`,
+		dateString: `${DAY_NAMES[date.getDay()]}, ${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`,
+		// Sat, 20 Apr 2019
+		date: date,
+		timestamp: timestamp,
+	};
+};
+
 
 function Chart(data, index) {
 	// Init canvas
@@ -51,24 +51,8 @@ function Chart(data, index) {
 
 	const container = createElement(document.body, 'div', 'chart');
 	const title = createElement(container, 'h2', 'chart__title');
-	title.textContent = `Chart #${index}`;
+	title.textContent = `Chart #${index + 1}`;
 	const canvas = createElement(container, 'canvas', 'chart__canvas');
-	const popup = createElement(container, 'div', 'chart__popup');
-	popup.innerHTML = `
-		<strong class="chart__popup-header">
-			<span class="chart__popup-header-title">Sat, 20 Apr 2019</span>
-			<span class="chart__popup-header-icon"><img src="${arrow}" /></span>
-		</strong>
-		<span class="chart__popup-item">
-			<span class="chart__popup-item-title">Joined</span>
-			<span class="chart__popup-item-value">100</span>
-		</span>
-		<span class="chart__popup-item">
-			<span class="chart__popup-item-title">Left</span>
-			<span class="chart__popup-item-value">20</span>
-		</span>
-	`;
-
 	const ctx = canvas.getContext('2d');
 
 	const config = {
@@ -81,7 +65,6 @@ function Chart(data, index) {
 			canvas: canvas,
 			canvasBounds: bounds,
 		}),
-		popup: popup,
 		maxHeight: 0,
 		minHeight: 0,
 	};
@@ -90,9 +73,12 @@ function Chart(data, index) {
 	const colors = data.colors;
 	const names = data.names;
 	const types = data.types;
+	data.columns[0] = data.columns[0].map(dateString)
 	const [[xkey, ...xs], ...ys] = data.columns;
 	config.maxHeight = flatMax(ys);
 	config.minHeight = flatMin(ys);
+
+	config.popup = createPopup(container, data, ys);
 
 	const norm = {
 		X: normalizeMemo(0, xs.length - 1),
