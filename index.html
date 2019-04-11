@@ -17,6 +17,12 @@
 			-webkit-touch-callout: none;
 		}
 
+		@media (max-width: 500px) {
+			body {
+				font-size: 0.8em;
+			}
+		}
+
 		.chart {
 			position: relative;
 			width: 100%;
@@ -34,22 +40,22 @@
 			display: table;
 			position: absolute;
 			right: 0;
-			top: 10px;
+			top: 0.8em;
 			transition-duration: .2s;
 			opacity: 0;
 			visibility: hidden;
 			background: #FFF;
 			padding: 8px;
-			border-radius: 10px;
-			box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+			border-radius: 0.8em;
+			box-shadow: 0 0 0.8em rgba(0,0,0,0.2);
 			font-family: Helvetica, Arial, sans-serif;
 			letter-spacing: 0.1px;
-			border-spacing: 5px;
+			border-spacing: 0.3em;
 		}
 		.chart__popup-header {
 			display: table-row;
 			font-weight: bold;
-			height: 20px;
+			height: 2em;
 		}
 		.chart__popup-header-title {
 			display: table-cell;
@@ -61,11 +67,10 @@
 			min-width: 3em;
 		}
 		.chart__popup-header-icon img {
-			height: 12px;
+			height: 1em;
 		}
 		.chart__popup-item {
 			display: table-row;
-			padding-top: 5px;
 			vertical-align: middle;
 		}
 		.chart__popup-item-title {
