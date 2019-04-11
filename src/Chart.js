@@ -50,6 +50,8 @@ function Chart(data, index) {
 	}, w, h, normCanvas;
 
 	const container = createElement(document.body, 'div', 'chart');
+	const title = createElement(container, 'h2', 'chart__title');
+	title.textContent = `Chart #${index}`;
 	const canvas = createElement(container, 'canvas', 'chart__canvas');
 	const popup = createElement(container, 'div', 'chart__popup');
 	popup.innerHTML = `

@@ -17,22 +17,30 @@ export default function Dots({ config, ctx, norm, colors }) {
 	let currentIndexOld = -1;
 	let currentIndex = -1;
 
+	let onCanvasOld = false;
+	let onCanvas = false;
+
 	const popup = config.popup;
 
 	const handleOver = (mouse, e) => {
-		// if (e.target !== ctx.canvas) return;
-		if (e.target !== ctx.canvas && ctx.canvas.parentNode.contains(e.target)) return;
-
-		currentIndexOld = currentIndex;
-		if (mouse.newY > currentY && mouse.newY < currentY + currentHeight) {
-			currentIndex = count - Math.round((currentWidth + currentX - mouse.newX) / chunkSize + 1);
-			popup.style.opacity = 1;
-			popup.style.visibility = 'visible';
-		} else {
-			currentIndex = -1;
-			popup.style.opacity = 0;
-			popup.style.visibility = 'hidden';
+		// Check if mouse on canvas
+		onCanvasOld = onCanvas;
+		onCanvas = ctx.canvas.parentNode.contains(e.target);
+		if (e.target !== ctx.canvas && onCanvas) return;
+		
+		if (onCanvas || (onCanvasOld === true && onCanvas === false)) {
+			currentIndexOld = currentIndex;
+			if (mouse.newY > currentY && mouse.newY < currentY + currentHeight) {
+				currentIndex = count - Math.round((currentWidth + currentX - mouse.newX) / chunkSize + 1);
+				popup.style.opacity = 1;
+				popup.style.visibility = 'visible';
+			} else {
+				currentIndex = -1;
+				popup.style.opacity = 0;
+				popup.style.visibility = 'hidden';
+			}
 		}
+
 
 		if (currentIndexOld !== currentIndex) {
 			config.shouldChartUpdate = true;

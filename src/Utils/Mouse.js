@@ -15,6 +15,8 @@ function createDispatcher(types) {
 		newY: 0,
 		newXRaw: 0,
 		newYRaw: 0,
+
+		isHolding: false,
 	}
 	types.forEach(type => {
 		handlers[type] = [];
@@ -71,6 +73,7 @@ export default function mouseForChart({ canvas, canvasBounds }) {
 	}
 
 	function onMouseUp(e) {
+		mouse.isHolding = false;
 		dispatcher.dispatch('up', e);
 	}
 

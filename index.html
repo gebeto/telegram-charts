@@ -7,8 +7,10 @@
 	<title>Telegram Charts</title>
 	<style>
 		body {
-			background-color: #eee;
+			/*background-color: #eee;*/
 			/*padding-top: 1000px;*/
+			padding: 0;
+			margin: 0;
 			padding-bottom: 1000px;
 
 			user-select: none;
@@ -27,6 +29,11 @@
 			position: relative;
 			width: 100%;
 			overflow: hidden;
+			font-family: Helvetica, Arial, sans-serif;
+		}
+
+		.chart__title {
+			padding: 0px 0.4em;
 		}
 
 		.chart__canvas {
@@ -48,7 +55,6 @@
 			padding: 8px;
 			border-radius: 0.8em;
 			box-shadow: 0 0 0.8em rgba(0,0,0,0.2);
-			font-family: Helvetica, Arial, sans-serif;
 			letter-spacing: 0.1px;
 			border-spacing: 0.3em;
 		}
