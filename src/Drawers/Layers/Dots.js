@@ -17,17 +17,27 @@ export default function Dots({ config, ctx, norm, colors }) {
 	let currentIndexOld = -1;
 	let currentIndex = -1;
 
+	const popup = config.popup;
+
 	config.mouse.addListener('move', (mouse, e) => {
-		if (e.target !== ctx.canvas) { return }
+		if (e.target !== ctx.canvas) return;
+
 		currentIndexOld = currentIndex;
 		if (mouse.newY > currentY && mouse.newY < currentY + currentHeight) {
 			currentIndex = count - Math.round((currentWidth + currentX - mouse.newX) / chunkSize + 1);
+			popup.style.opacity = 1;
+			popup.style.visibility = 'visible';
 		} else {
 			currentIndex = -1;
+			popup.style.opacity = 0;
+			popup.style.visibility = 'hidden';
 		}
 
 		if (currentIndexOld !== currentIndex) {
 			config.shouldChartUpdate = true;
+
+			const popupBounds = popup.getBoundingClientRect();
+			popup.style.left = `${mouse.newX - popupBounds.width / 2}px`;
 		}
 	});
 

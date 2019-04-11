@@ -79,6 +79,7 @@ function Chart(data, index) {
 			canvas: canvas,
 			canvasBounds: bounds,
 		}),
+		popup: popup,
 		maxHeight: 0,
 		minHeight: 0,
 	};
@@ -180,7 +181,7 @@ function Chart(data, index) {
 
 		if (config.shouldChartUpdate) {
 			config.shouldChartUpdate = false;
-			console.log('animated', config.shouldChartUpdate);
+			// console.log('animated', config.shouldChartUpdate);
 			ctx.clearRect(0, 0, w, CANVAS_HEIGHT - CONTROL_HEIGHT);
 			drawChart(14, 0, w - 28, CANVAS_HEIGHT - CONTROL_HEIGHT);
 		}
