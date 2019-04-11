@@ -5,6 +5,7 @@ module.exports = {
 	output: {
 		path: path.resolve(__dirname, 'dist'),
 		filename: 'bundle.js',
+		publicPath: 'dist/',
 	},
 
 	module: {
@@ -14,11 +15,11 @@ module.exports = {
 				loader: 'babel-loader',
 			},
 			{
-				test: /\.json/,
+				test: /\.svg/,
 				use: [{
 					loader: 'file-loader',
 					options: {
-						name: '[path][name].[ext]',
+						name: '[name].[ext]',
 					}
 				}],
 

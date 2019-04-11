@@ -11,6 +11,8 @@ import LineChartDrawer from './Drawers/LineChart';
 
 import Mouse from './Utils/Mouse';
 
+import arrow from './arrow.svg';
+
 import {
 	PIXEL_RATIO,
 	CANVAS_HEIGHT,
@@ -31,14 +33,40 @@ import {
 } from './utils';
 
 
+function createElement(parent, elementTag, className) {
+	const element = document.createElement(elementTag);
+	element.className = className;
+	if (parent) {
+		parent.appendChild(element);
+	}
+	return element;
+}
+
 function Chart(data, index) {
 	// Init canvas
 	let bounds = {
 		left: 0,
 		top: 0,
 	}, w, h, normCanvas;
-	const canvas = document.createElement('canvas');
-	document.body.appendChild(canvas);
+
+	const container = createElement(document.body, 'div', 'chart');
+	const canvas = createElement(container, 'canvas', 'chart__canvas');
+	const popup = createElement(container, 'div', 'chart__popup');
+	popup.innerHTML = `
+		<strong class="chart__popup-header">
+			<span class="chart__popup-header-title">Sat, 20 Apr 2019</span>
+			<span class="chart__popup-header-icon"><img src="${arrow}" /></span>
+		</strong>
+		<span class="chart__popup-item">
+			<span class="chart__popup-item-title">Joined</span>
+			<span class="chart__popup-item-value">100</span>
+		</span>
+		<span class="chart__popup-item">
+			<span class="chart__popup-item-title">Left</span>
+			<span class="chart__popup-item-value">20</span>
+		</span>
+	`;
+
 	const ctx = canvas.getContext('2d');
 
 	const config = {
