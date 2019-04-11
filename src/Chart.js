@@ -91,15 +91,19 @@ function Chart(data, index) {
 		Y: normalizeMemo(config.minHeight, config.maxHeight)
 	};
 
-	const updateNorms = function updateNorms() {
+	function updateNorms() {
 		const rStart = control.range[0];
 		const rEnd = control.range[1];
-		const startIndex = Math.round(rStart * xs.length);
-		const endIndex = Math.round(rEnd * xs.length);
+		// const startIndex = Math.floor(rStart * xs.length);
+		// const endIndex = Math.round(rEnd * xs.length);
+		const startIndexRaw = rStart * xs.length - 1;
+		const startIndex = startIndexRaw < 0 ? 0 : Math.floor(startIndexRaw);
+		const endIndexRaw = rEnd * xs.length + 3;
+		const endIndex = endIndexRaw > xs.length ? xs.length : Math.round(endIndexRaw);
 
-		config.minHeight = flatMinRange(ys, startIndex, endIndex);
-		config.maxHeight = flatMaxRange(ys, startIndex, endIndex);
-		norm.Y.updateDelta(config.minHeight, config.maxHeight);
+		config.minHeight = flatMinRange(ys, startIndex, endIndex + 1);
+		config.maxHeight = flatMaxRange(ys, startIndex, endIndex + 1);
+		norm.Y.updateDelta(config.minHeight, config.maxHeight + 1);
 
 		config.startIndex = startIndex;
 		config.endIndex = endIndex;

@@ -20,15 +20,6 @@ export default function LineChartDrawer(drawersArgs) {
 	const drawLineLayer  = drawingWithRange(control.range, LineRangeLayerDrawer(drawersArgs));
 	const drawDotsLayer  = drawingWithRange(control.range, DotsLayerDrawer(drawersArgs));
 
-	// const backCanvas = document.createElement('canvas');
-	// const backCtx = backCanvas.getContext('2d');
-
-	// backCanvas.style.border = '1px solid red';
-	// document.body.appendChild(backCanvas);
-
-	const lastRange = [control.range[0], control.range[1], control.range[1] - control.range[0]];
-
-
 	return function drawChart(x, y, width, height) {
 		// ctx.save();
 		// ctx.fillStyle = 'green';

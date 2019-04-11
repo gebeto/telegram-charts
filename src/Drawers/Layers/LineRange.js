@@ -11,7 +11,7 @@ export default function LineRange({ config, control, ctx, norm, colors }, opts =
 		ctx.save();
 		ctx.beginPath();
 		ctx.moveTo(x + S, y + height - norm.Y(items[S]) * height);
-		for (let i = 1; i < E + 1; i++) {
+		for (let i = S; i < E; i++) {
 			const X = x + norm.X(i) * width;
 			const Y = y + height - norm.Y(items[i]) * height;
 			ctx.lineTo(X, Y);
