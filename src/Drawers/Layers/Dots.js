@@ -17,7 +17,8 @@ export default function Dots({ config, ctx, norm, colors }) {
 	let currentIndexOld = -1;
 	let currentIndex = -1;
 
-	config.mouse.addListener('move', (mouse) => {
+	config.mouse.addListener('move', (mouse, e) => {
+		if (e.target !== ctx.canvas) { return }
 		currentIndexOld = currentIndex;
 		if (mouse.newY > currentY && mouse.newY < currentY + currentHeight) {
 			currentIndex = count - Math.round((currentWidth + currentX - mouse.newX) / chunkSize + 1);

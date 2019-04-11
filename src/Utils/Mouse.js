@@ -18,9 +18,9 @@ function createDispatcher(types) {
 	}
 	types.forEach(type => {
 		handlers[type] = [];
-		dispatchers[type] = function(mouse) {
+		dispatchers[type] = function(mouse, event) {
 			for (let i = 0; i < handlers[type].length; i++) {
-				handlers[type][i](mouse);
+				handlers[type][i](mouse, event);
 			}
 		}
 	});
@@ -29,9 +29,9 @@ function createDispatcher(types) {
 		addListener(type, handler) {
 			handlers[type].push(handler);
 		},
-		dispatch(type) {
+		dispatch(type, event) {
 			if (dispatchers[type]) {
-				dispatchers[type](mouse);
+				dispatchers[type](mouse, event);
 			} else {
 				throw Error("Unknown event");
 			}
@@ -54,7 +54,7 @@ export default function mouseForChart({ canvas, canvasBounds }) {
 		mouse.newX = mouse.x;
 		mouse.newY = mouse.y;
 
-		dispatcher.dispatch('down');
+		dispatcher.dispatch('down', e);
 	}
 
 	function onMouseMove(e) {
@@ -63,15 +63,15 @@ export default function mouseForChart({ canvas, canvasBounds }) {
 		mouse.newX = mouse.newXRaw * PIXEL_RATIO;
 		mouse.newY = mouse.newYRaw * PIXEL_RATIO;
 
-		dispatcher.dispatch('move');
+		dispatcher.dispatch('move', e);
 	}
 
 	function onMouseEnter(e) {
-		dispatcher.dispatch('enter');
+		dispatcher.dispatch('enter', e);
 	}
 
 	function onMouseUp(e) {
-		dispatcher.dispatch('up');
+		dispatcher.dispatch('up', e);
 	}
 
 	function onTouchDown(e) {
