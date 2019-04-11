@@ -37,8 +37,10 @@ export default function Dots({ config, ctx, norm, colors }) {
 		if (currentIndexOld !== currentIndex) {
 			config.shouldChartUpdate = true;
 
-			const popupBounds = popup.getBoundingClientRect();
-			popup.style.left = `${mouse.newX / PIXEL_RATIO - popupBounds.width / 2}px`;
+			if (currentIndex !== -1) {
+				const popupBounds = popup.getBoundingClientRect();
+				popup.style.left = `${mouse.newX / PIXEL_RATIO - popupBounds.width / 2}px`;
+			}
 		}
 	};
 
