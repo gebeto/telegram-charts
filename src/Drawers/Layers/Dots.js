@@ -20,7 +20,8 @@ export default function Dots({ config, ctx, norm, colors }) {
 	const popup = config.popup;
 
 	const handleOver = (mouse, e) => {
-		if (e.target !== ctx.canvas) return;
+		// if (e.target !== ctx.canvas) return;
+		if (e.target !== ctx.canvas && ctx.canvas.parentNode.contains(e.target)) return;
 
 		currentIndexOld = currentIndex;
 		if (mouse.newY > currentY && mouse.newY < currentY + currentHeight) {
