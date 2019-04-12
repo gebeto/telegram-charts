@@ -17,3 +17,4 @@ export const X_AXIS_HEIGHT = 29 * PIXEL_RATIO;
 export const X_AXIS_HEIGHT_DIV_2 = X_AXIS_HEIGHT / 2;
 
 export const Y_AXIS_TEXT_PADDING = 5 * PIXEL_RATIO;
+export const ONE = 1 * PIXEL_RATIO;

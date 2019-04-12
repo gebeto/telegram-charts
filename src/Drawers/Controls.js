@@ -1,5 +1,9 @@
 import LineLayerDrawer from './Layers/Line';
-import { PIXEL_RATIO, SIDES_PADDING } from '../Globals';
+import {
+	PIXEL_RATIO,
+	SIDES_PADDING,
+	ONE,
+} from '../Globals';
 
 const NONE = 0;
 const DRAG_START = 1;
@@ -17,12 +21,14 @@ export default function ControlsDrawer(drawersArgs) {
 	let xe = 0;
 	let ww = xe - xs;
 
-	const pipaH = 36 * PIXEL_RATIO;
+	// const pipaH = 36 * PIXEL_RATIO;
+	const pipaH = 10 * PIXEL_RATIO;
 	const pipaH2 = pipaH / 2;
 
 	const controlWidth = 10 * PIXEL_RATIO;
 	const controlWidthMul2 = controlWidth * 2;
 	const controlWidthDiv2 = controlWidth / 2;
+	const controlWidthDiv13 = controlWidth - controlWidth / 3;
 	const controlPipaWidth = 2 * PIXEL_RATIO;
 	const controlPipaPos = (controlWidth - controlPipaWidth) / 2;
 
@@ -145,22 +151,22 @@ export default function ControlsDrawer(drawersArgs) {
 		// Fill unactive part
 		ctx.save();
 		ctx.globalAlpha = 0.6;
-		ctx.fillStyle = "red";
+		// ctx.fillStyle = "red";
 		ctx.fillStyle = "#E2EEF9";
 
 		ctx.beginPath();
 		ctx.moveTo(xs - 1, y);
 		ctx.lineTo(xs - 1, y + height);
-		ctx.arcTo(oldX, y + height, oldX, y + height - controlWidth, controlWidth / 2);
-		ctx.arcTo(oldX, y, xs - 1, y, controlWidth / 2);
+		ctx.arcTo(oldX, y + height, oldX, y + height - controlWidth, controlWidthDiv2);
+		ctx.arcTo(oldX, y, xs - 1, y, controlWidthDiv2);
 		ctx.closePath();
 		ctx.fill();
 
 		ctx.beginPath();
 		ctx.moveTo(xe + 1, y);
 		ctx.lineTo(xe + 1, y + height);
-		ctx.arcTo(oldX + oldWidth, y + height, oldX + oldWidth, y + height - controlWidth, controlWidth / 2);
-		ctx.arcTo(oldX + oldWidth, y, xe, y, controlWidth / 2);
+		ctx.arcTo(oldX + oldWidth, y + height, oldX + oldWidth, y + height - controlWidth, controlWidthDiv2);
+		ctx.arcTo(oldX + oldWidth, y, xe, y, controlWidthDiv2);
 		ctx.closePath();
 		ctx.fill();
 
@@ -173,7 +179,6 @@ export default function ControlsDrawer(drawersArgs) {
 		ctx.save();
 		ctx.fillStyle = "#C0D1E1";
 		ctx.beginPath();
-		const ONE = 1 * PIXEL_RATIO
 		ctx.rect(xs, y, ww, ONE);
 		ctx.rect(xs, y + height - ONE, ww, ONE);
 		ctx.fill();
@@ -184,8 +189,8 @@ export default function ControlsDrawer(drawersArgs) {
 		const xxxs = xs;
 		ctx.moveTo(xxxs, y);
 		ctx.lineTo(xxxs, y + height);
-		ctx.arcTo(xxxs - controlWidth, y + height, xxxs - controlWidth, y + height - controlWidth, controlWidth / 2);
-		ctx.arcTo(xxxs - controlWidth, y, xxxs, y, controlWidth / 2);
+		ctx.arcTo(xxxs - controlWidth, y + height, xxxs - controlWidth, y + height - controlWidth, controlWidthDiv13);
+		ctx.arcTo(xxxs - controlWidth, y, xxxs, y, controlWidthDiv13);
 		ctx.closePath();
 		ctx.fill();
 
@@ -193,8 +198,8 @@ export default function ControlsDrawer(drawersArgs) {
 		ctx.beginPath();
 		ctx.moveTo(xe, y);
 		ctx.lineTo(xe, y + height);
-		ctx.arcTo(xe + controlWidth, y + height, xe + controlWidth, y + height - controlWidth, controlWidth / 2);
-		ctx.arcTo(xe + controlWidth, y, xe, y, controlWidth / 2);
+		ctx.arcTo(xe + controlWidth, y + height, xe + controlWidth, y + height - controlWidth, controlWidthDiv13);
+		ctx.arcTo(xe + controlWidth, y, xe, y, controlWidthDiv13);
 		ctx.closePath();
 		ctx.fill();
 
@@ -203,8 +208,11 @@ export default function ControlsDrawer(drawersArgs) {
 		ctx.save();
 		ctx.beginPath();
 		ctx.fillStyle = "#FFFFFF";
-		ctx.rect(xs - controlPipaPos, y + pipaH2, -controlPipaWidth, height - pipaH);
-		ctx.rect(xe + controlPipaPos, y + pipaH2, controlPipaWidth, height - pipaH);
+		// ctx.rect(xs - controlPipaPos, y + pipaH2, -controlPipaWidth, height - pipaH);
+		// ctx.rect(xe + controlPipaPos, y + pipaH2, controlPipaWidth, height - pipaH);
+		ctx.rect(xs - controlPipaPos, y + height/2 - pipaH2, -controlPipaWidth, pipaH);
+		ctx.rect(xe + controlPipaPos, y + height/2 - pipaH2, controlPipaWidth, pipaH);
+		// ctx.rect(xe + controlPipaPos, y + pipaH2, controlPipaWidth, height - pipaH);
 		ctx.fill();
 		ctx.restore();
 	}
