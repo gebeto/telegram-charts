@@ -1,11 +1,16 @@
-import { PIXEL_RATIO, FONT } from '../../Globals';
+import {
+	Y_AXIS_TEXT_PADDING,
+	PIXEL_RATIO,
+	FONT,
+} from '../../Globals';
 
 
 export default function YAxis({ control, ctx, normX, normY, colors }) {
-	const partsCount = 7;
+	const partsCount = 6;
 	
 	return function drawYAxis(min, max, x, y, width, height) {
-		const part = height / partsCount;
+		const a = height / partsCount;
+		const part = (height + a/2) / partsCount;
 		const partNumber = Math.round((max - min) / partsCount);
 
 		ctx.save();
@@ -14,10 +19,11 @@ export default function YAxis({ control, ctx, normX, normY, colors }) {
 		ctx.fillStyle = '#182D3B';
 		ctx.globalAlpha = 0.5;
 		ctx.font = FONT;
+		ctx.textBaseline = 'bottom';
 		for (let i = 0; i < partsCount; i++) {
 			ctx.moveTo(x, y + height - i * part);
 			ctx.lineTo(x + width, y + height - i * part);
-			ctx.fillText(min + partNumber * i, x + 3, y + height - i * part - 5)
+			ctx.fillText(min + partNumber * i, x + 3, y + height - i * part - Y_AXIS_TEXT_PADDING)
 		}
 
 		ctx.lineWidth = 1 * PIXEL_RATIO;

@@ -20,7 +20,7 @@ export default function ControlsDrawer(drawersArgs) {
 	const pipaH = 36 * PIXEL_RATIO;
 	const pipaH2 = pipaH / 2;
 
-	const controlWidth = 14 * PIXEL_RATIO;
+	const controlWidth = 10 * PIXEL_RATIO;
 	const controlWidthMul2 = controlWidth * 2;
 	const controlWidthDiv2 = controlWidth / 2;
 	const controlPipaWidth = 2 * PIXEL_RATIO;
@@ -173,8 +173,9 @@ export default function ControlsDrawer(drawersArgs) {
 		ctx.save();
 		ctx.fillStyle = "#C0D1E1";
 		ctx.beginPath();
-		ctx.rect(xs, y, ww, 1);
-		ctx.rect(xs, y + height - 1, ww, 1);
+		const ONE = 1 * PIXEL_RATIO
+		ctx.rect(xs, y, ww, ONE);
+		ctx.rect(xs, y + height - ONE, ww, ONE);
 		ctx.fill();
 
 
