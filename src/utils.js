@@ -92,13 +92,3 @@ export function memo(fun) {
 		return memos[arg];
 	}
 }
-
-
-export function drawingWithRange(control, draw) {
-	return function drawRange(data, x, y, width, height) {
-		const xs = width * control.range[0];
-		const xNew = x - xs / control.scale;
-		const widthNew = width / control.scale;
-		draw(data, xNew, y, widthNew, height);
-	}
-}

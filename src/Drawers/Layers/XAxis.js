@@ -1,6 +1,7 @@
 import { memo, normalize, normalizeMemo } from '../../utils';
 import {
 	FONT,
+	SIDES_PADDING2,
 	PIXEL_RATIO,
 	X_AXIS_HEIGHT,
 	X_AXIS_HEIGHT_DIV_2,
@@ -12,9 +13,14 @@ import {
 
 
 
+
 export default function XAxis({ config, control, ctx, norm, colors }) {
+	let deepness = 0;
+	const diff = norm.X(112);
+
 	return function drawXAxis(items, x, y, width, height) {
 		const count = items.length;
+		console.log(count);
 
 		ctx.save();
 
@@ -29,25 +35,20 @@ export default function XAxis({ config, control, ctx, norm, colors }) {
 		// 	ctx.fillText(items[i].dayString, x + norm.X(i) * width, y + X_AXIS_HEIGHT_DIV_2);
 		// }
 
-		const x1 = norm.X(0) * width;
-		const x2 = norm.X(1) * width;
-		const currRaw = x1 - x2;
-		const curr = Math.floor(x2 - x1);
-		const divider = Math.floor(AXIS_TEXT_WIDTH / curr);
-		// const dividerNew = divider;
-		// const incer = (AXIS_TEXT_WIDTH / divider)
-		console.log(curr, divider);
+		const currRaw = diff * width;
+		const curr = Math.floor(currRaw);
+		const step = currRaw / AXIS_TEXT_WIDTH;
+		console.log(diff, curr, currRaw, step);
 
-
-		for (let i = 0; i < count; i += 1 << divider) {
+		for (let i = 0; i < count; i += 1) {
 			// const X = x + AXIS_TEXT_WIDTH_DIV_2 + norm.X(i) * (width - AXIS_TEXT_WIDTH);
 			// const Y = y + X_AXIS_HEIGHT_DIV_2;
+
 			const X = x + norm.X(i) * width;
 			const Y = y + X_AXIS_HEIGHT_DIV_2;
 			ctx.fillRect(X - AXIS_TEXT_WIDTH_DIV_2, Y - height / 2, AXIS_TEXT_WIDTH, height);
+
 			ctx.fillText(items[i].dayString, X, Y);
-
-
 		}
 
 		ctx.restore();

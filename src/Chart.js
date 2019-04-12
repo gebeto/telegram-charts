@@ -18,6 +18,7 @@ import {
 	MONTH_NAMES,
 	DAY_NAMES,
 	FONT,
+	AXIS_TEXT_WIDTH,
 } from './Globals';
 
 import {
@@ -32,7 +33,7 @@ import {
 } from './utils';
 
 
-function dateString(timestamp) {
+function dateString(timestamp, index, arr) {
 	const date = new Date(timestamp);
 	return {
 		dayString: `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`,
@@ -96,31 +97,32 @@ function Chart(data, index) {
 	const colors = data.colors;
 	const names = data.names;
 	const types = data.types;
-	data.columns[0] = data.columns[0].map(el => el.length ? el : dateString(el))
-	const [[xkey, ...xs], ...ys] = data.columns;
+
+	data.columns[0] = data.columns[0].map(el => el.length ? el : dateString(el));
+	const [[xAxisKey, ...xAxis], ...ys] = data.columns;
 	config.maxHeight = flatMax(ys);
 	config.minHeight = flatMin(ys);
-	config.endIndex = xs.length;
-	header.setSubtitle(`${xs[0].dateStringTitle} - ${xs[xs.length - 1].dateStringTitle}`)
+	config.endIndex = xAxis.length;
+	header.setSubtitle(`${xAxis[0].dateStringTitle} - ${xAxis[xAxis.length - 1].dateStringTitle}`)
 
 	config.popup = createPopup(container, data, ys);
 
 	const norm = {
-		X: normalizeMemo(0, xs.length - 1),
+		X: normalizeMemo(0, xAxis.length - 1),
 		Y: normalizeAnimated(config.animator, config.minHeight, config.maxHeight)
 	};
 	const controlNorm = {
-		X: normalizeMemo(0, xs.length - 1),
+		X: normalizeMemo(0, xAxis.length),
 		Y: normalizeMemo(config.minHeight, config.maxHeight)
 	};
 
 	function updateNorms() {
 		const rStart = control.range[0];
 		const rEnd = control.range[1];
-		const startIndexRaw = rStart * xs.length - 1;
+		const startIndexRaw = rStart * xAxis.length - 1;
 		const startIndex = startIndexRaw < 0 ? 0 : Math.floor(startIndexRaw);
-		const endIndexRaw = rEnd * xs.length;
-		const endIndex = endIndexRaw > xs.length ? xs.length : Math.round(endIndexRaw);
+		const endIndexRaw = rEnd * xAxis.length;
+		const endIndex = endIndexRaw > xAxis.length ? xAxis.length : Math.round(endIndexRaw);
 
 		config.minHeight = flatMinRange(ys, startIndex, endIndex);
 		config.maxHeight = flatMaxRange(ys, startIndex, endIndex);
@@ -132,14 +134,16 @@ function Chart(data, index) {
 
 
 	const control = {
-		// range: [0.1, 0.9],
+		range: [0.1, 0.9],
+		rangedX: 0,
+		rangedWidth: 0,
 		// range: [0.93, 1.0],
-		range: [0.0, 0.1],
+		// range: [0.0, 0.1],
 		count: 0,
 		scale: 0,
 		updateRange: function updateRange(start, end) {
 			const scale = end - start;
-			const count = xs.length * scale;
+			const count = xAxis.length * scale;
 			if (count > 5) {
 				control.count = Math.round(count);
 				control.scale = scale;
@@ -176,14 +180,6 @@ function Chart(data, index) {
 		}
 	}
 
-	const drawersArgs = {
-		config, control, ctx, norm, colors, ys, xs,
-		canvasBounds: bounds,
-	};
-
-	const drawChart = LineChartDrawer(drawersArgs);
-	const drawControl = ControlsDrawer({ ...drawersArgs, norm: controlNorm });
-
 	function render(force) {
 		updateBounds();
 		const isActiveAnimations = config.animator.updateAnimations();
@@ -202,10 +198,18 @@ function Chart(data, index) {
 		}
 	}
 
+
 	window.addEventListener('resize', updateBounds);
-	updateBounds();
-	updateNorms()
 	control.updateRange(control.range[0], control.range[1])
+	updateBounds();
+	updateNorms();
+
+	const drawersArgs = {
+		config, control, ctx, norm, colors, ys, xAxis,
+		canvasBounds: bounds,
+	};
+	const drawChart = LineChartDrawer(drawersArgs);
+	const drawControl = ControlsDrawer({ ...drawersArgs, norm: controlNorm });
 	render()
 
 	return {
