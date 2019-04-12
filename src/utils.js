@@ -57,8 +57,8 @@ export function normalizeAnimated(animator, min, max) {
 export const flatMax = (arr) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1))));
 export const flatMin = (arr) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1))));
 
-export const flatMaxRange = (arr, start, end) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1 + start, end))));
-export const flatMinRange = (arr, start, end) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1 + start, end))));
+export const flatMaxRange = (arr, start, end) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1 + start, 1 + end))));
+export const flatMinRange = (arr, start, end) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1 + start, 1 + end))));
 
 export const debounce = (func, delay) => {
 	let inDebounce
@@ -94,12 +94,11 @@ export function memo(fun) {
 }
 
 
-export function drawingWithRange(range, draw) {
+export function drawingWithRange(control, draw) {
 	return function drawRange(data, x, y, width, height) {
-		const scale = range[1] - range[0];
-		const xs = width * range[0];
-		const xNew = x - xs / scale;
-		const widthNew = width / scale;
+		const xs = width * control.range[0];
+		const xNew = x - xs / control.scale;
+		const widthNew = width / control.scale;
 		draw(data, xNew, y, widthNew, height);
 	}
 }

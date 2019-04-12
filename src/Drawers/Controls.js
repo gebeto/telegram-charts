@@ -46,35 +46,37 @@ export default function ControlsDrawer(drawersArgs) {
 
 	function mouseMove(mouse) {
 		if (mouseMode === NONE) return;
-		console.log('MOVE')
 		config.shouldChartUpdate = true;
 		config.shouldControlUpdate = true;
 
-		const norm = control.normalizeForCanvas(mouse.newX);
+		const norm = control.normalizeForControl(mouse.newX);
+		const normOld = control.normalizeForControl(mouse.x);
+		const diff = (norm - normOld);
+
+		const newRangeStart = oldRange[0] + diff;
+		const newRangeEnd = oldRange[1] + diff;
 		if (mouseMode === DRAG_START) {
-			if (norm >= 0) {
-				control.updateRange(0, norm);
+			if (newRangeStart > 0) {
+				control.updateRange(newRangeStart, oldRange[1]);
 			} else {
-				control.updateRange(0, 0);
+				control.updateRange(0, oldRange[1]);
 			}
 		} else if (mouseMode === DRAG_END) {
-			if (norm <= 1) {
-				control.updateRange(1, norm);
+			if (newRangeEnd < 1) {
+				control.updateRange(oldRange[0], newRangeEnd);
 			} else {
-				control.updateRange(1, 1);
+				control.updateRange(oldRange[0], 1);
 			}
 		} else {
-			const normOld = control.normalizeForCanvas(mouse.x);
-			const diff = (norm - normOld);
-			if (oldRange[0] + diff >= 0 && oldRange[1] + diff <= 1) {
-				control.updateFullRange(oldRange[0] + diff, oldRange[1] + diff);
+			if (newRangeStart >= 0 && newRangeEnd <= 1) {
+				control.updateRange(newRangeStart, newRangeEnd);
 			} else {
-				if (diff + oldRange[1] > 1) {
+				if (newRangeEnd > 1) {
 					let diff = 1 - oldRange[1];
-					control.updateFullRange(oldRange[0] + diff, oldRange[1] + diff);
-				} else if (diff + oldRange[0] < 0) {
+					control.updateRange(oldRange[0] + diff, oldRange[1] + diff);
+				} else if (newRangeStart < 0) {
 					let diff = 0 - oldRange[0];
-					control.updateFullRange(oldRange[0] + diff, oldRange[1] + diff);
+					control.updateRange(oldRange[0] + diff, oldRange[1] + diff);
 				}
 			}
 		}
@@ -85,7 +87,6 @@ export default function ControlsDrawer(drawersArgs) {
 		const clickRangeStart = clickRangeBase;
 		const clickRangeEnd = clickRangeBase;
 
-		console.log('DOWN')
 		config.shouldChartUpdate = true;
 		config.shouldControlUpdate = true;
 

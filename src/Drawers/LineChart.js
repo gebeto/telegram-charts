@@ -16,9 +16,9 @@ export default function LineChartDrawer(drawersArgs) {
 	const XAxisSize = 10 * PIXEL_RATIO;
 
 	const drawYAxisLayer = YAxisLayerDrawer(drawersArgs);
-	const drawXAxisLayer = drawingWithRange(control.range, XAxisLayerDrawer(drawersArgs));
-	const drawLineLayer  = drawingWithRange(control.range, LineRangeLayerDrawer(drawersArgs));
-	const drawDotsLayer  = drawingWithRange(control.range, DotsLayerDrawer(drawersArgs));
+	const drawXAxisLayer = drawingWithRange(control, XAxisLayerDrawer(drawersArgs));
+	const drawLineLayer  = drawingWithRange(control, LineRangeLayerDrawer(drawersArgs));
+	const drawDotsLayer  = drawingWithRange(control, DotsLayerDrawer(drawersArgs));
 
 	return function drawChart(x, y, width, height) {
 		// ctx.save();

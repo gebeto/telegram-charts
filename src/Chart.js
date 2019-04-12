@@ -48,7 +48,7 @@ function Chart(data, index) {
 	let bounds = {
 		left: 0,
 		top: 0,
-	}, w, h, normCanvas;
+	}, w, h, normControl;
 
 	const container = createElement(document.body, 'div', 'chart');
 	const title = createElement(container, 'h2', 'chart__title');
@@ -68,6 +68,8 @@ function Chart(data, index) {
 		}),
 		maxHeight: 0,
 		minHeight: 0,
+		startIndex: 0,
+		endIndex: 0,
 	};
 
 	// Init data
@@ -78,6 +80,7 @@ function Chart(data, index) {
 	const [[xkey, ...xs], ...ys] = data.columns;
 	config.maxHeight = flatMax(ys);
 	config.minHeight = flatMin(ys);
+	config.endIndex = xs.length;
 
 	config.popup = createPopup(container, data, ys);
 
@@ -93,39 +96,38 @@ function Chart(data, index) {
 	function updateNorms() {
 		const rStart = control.range[0];
 		const rEnd = control.range[1];
-		const startIndexRaw = rStart * xs.length - 2 * PIXEL_RATIO;
+		const startIndexRaw = rStart * xs.length - 1;
 		const startIndex = startIndexRaw < 0 ? 0 : Math.floor(startIndexRaw);
-		const endIndexRaw = rEnd * xs.length + 3 * PIXEL_RATIO;
+		const endIndexRaw = rEnd * xs.length;
 		const endIndex = endIndexRaw > xs.length ? xs.length : Math.round(endIndexRaw);
 
-		config.minHeight = flatMinRange(ys, startIndex, endIndex - 1 * PIXEL_RATIO);
-		config.maxHeight = flatMaxRange(ys, startIndex, endIndex - 1 * PIXEL_RATIO);
+		config.minHeight = flatMinRange(ys, startIndex, endIndex);
+		config.maxHeight = flatMaxRange(ys, startIndex, endIndex);
 		norm.Y.updateDelta(config.minHeight, config.maxHeight);
 
-		config.startIndex = startIndex;
-		config.endIndex = endIndex;
+		// config.startIndex = startIndex;
+		// config.endIndex = endIndex;
 	};
 
 
 	const control = {
+		oldRange: [0.1, 0.9],
 		range: [0.1, 0.9],
-		updateRange: function updateRange(index, value) {
-			const secIndex = index === 0 ? 1 : 0;
-
-			if (index === 0 && value < control.range[1] - 0.1) {
-				control.range[index] = value;
-			} else if (index === 1 && value > control.range[0] + 0.1) {
-				control.range[index] = value;
+		count: 0,
+		scale: 0,
+		updateRange: function updateRange(start, end) {
+			const scale = end - start;
+			const count = xs.length * scale;
+			if (count > 5) {
+				control.count = Math.round(count);
+				control.scale = scale;
+				control.range[0] = start;
+				control.range[1] = end;
+				updateNorms();
 			}
-			updateNorms();
 		},
-		updateFullRange: function updateFullRange(start, end) {
-			control.range[0] = start;
-			control.range[1] = end;
-			updateNorms();
-		},
-		normalizeForCanvas: function normalizeForCanvas(xPos) {
-			return normCanvas(xPos);
+		normalizeForControl: function normalizeForControl(xPos) {
+			return normControl(xPos);
 		},
 	};
 
@@ -146,7 +148,7 @@ function Chart(data, index) {
 		if (w !== newWidth || h !== newHeight) {
 			config.shouldChartUpdate = true;
 			config.shouldControlUpdate = true;
-			normCanvas = normalizeMemo(SIDES_PADDING2, bounds.width - SIDES_PADDING2);
+			normControl = normalizeMemo(SIDES_PADDING2, bounds.width - SIDES_PADDING2);
 			w = canvas.width = bounds.width;
 			h = canvas.height = CANVAS_HEIGHT;
 		}
@@ -181,10 +183,10 @@ function Chart(data, index) {
 	window.addEventListener('resize', updateBounds);
 	updateBounds();
 	updateNorms()
+	control.updateRange(control.range[0], control.range[1])
 	render()
 
 	return {
-		updateRange: control.updateRange,
 		render: render,
 		control: control,
 	};
