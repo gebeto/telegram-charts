@@ -46,6 +46,7 @@ export default function ControlsDrawer(drawersArgs) {
 
 	function mouseMove(mouse) {
 		if (mouseMode === NONE) return;
+		console.log('MOVE')
 		config.shouldChartUpdate = true;
 		config.shouldControlUpdate = true;
 
@@ -83,6 +84,10 @@ export default function ControlsDrawer(drawersArgs) {
 		const clickRange = clickRangeBase;
 		const clickRangeStart = clickRangeBase;
 		const clickRangeEnd = clickRangeBase;
+
+		console.log('DOWN')
+		config.shouldChartUpdate = true;
+		config.shouldControlUpdate = true;
 
 		const boundsStart = controlsBounds.start;
 		const boundsEnd = controlsBounds.end;

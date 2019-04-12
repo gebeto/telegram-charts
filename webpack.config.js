@@ -26,12 +26,4 @@ module.exports = {
 			}
 		]
 	},
-
-	// devServer: {
-	// 	contentBase: path.join(__dirname, 'dist'),
-	// 	watchContentBase: true,
-
-	// 	compress: true,
-	// 	port: 5000,
-	// },
 }

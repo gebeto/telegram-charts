@@ -37,7 +37,6 @@ function dateString(timestamp) {
 	return {
 		dayString: `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`,
 		dateString: `${DAY_NAMES[date.getDay()]}, ${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`,
-		// Sat, 20 Apr 2019
 		date: date,
 		timestamp: timestamp,
 	};
@@ -94,13 +93,13 @@ function Chart(data, index) {
 	function updateNorms() {
 		const rStart = control.range[0];
 		const rEnd = control.range[1];
-		const startIndexRaw = rStart * xs.length - 1;
+		const startIndexRaw = rStart * xs.length - 2 * PIXEL_RATIO;
 		const startIndex = startIndexRaw < 0 ? 0 : Math.floor(startIndexRaw);
-		const endIndexRaw = rEnd * xs.length + 3;
+		const endIndexRaw = rEnd * xs.length + 3 * PIXEL_RATIO;
 		const endIndex = endIndexRaw > xs.length ? xs.length : Math.round(endIndexRaw);
 
-		config.minHeight = flatMinRange(ys, startIndex, endIndex - 1);
-		config.maxHeight = flatMaxRange(ys, startIndex, endIndex - 1);
+		config.minHeight = flatMinRange(ys, startIndex, endIndex - 1 * PIXEL_RATIO);
+		config.maxHeight = flatMaxRange(ys, startIndex, endIndex - 1 * PIXEL_RATIO);
 		norm.Y.updateDelta(config.minHeight, config.maxHeight);
 
 		config.startIndex = startIndex;
