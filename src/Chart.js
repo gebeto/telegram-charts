@@ -37,10 +37,31 @@ function dateString(timestamp) {
 	return {
 		dayString: `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`,
 		dateString: `${DAY_NAMES[date.getDay()]}, ${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`,
+		dateStringTitle: `${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`,
 		date: date,
 		timestamp: timestamp,
 	};
 };
+
+
+function createHeader(container, titleText, subtitleText) {
+	const header = createElement(container, 'div', 'chart__header');
+
+	const title = createElement(header, 'h2', 'chart__header-title');
+	title.textContent = titleText;
+
+	const subtitle = createElement(header, 'h3', 'chart__header-sub-title');
+	subtitle.textContent = subtitleText;
+
+	return {
+		setTitle(titleText) {
+			title.textContent = titleText;
+		},
+		setSubtitle(subtitleText) {
+			subtitle.textContent = subtitleText;
+		}
+	}
+}
 
 
 function Chart(data, index) {
@@ -51,8 +72,7 @@ function Chart(data, index) {
 	}, w, h, normControl;
 
 	const container = createElement(document.body, 'div', 'chart');
-	const title = createElement(container, 'h2', 'chart__title');
-	title.textContent = `Chart #${index + 1}`;
+	const header = createHeader(container, `Chart #${index + 1}`, 'Hello world!');
 	const canvas = createElement(container, 'canvas', 'chart__canvas');
 	const ctx = canvas.getContext('2d');
 
@@ -81,6 +101,7 @@ function Chart(data, index) {
 	config.maxHeight = flatMax(ys);
 	config.minHeight = flatMin(ys);
 	config.endIndex = xs.length;
+	header.setSubtitle(`${xs[0].dateStringTitle} - ${xs[xs.length - 1].dateStringTitle}`)
 
 	config.popup = createPopup(container, data, ys);
 
