@@ -11,6 +11,8 @@ export const PI2 = Math.PI * 2;
 export const FONT = `${11 * PIXEL_RATIO}px Arial`;
 export const AXIS_TEXT_WIDTH = 40 * PIXEL_RATIO;
 export const AXIS_TEXT_WIDTH_DIV_2 = AXIS_TEXT_WIDTH / 2;
+export const AXIS_TEXT_WIDTH_MUL_2 = AXIS_TEXT_WIDTH * 2;
+export const AXIS_TEXT_WIDTH_MUL_3 = AXIS_TEXT_WIDTH * 3;
 
 export const BOTTOM_PADDING = 7 * PIXEL_RATIO;
 export const CONTROL_HEIGHT = 43 * PIXEL_RATIO;

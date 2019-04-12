@@ -133,7 +133,8 @@ function Chart(data, index) {
 
 	const control = {
 		// range: [0.1, 0.9],
-		range: [0.93, 1.0],
+		// range: [0.93, 1.0],
+		range: [0.0, 0.1],
 		count: 0,
 		scale: 0,
 		updateRange: function updateRange(start, end) {
