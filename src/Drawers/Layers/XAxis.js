@@ -20,7 +20,6 @@ export default function XAxis({ config, control, ctx, norm, colors }) {
 
 	return function drawXAxis(items, x, y, width, height) {
 		const count = items.length;
-		console.log(count);
 
 		ctx.save();
 
@@ -38,7 +37,7 @@ export default function XAxis({ config, control, ctx, norm, colors }) {
 		const currRaw = diff * width;
 		const curr = Math.floor(currRaw);
 		const step = currRaw / AXIS_TEXT_WIDTH;
-		console.log(diff, curr, currRaw, step);
+		// console.log(diff, curr, currRaw, step);
 
 		for (let i = 0; i < count; i += 1) {
 			// const X = x + AXIS_TEXT_WIDTH_DIV_2 + norm.X(i) * (width - AXIS_TEXT_WIDTH);

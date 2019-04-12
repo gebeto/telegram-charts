@@ -198,7 +198,6 @@ function Chart(data, index) {
 		}
 	}
 
-
 	window.addEventListener('resize', updateBounds);
 	control.updateRange(control.range[0], control.range[1])
 	updateBounds();
