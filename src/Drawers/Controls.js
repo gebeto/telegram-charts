@@ -21,7 +21,6 @@ export default function ControlsDrawer(drawersArgs) {
 	let xe = 0;
 	let ww = xe - xs;
 
-	// const pipaH = 36 * PIXEL_RATIO;
 	const pipaH = 10 * PIXEL_RATIO;
 	const pipaH2 = pipaH / 2;
 
