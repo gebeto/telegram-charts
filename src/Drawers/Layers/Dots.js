@@ -30,7 +30,9 @@ export default function Dots({ config, ctx, norm, colors }) {
 		// if ((!onCanvas && onCanvasOld) || e.target.tagName === 'BUTTON') {
 		if ((!onCanvas && onCanvasOld) || e.target.tagName === 'BUTTON') {
 			// console.log('NOT ON CANVAS');
-			config.shouldChartUpdate = true;
+			if (currentIndex !== -1) {
+				config.shouldChartUpdate = true;
+			}
 			currentIndex = -1;
 			popup.hide();
 		}
