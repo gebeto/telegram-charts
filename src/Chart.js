@@ -115,7 +115,7 @@ function Chart(data, index) {
 	};
 
 	function updateNorms() {
-		console.log('update norms');
+		// console.log('update norms');
 		const rStart = control.range[0];
 		const rEnd = control.range[1];
 		const startIndexRaw = rStart * xAxis.length;
@@ -132,7 +132,7 @@ function Chart(data, index) {
 
 		const min = uninf(flatMin(yyy));
 		const max = uninf(flatMax(yyy));
-		console.log(min, max)
+		// console.log(min, max)
 		controlNorm.Y.updateDelta(min, max);
 
 		header.setSubtitle(`${xAxis[startIndex].dateStringTitle} - ${xAxis[endIndex - 1].dateStringTitle}`)
@@ -194,14 +194,14 @@ function Chart(data, index) {
 		if (isActiveAnimations) config.shouldChartUpdate = true;
 
 		if (config.shouldChartUpdate) {
-			console.log('update chart', index);
+			// console.log('update chart', index);
 			config.shouldChartUpdate = false;
 			ctx.clearRect(0, 0, w, CANVAS_HEIGHT - CONTROL_HEIGHT);
 			drawChart(SIDES_PADDING, 0, w - SIDES_PADDING2, CANVAS_HEIGHT - CONTROL_HEIGHT);
 		}
 
 		if (config.shouldControlUpdate) {
-			console.log('update control', index);
+			// console.log('update control', index);
 			config.shouldControlUpdate = false;
 			ctx.clearRect(0, CANVAS_HEIGHT - CONTROL_HEIGHT, w, CONTROL_HEIGHT);
 			drawControl(SIDES_PADDING, CANVAS_HEIGHT - CONTROL_HEIGHT, w - SIDES_PADDING2, CONTROL_HEIGHT);

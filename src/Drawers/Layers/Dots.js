@@ -27,15 +27,16 @@ export default function Dots({ config, ctx, norm, colors }) {
 		onCanvasOld = onCanvas;
 		// onCanvas = ctx.canvas.parentNode.contains(e.target);
 		onCanvas = ctx.canvas.parentNode.contains(e.target);
-		// console.log('onCanvas', onCanvas, config.index);
+		// if ((!onCanvas && onCanvasOld) || e.target.tagName === 'BUTTON') {
 		if ((!onCanvas && onCanvasOld) || e.target.tagName === 'BUTTON') {
-		// if (!onCanvas && onCanvasOld) {
+			// console.log('NOT ON CANVAS');
 			config.shouldChartUpdate = true;
 			currentIndex = -1;
 			popup.hide();
 		}
+
+		// if (!onCanvas) return;
 		if (e.target !== ctx.canvas) return;
-		// console.log('OVERT', config.index);
 
 		if (onCanvas || (onCanvasOld === true && onCanvas === false)) {
 			currentIndexOld = currentIndex;
