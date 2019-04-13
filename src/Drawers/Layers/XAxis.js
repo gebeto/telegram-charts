@@ -37,13 +37,32 @@ export default function XAxis({ config, control, ctx, norm, colors }) {
 		const currRaw = width * diff;
 		const curr = Math.floor(currRaw);
 		const step = Math.ceil(AXIS_TEXT_WIDTH / currRaw);
-		// let realStep = 1 << (step-1);
+		const nextStep = step + 1;
 		let realStep = steps[step];
-		console.log(curr, currRaw, step, realStep);
+		let nextRealStep = steps[nextStep];
+
+		const breakPoint = currRaw;
+		const currItemWidth = AXIS_TEXT_WIDTH / step;
+		const fade = breakPoint / currItemWidth;
+		const alpha = (fade - 1) * (step);
+// 		console.log(`Step: ${step}
+// curr: ${currItemWidth}
+// breakPoint: ${breakPoint}
+// alpha: ${alpha}`);
 
 		for (let i = 0; i < count; i += realStep) {
 			// const X = x + AXIS_TEXT_WIDTH_DIV_2 + norm.X(i) * (width - AXIS_TEXT_WIDTH);
 			// const Y = y + X_AXIS_HEIGHT_DIV_2;
+			const ost = i % nextRealStep;
+			if (ost === 0) {
+				ctx.globalAlpha = 0.5;
+			} else {
+				if (alpha > 0.5) {
+					ctx.globalAlpha = 0.5;
+				} else {
+					ctx.globalAlpha = alpha;
+				}
+			}
 
 			const X = x + norm.X(i) * width;
 			const Y = y + X_AXIS_HEIGHT_DIV_2;
