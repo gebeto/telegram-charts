@@ -224,6 +224,10 @@ function Chart(data, index) {
 	return {
 		render: render,
 		control: control,
+		update() {
+			config.shouldChartUpdate = true;
+			config.shouldControlUpdate = true;
+		}
 	};
 }
 
