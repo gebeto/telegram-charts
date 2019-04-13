@@ -92,7 +92,7 @@ function Chart(data, index) {
 	config.endIndex = xAxis.length;
 	header.setSubtitle(`${xAxis[0].dateStringTitle} - ${xAxis[xAxis.length - 1].dateStringTitle}`)
 
-	config.popup = createPopup(container, data, ys);
+	config.popup = createPopup(container, config, data, ys);
 	const buttons = createButtons(container, config.animator, data, ys, () => updateNorms())
 	config.buttons = buttons;
 	// config.maxHeight = uninf(flatMax(buttons.filter(el => el.enabled).map(el => el.data)));

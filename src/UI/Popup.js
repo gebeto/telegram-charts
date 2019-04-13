@@ -21,7 +21,7 @@ export function createPopupItem(color, title, value) {
 }
 
 
-export function createPopup(container, data, ys) {
+export function createPopup(container, config, data, ys) {
 	const popup = createElement(container, 'div', 'chart__popup');
 
 	const publicInterface = {
@@ -33,7 +33,8 @@ export function createPopup(container, data, ys) {
 			`;
 		},
 		show(index) {
-			const curr = ys.map(y => createPopupItem(data.colors[y[0]], data.names[y[0]], y[index + 1]));
+			const curr = ys.filter(y => config.buttons[y[0]].enabled).map(y => createPopupItem(data.colors[y[0]], data.names[y[0]], y[index + 1]));
+			if (!curr.length) return;
 			popup.innerHTML = `
 				${createPopupHeader(data.columns[0][index + 1].dateString)}
 				${curr.join('')}

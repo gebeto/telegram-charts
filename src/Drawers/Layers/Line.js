@@ -20,7 +20,7 @@ export default function Line({ config, control, ctx, norm, colors }, opts = {}) 
 		}
 		ctx.lineWidth = lineWidth;
 		ctx.strokeStyle = colors[key];
-		ctx.globalAlpha = opacity / 2;
+		ctx.globalAlpha = opacity;
 		ctx.lineJoin = 'round';
 		ctx.stroke();
 		ctx.restore();

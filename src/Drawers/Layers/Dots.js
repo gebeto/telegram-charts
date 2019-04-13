@@ -43,7 +43,6 @@ export default function Dots({ config, ctx, norm, colors }) {
 			}
 		}
 
-
 		if (currentIndexOld !== currentIndex) {
 			config.shouldChartUpdate = true;
 
@@ -64,6 +63,9 @@ export default function Dots({ config, ctx, norm, colors }) {
 		currentY = y;
 
 		const [key, ...items] = data;
+		const opacity = config.buttons[key].opacity.value;
+		if (!opacity) return;
+
 		count = items.length;
 		chunkSize = norm.X(1) * width;
 		const chunkSizeDiv2 = chunkSize / 2;
