@@ -93,15 +93,20 @@ function Chart(data, index) {
 	header.setSubtitle(`${xAxis[0].dateStringTitle} - ${xAxis[xAxis.length - 1].dateStringTitle}`)
 
 	config.popup = createPopup(container, data, ys);
-	const buttons = createButtons(container, data, ys, () => updateNorms())
-	console.log(buttons);
-	config.maxHeight = uninf(flatMax(buttons.filter(el => el.enabled).map(el => el.data)));
-	config.minHeight = uninf(flatMin(buttons.filter(el => el.enabled).map(el => el.data)));
+	const buttons = createButtons(container, config.animator, data, ys, () => updateNorms())
+	config.buttons = buttons;
+	// config.maxHeight = uninf(flatMax(buttons.filter(el => el.enabled).map(el => el.data)));
+	// config.minHeight = uninf(flatMin(buttons.filter(el => el.enabled).map(el => el.data)));
+	const filtered = ys.filter(y => buttons[y[0]].enabled)
+	config.minHeight = uninf(flatMin(filtered));
+	config.maxHeight = uninf(flatMax(filtered));
+	console.log(config.minHeight, config.maxHeight)
 
 	const norm = {
 		X: normalizeMemo(0, xAxis.length - 1),
 		Y: normalizeAnimated(config.animator, config.minHeight, config.maxHeight)
 	};
+
 	const controlNorm = {
 		X: normalizeMemo(0, xAxis.length - 1),
 		Y: normalizeAnimated(config.animator, config.minHeight, config.maxHeight)
@@ -115,7 +120,9 @@ function Chart(data, index) {
 		const endIndexRaw = rEnd * xAxis.length;
 		const endIndex = endIndexRaw > xAxis.length ? xAxis.length : Math.ceil(endIndexRaw);
 
-		const yyy = buttons.filter(el => el.enabled).map(el => el.data);
+		const yyy = ys.filter(y => buttons[y[0]].enabled);
+		// config.minHeight = uninf(flatMinRange(yyy, startIndex, endIndex));
+		// config.maxHeight = uninf(flatMaxRange(yyy, startIndex, endIndex));
 		config.minHeight = uninf(flatMinRange(yyy, startIndex, endIndex));
 		config.maxHeight = uninf(flatMaxRange(yyy, startIndex, endIndex));
 		norm.Y.updateDelta(config.minHeight, config.maxHeight);
@@ -197,7 +204,7 @@ function Chart(data, index) {
 	updateNorms();
 
 	const drawersArgs = {
-		config, control, ctx, norm, colors, ys, xAxis,
+		config, control, ctx, norm, colors, ys, buttons, xAxis,
 		canvasBounds: bounds,
 	};
 	const drawChart = LineChartDrawer(drawersArgs);

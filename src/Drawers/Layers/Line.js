@@ -6,6 +6,9 @@ export default function Line({ config, control, ctx, norm, colors }, opts = {}) 
 
 	return function drawLine(data, x, y, width, height) {
 		const [key, ...items] = data;
+		const opacity = config.buttons[key].opacity.value;
+		if (!opacity) return;
+
 		const count = items.length;
 		ctx.save();
 		ctx.beginPath();
@@ -17,6 +20,7 @@ export default function Line({ config, control, ctx, norm, colors }, opts = {}) 
 		}
 		ctx.lineWidth = lineWidth;
 		ctx.strokeStyle = colors[key];
+		ctx.globalAlpha = opacity / 2;
 		ctx.lineJoin = 'round';
 		ctx.stroke();
 		ctx.restore();

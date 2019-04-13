@@ -99,7 +99,6 @@ export default function ControlsDrawer(drawersArgs) {
 		const boundsEnd = controlsBounds.end;
 		const inControl = mouse.y > boundsStart.y && mouse.y < boundsStart.y + boundsStart.height;
 		if (!inControl) return;
-		// console.log('DOWN', config.index);
 		oldRange = [control.range[0], control.range[1]];
 		if (mouse.newX > boundsStart.x - clickRangeStart && mouse.newX < boundsStart.x + boundsStart.width && mouse.newY > boundsStart.y - clickRangeStart && mouse.newY < boundsStart.y + boundsStart.height + clickRangeStart) {
 			mouseMode = DRAG_START;
