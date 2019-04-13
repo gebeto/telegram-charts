@@ -30,11 +30,12 @@ export function createButtonFor(container, data, y, handler) {
 	return state;
 }
 
-export function createButtons(container, data, ysAxis) {
+export function createButtons(container, data, ysAxis, handler) {
 	const buttonsWrapper = createElement(container, 'div', 'chart__buttons');
 
 	const buttons = ysAxis.map(y => createButtonFor(buttonsWrapper, data, y, (enabled) => {
 		console.log(y[0], enabled);
+		handler && handler()
 	}));
 
 	return buttons;

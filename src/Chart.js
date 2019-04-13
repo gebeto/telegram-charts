@@ -35,7 +35,7 @@ import {
 	// flatMax,
 } from './utils';
 
-
+const uninf = (val) => (val === Infinity || val === -Infinity) ? 0 : val;
 export const flatMax = (arr) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1))));
 export const flatMin = (arr) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1))));
 export const flatMaxRange = (arr, start, end) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1 + start, 1 + end))));
@@ -89,13 +89,14 @@ function Chart(data, index) {
 
 	data.columns[0] = data.columns[0].map(el => el.length ? el : dateString(el));
 	const [[xAxisKey, ...xAxis], ...ys] = data.columns;
-	config.maxHeight = flatMax(ys);
-	config.minHeight = flatMin(ys);
 	config.endIndex = xAxis.length;
 	header.setSubtitle(`${xAxis[0].dateStringTitle} - ${xAxis[xAxis.length - 1].dateStringTitle}`)
 
 	config.popup = createPopup(container, data, ys);
-	const buttons = createButtons(container, data, ys)
+	const buttons = createButtons(container, data, ys, () => updateNorms())
+	console.log(buttons);
+	config.maxHeight = uninf(flatMax(buttons.filter(el => el.enabled).map(el => el.data)));
+	config.minHeight = uninf(flatMin(buttons.filter(el => el.enabled).map(el => el.data)));
 
 	const norm = {
 		X: normalizeMemo(0, xAxis.length - 1),
@@ -114,8 +115,9 @@ function Chart(data, index) {
 		const endIndexRaw = rEnd * xAxis.length;
 		const endIndex = endIndexRaw > xAxis.length ? xAxis.length : Math.ceil(endIndexRaw);
 
-		config.minHeight = flatMinRange(ys, startIndex, endIndex);
-		config.maxHeight = flatMaxRange(ys, startIndex, endIndex);
+		const yyy = buttons.filter(el => el.enabled).map(el => el.data);
+		config.minHeight = uninf(flatMinRange(yyy, startIndex, endIndex));
+		config.maxHeight = uninf(flatMaxRange(yyy, startIndex, endIndex));
 		norm.Y.updateDelta(config.minHeight, config.maxHeight);
 
 		header.setSubtitle(`${xAxis[startIndex].dateStringTitle} - ${xAxis[endIndex - 1].dateStringTitle}`)
