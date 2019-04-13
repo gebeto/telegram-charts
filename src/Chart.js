@@ -112,8 +112,8 @@ function Chart(data, index) {
 		Y: normalizeAnimated(config.animator, config.minHeight, config.maxHeight)
 	};
 	const controlNorm = {
-		X: normalizeMemo(0, xAxis.length),
-		Y: normalizeMemo(config.minHeight, config.maxHeight)
+		X: normalizeMemo(0, xAxis.length - 1),
+		Y: normalizeAnimated(config.animator, config.minHeight, config.maxHeight)
 	};
 
 	function updateNorms() {
