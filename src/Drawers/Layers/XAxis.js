@@ -12,11 +12,11 @@ import {
 } from '../../Globals';
 
 
-
+const steps = [0, 1, 2, 4, 4, 8, 8, 8, 8, 16, 16, 16, 16, 16, 16, 16, 16, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64];
 
 export default function XAxis({ config, control, ctx, norm, colors }) {
 	let deepness = 0;
-	const diff = norm.X(112);
+	const diff = norm.X(1);
 
 	return function drawXAxis(items, x, y, width, height) {
 		const count = items.length;
@@ -34,19 +34,21 @@ export default function XAxis({ config, control, ctx, norm, colors }) {
 		// 	ctx.fillText(items[i].dayString, x + norm.X(i) * width, y + X_AXIS_HEIGHT_DIV_2);
 		// }
 
-		const currRaw = diff * width;
+		const currRaw = width * diff;
 		const curr = Math.floor(currRaw);
-		const step = currRaw / AXIS_TEXT_WIDTH;
-		// console.log(diff, curr, currRaw, step);
+		const step = Math.ceil(AXIS_TEXT_WIDTH / currRaw);
+		// let realStep = 1 << (step-1);
+		let realStep = steps[step];
+		console.log(curr, currRaw, step, realStep);
 
-		for (let i = 0; i < count; i += 1) {
+		for (let i = 0; i < count; i += realStep) {
 			// const X = x + AXIS_TEXT_WIDTH_DIV_2 + norm.X(i) * (width - AXIS_TEXT_WIDTH);
 			// const Y = y + X_AXIS_HEIGHT_DIV_2;
 
 			const X = x + norm.X(i) * width;
 			const Y = y + X_AXIS_HEIGHT_DIV_2;
-			ctx.fillRect(X - AXIS_TEXT_WIDTH_DIV_2, Y - height / 2, AXIS_TEXT_WIDTH, height);
 
+			// ctx.fillRect(X - AXIS_TEXT_WIDTH_DIV_2, Y - height / 2, AXIS_TEXT_WIDTH, height);
 			ctx.fillText(items[i].dayString, X, Y);
 		}
 
