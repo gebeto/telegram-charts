@@ -5,7 +5,10 @@ import { createAnimator } from './Utils/Animated';
 import ControlsDrawer from './Drawers/Controls';
 import LineChartDrawer from './Drawers/LineChart';
 
-import { createPopup, createElement } from './Popup';
+import { createElement } from './UI/utils';
+import { createPopup } from './UI/Popup';
+import { createHeader } from './UI/Header';
+import { createButtons } from './UI/Buttons';
 
 
 import {
@@ -43,26 +46,6 @@ function dateString(timestamp, index, arr) {
 		timestamp: timestamp,
 	};
 };
-
-
-function createHeader(container, titleText, subtitleText) {
-	const header = createElement(container, 'div', 'chart__header');
-
-	const title = createElement(header, 'h2', 'chart__header-title');
-	title.textContent = titleText;
-
-	const subtitle = createElement(header, 'h3', 'chart__header-sub-title');
-	subtitle.textContent = subtitleText;
-
-	return {
-		setTitle(titleText) {
-			title.textContent = titleText;
-		},
-		setSubtitle(subtitleText) {
-			subtitle.textContent = subtitleText;
-		}
-	}
-}
 
 
 function Chart(data, index) {
@@ -106,6 +89,7 @@ function Chart(data, index) {
 	header.setSubtitle(`${xAxis[0].dateStringTitle} - ${xAxis[xAxis.length - 1].dateStringTitle}`)
 
 	config.popup = createPopup(container, data, ys);
+	const buttons = createButtons(container, data, ys)
 
 	const norm = {
 		X: normalizeMemo(0, xAxis.length - 1),

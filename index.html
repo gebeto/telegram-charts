@@ -101,6 +101,43 @@
 			font-weight: bold;
 		}
 
+
+		.chart__buttons {
+			padding: 0px 1em;
+			margin-top: 15px;
+		}
+
+		.chart__buttons-button {
+			font-size: 12px;
+			font-weight: 900;
+			padding: 0px 15px;
+			height: 36px;
+			border: 0;
+			box-shadow: 0;
+			background: #eee;
+			border-radius: 18px;
+			outline: none;
+			border: 2px solid red;
+
+			
+		}
+		.chart__buttons-button-icon {
+			width: 12px;
+			height: 12px;
+			padding-right: 3px;
+			transition-duration: 0.3s;
+			opacity: 1;
+		}
+
+		.chart__buttons-button:hover .chart__buttons-button-icon {
+			padding-right: 0px;
+			opacity: 0;
+			width: 0px;
+		}
+
+		.chart__buttons-button-title {
+		}
+
 		@media (max-width: 500px) {
 			body {
 				font-size: 0.8em;
