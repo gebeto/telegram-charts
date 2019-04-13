@@ -128,6 +128,7 @@ function Chart(data, index) {
 		config.maxHeight = flatMaxRange(ys, startIndex, endIndex);
 		norm.Y.updateDelta(config.minHeight, config.maxHeight);
 
+		header.setSubtitle(`${xAxis[startIndex].dateStringTitle} - ${xAxis[endIndex - 1].dateStringTitle}`)
 		// config.startIndex = startIndex;
 		// config.endIndex = endIndex;
 	};
