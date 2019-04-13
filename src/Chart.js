@@ -93,7 +93,9 @@ function Chart(data, index) {
 	header.setSubtitle(`${xAxis[0].dateStringTitle} - ${xAxis[xAxis.length - 1].dateStringTitle}`)
 
 	config.popup = createPopup(container, config, data, ys);
-	const buttons = createButtons(container, config.animator, data, ys, () => updateNorms())
+	const buttons = createButtons(container, config.animator, data, ys, () => {
+		updateNorms();
+	})
 	config.buttons = buttons;
 	// config.maxHeight = uninf(flatMax(buttons.filter(el => el.enabled).map(el => el.data)));
 	// config.minHeight = uninf(flatMin(buttons.filter(el => el.enabled).map(el => el.data)));
@@ -186,6 +188,7 @@ function Chart(data, index) {
 		if (isActiveAnimations) config.shouldChartUpdate = true;
 
 		if (config.shouldChartUpdate) {
+			console.log('update chart', index);
 			config.shouldChartUpdate = false;
 			ctx.clearRect(0, 0, w, CANVAS_HEIGHT - CONTROL_HEIGHT);
 			drawChart(SIDES_PADDING, 0, w - SIDES_PADDING2, CANVAS_HEIGHT - CONTROL_HEIGHT);

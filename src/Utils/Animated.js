@@ -2,7 +2,8 @@ import AnimationLoop from './AnimationLoop';
 
 
 export default class Animated {
-	constructor(value, duration = 300) {
+	constructor(value, duration, onAnimation) {
+		this.onAnimation = onAnimation;
 		this.fromValue = value;
 		this.toValue = value;
 		this.value = value;
@@ -20,6 +21,12 @@ export default class Animated {
 		this.startTime = AnimationLoop.time;
 		this.toValue = toValue;
 		this.fromValue = this.value;
+	}
+
+	update() {
+		const result = this._update();
+		result && this.onAnimation && this.onAnimation();
+		return result;
 	}
 
 	_update() {
@@ -40,8 +47,8 @@ export function createAnimator() {
 		active: false,
 	};
 
-	function createAnimation(value, duration) {
-		const animation = new Animated(value, duration)
+	function createAnimation(value, duration, onAnimation) {
+		const animation = new Animated(value, duration, onAnimation)
 		animations.push(animation);
 		return animation;
 	}
@@ -57,9 +64,10 @@ export function createAnimator() {
 		const count = animations.length;
 		let isActive = false;
 		for (let i = 0; i < count; i++) {
-			if (animations[i]._update()) {
-				isActive = true;
-			}
+			isActive = animations[i].update() || isActive;
+			// if (animations[i].update()) {
+			// 	isActive = true;
+			// }
 		}
 		opts.active = isActive;
 		return isActive;
