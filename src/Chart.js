@@ -121,7 +121,7 @@ function Chart(data, index) {
 		const rEnd = control.range[1];
 		const startIndexRaw = rStart * xAxis.length;
 		const startIndex = startIndexRaw < 0 ? 0 : Math.floor(startIndexRaw);
-		const endIndexRaw = rEnd * xAxis.length + 1;
+		const endIndexRaw = rEnd * xAxis.length;
 		const endIndex = endIndexRaw > xAxis.length ? xAxis.length : Math.ceil(endIndexRaw);
 
 		config.minHeight = flatMinRange(ys, startIndex, endIndex);
