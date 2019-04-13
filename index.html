@@ -108,6 +108,8 @@
 		}
 
 		.chart__buttons-button {
+			margin: 0px 4px;
+			min-width: 80px;
 			font-size: 12px;
 			font-weight: 900;
 			/*padding: 0px 15px;*/
@@ -117,13 +119,14 @@
 			height: 36px;
 			border: 0;
 			box-shadow: 0;
-			background: #eee;
+			background: red;
 			border-radius: 18px;
 			outline: none;
 			border: 2px solid red;
 			
 			position: relative;
-			transition-duration: 0.3s;
+			transition-duration: 0.2s;
+			color: #FFF;
 		}
 		.chart__buttons-button:before {
 			content: " ";
@@ -136,13 +139,14 @@
 			background-size: contain;
 			background-repeat: no-repeat;
 			background-position: center;
-			transition-duration: 0.3s;
+			transition-duration: 0.2s;
 		}
-		.chart__buttons-button:hover {
+		.chart__buttons-button.unchecked {
 			padding-left: 20px;
 			padding-right: 20px;
+			background: transparent !important;
 		}
-		.chart__buttons-button:hover:before {
+		.chart__buttons-button.unchecked:before {
 			width: 0px;
 			left: 16px;
 		}
