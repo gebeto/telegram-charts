@@ -130,8 +130,8 @@ function Chart(data, index) {
 		config.maxHeight = uninf(flatMaxRange(yyy, startIndex, endIndex));
 		norm.Y.updateDelta(config.minHeight, config.maxHeight);
 
-		const min = flatMin(yyy);
-		const max = flatMax(yyy);
+		const min = uninf(flatMin(yyy));
+		const max = uninf(flatMax(yyy));
 		console.log(min, max)
 		controlNorm.Y.updateDelta(min, max);
 
