@@ -11,7 +11,7 @@ export default function YAxis({ control, ctx, normX, normY, colors }) {
 	return function drawYAxis(min, max, x, y, width, height) {
 		const a = height / partsCount;
 		const part = (height + a/2) / partsCount;
-		const partNumber = Math.round((max - min) / partsCount);
+		const partNumber = Math.ceil((max - min) / partsCount);
 
 		ctx.save();
 		ctx.beginPath();

@@ -490,7 +490,7 @@ function TChart(container) {
             } else {
                 popup.style.display = 'block';
 
-                var newSelectI = Math.round((mouseX - previewMinX) / intervalX) + 1;
+                var newSelectI = Math.ceil((mouseX - previewMinX) / intervalX) + 1;
                 if (newSelectI < 1) newSelectI = 1;
                 if (newSelectI > xColumn.data.length - 1) newSelectI = xColumn.data.length - 1;
 

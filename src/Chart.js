@@ -119,10 +119,10 @@ function Chart(data, index) {
 	function updateNorms() {
 		const rStart = control.range[0];
 		const rEnd = control.range[1];
-		const startIndexRaw = rStart * xAxis.length - 1;
+		const startIndexRaw = rStart * xAxis.length;
 		const startIndex = startIndexRaw < 0 ? 0 : Math.floor(startIndexRaw);
-		const endIndexRaw = rEnd * xAxis.length;
-		const endIndex = endIndexRaw > xAxis.length ? xAxis.length : Math.round(endIndexRaw);
+		const endIndexRaw = rEnd * xAxis.length + 1;
+		const endIndex = endIndexRaw > xAxis.length ? xAxis.length : Math.ceil(endIndexRaw);
 
 		config.minHeight = flatMinRange(ys, startIndex, endIndex);
 		config.maxHeight = flatMaxRange(ys, startIndex, endIndex);
@@ -146,7 +146,7 @@ function Chart(data, index) {
 			const scale = end - start;
 			const count = xAxis.length * scale;
 			if (count > 5) {
-				control.count = Math.round(count);
+				control.count = Math.ceil(count);
 				control.scale = scale;
 				control.range[0] = start;
 				control.range[1] = end;

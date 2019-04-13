@@ -31,7 +31,7 @@ export default function Dots({ config, ctx, norm, colors }) {
 		if (onCanvas || (onCanvasOld === true && onCanvas === false)) {
 			currentIndexOld = currentIndex;
 			if (mouse.newY > currentY && mouse.newY < currentY + currentHeight) {
-				currentIndex = count - Math.round((currentWidth + currentX - mouse.newX) / chunkSize + 1);
+				currentIndex = count - Math.ceil((currentWidth + currentX - mouse.newX) / chunkSize + 1);
 				// popup.style.opacity = 1;
 				// popup.style.visibility = 'visible';
 				popup.show(currentIndex);
