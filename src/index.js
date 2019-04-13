@@ -5,7 +5,7 @@ import { createBar } from './UI/ChangeThemeBar';
 import { CURRENT, THEME_DAY, THEME_NIGHT } from './Globals';
 
 let charts = [];
-createBar(document.body, 'Change theme', (isDay) => {
+createBar(document.body, (isDay) => {
 	CURRENT.THEME = isDay ? THEME_DAY : THEME_NIGHT;
 	document.body.className = isDay ? 'day' : 'night';
 	charts.forEach(chart => chart.update());
