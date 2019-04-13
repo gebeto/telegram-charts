@@ -102,7 +102,7 @@ function Chart(data, index) {
 	const filtered = ys.filter(y => buttons[y[0]].enabled)
 	config.minHeight = uninf(flatMin(filtered));
 	config.maxHeight = uninf(flatMax(filtered));
-	console.log(config.minHeight, config.maxHeight)
+	// console.log(config.minHeight, config.maxHeight)
 
 	const norm = {
 		X: normalizeMemo(0, xAxis.length - 1),

@@ -1,6 +1,7 @@
 import { memo, normalize, normalizeMemo } from '../../utils';
 import {
 	FONT,
+	CURRENT,
 	SIDES_PADDING2,
 	PIXEL_RATIO,
 	X_AXIS_HEIGHT,
@@ -23,7 +24,8 @@ export default function XAxis({ config, control, ctx, norm, colors }) {
 
 		ctx.save();
 
-		ctx.fillStyle = '#182D3B'
+		// ctx.fillStyle = '#182D3B'
+		ctx.fillStyle = CURRENT.THEME.gridLines;
 		ctx.font = FONT;
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';

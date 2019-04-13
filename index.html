@@ -20,6 +20,24 @@
 			-webkit-touch-callout: none;
 		}
 
+		body.dark {
+			/*background: #1B232F;*/
+			background: #1e2734;
+			color: #FFFFFF;
+		}
+
+		.change-theme {
+			width: 100%;
+			height: 100px;
+			background: #EEE;
+			border: none;
+			outline: none;
+			border-bottom: 1px solid #DDD;
+			font-weight: 700;
+			font-size: 2em;
+			cursor: pointer;
+		}
+
 		.chart {
 			padding-top: 10px;
 			padding-bottom: 10px;
@@ -49,7 +67,7 @@
 		}
 
 		.chart__canvas {
-			background: #fff;
+			/*background: #fff;*/
 			width: 100%;
 			-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 		}
@@ -65,28 +83,37 @@
 			visibility: hidden;
 			background: #FFF;
 			padding: 8px;
+			padding-top: 0;
 			border-radius: 0.8em;
 			box-shadow: 0 0 0.8em rgba(0,0,0,0.2);
 			letter-spacing: 0.1px;
 			border-spacing: 0.3em;
 		}
+		body.dark .chart__popup {
+			/*background: #1B232F;*/
+			background: #181F2A;
+			/*background: #141b24;*/
+		}
 		.chart__popup-header {
 			display: table-row;
 			font-weight: bold;
 			height: 2em;
+			vertical-align: middle;
 		}
 		.chart__popup-header-title {
 			display: table-cell;
 			text-align: left;
 			min-width: 10em;
+			vertical-align: middle;
 		}
 		.chart__popup-header-icon {
 			display: table-cell;
 			text-align: right;
 			min-width: 3em;
+			vertical-align: middle;
 		}
 		.chart__popup-header-icon img {
-			height: 1em;
+			height: 0.8em;
 		}
 		.chart__popup-item {
 			display: table-row;

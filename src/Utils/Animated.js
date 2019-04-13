@@ -65,9 +65,6 @@ export function createAnimator() {
 		let isActive = false;
 		for (let i = 0; i < count; i++) {
 			isActive = animations[i].update() || isActive;
-			// if (animations[i].update()) {
-			// 	isActive = true;
-			// }
 		}
 		opts.active = isActive;
 		return isActive;

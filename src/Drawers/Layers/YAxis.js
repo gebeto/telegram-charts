@@ -1,6 +1,7 @@
 import {
 	Y_AXIS_TEXT_PADDING,
 	PIXEL_RATIO,
+	CURRENT,
 	FONT,
 } from '../../Globals';
 
@@ -16,7 +17,8 @@ export default function YAxis({ control, ctx, normX, normY, colors }) {
 		ctx.save();
 		ctx.beginPath();
 
-		ctx.fillStyle = '#182D3B';
+		// ctx.fillStyle = '#182D3B';
+		ctx.fillStyle = CURRENT.THEME.gridLines;
 		ctx.globalAlpha = 0.5;
 		ctx.font = FONT;
 		ctx.textBaseline = 'bottom';
@@ -28,7 +30,8 @@ export default function YAxis({ control, ctx, normX, normY, colors }) {
 
 		ctx.lineWidth = 1 * PIXEL_RATIO;
 		ctx.globalAlpha = 0.1;
-		ctx.strokeStyle = '#182D3B';
+		// ctx.strokeStyle = '#182D3B';
+		ctx.strokeStyle = CURRENT.THEME.gridLines;
 		ctx.stroke();
 		ctx.restore();
 	}

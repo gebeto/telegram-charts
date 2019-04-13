@@ -13,9 +13,9 @@ export function createPopupHeader(title) {
 
 export function createPopupItem(color, title, value) {
 	return `
-		<span class="chart__popup-item" style="color: ${color}">
+		<span class="chart__popup-item">
 			<span class="chart__popup-item-title">${title}</span>
-			<span class="chart__popup-item-value">${value}</span>
+			<span class="chart__popup-item-value" style="color: ${color}">${value}</span>
 		</span>
 	`;
 }

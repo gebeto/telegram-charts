@@ -1,5 +1,8 @@
 import AnimationLoop from './Utils/AnimationLoop';
 import Chart from './Chart';
+import { createBar } from './UI/ChangeThemeBar';
+
+createBar(document.body, 'Change theme');
 
 const item = 3;
 fetch('assets/chart_data.json').then(res => res.json()).then(ChartsData => {

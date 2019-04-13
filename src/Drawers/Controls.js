@@ -3,6 +3,7 @@ import {
 	PIXEL_RATIO,
 	SIDES_PADDING,
 	ONE,
+	CURRENT,
 } from '../Globals';
 
 const NONE = 0;
@@ -149,8 +150,8 @@ export default function ControlsDrawer(drawersArgs) {
 		// Fill unactive part
 		ctx.save();
 		ctx.globalAlpha = 0.6;
-		// ctx.fillStyle = "red";
-		ctx.fillStyle = "#E2EEF9";
+		// ctx.fillStyle = "#E2EEF9";
+		ctx.fillStyle = CURRENT.THEME.scrollBackground;
 
 		ctx.beginPath();
 		ctx.moveTo(xs - 1, y);
@@ -175,7 +176,8 @@ export default function ControlsDrawer(drawersArgs) {
 
 		// Range body
 		ctx.save();
-		ctx.fillStyle = "#C0D1E1";
+		// ctx.fillStyle = "#C0D1E1";
+		ctx.fillStyle = CURRENT.THEME.scrollSelector;
 		ctx.beginPath();
 		ctx.rect(xs, y, ww, ONE);
 		ctx.rect(xs, y + height - ONE, ww, ONE);

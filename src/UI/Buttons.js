@@ -39,7 +39,7 @@ export function createButtons(container, animator, data, ysAxis, handler) {
 
 	ysAxis.map(y => {
 		buttonsObj[y[0]] = createButtonFor(buttonsWrapper, animator, data, y, (enabled) => {
-			console.log(y[0], enabled);
+			// console.log(y[0], enabled);
 			handler && handler();
 		});
 	});

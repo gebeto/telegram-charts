@@ -22,3 +22,26 @@ export const X_AXIS_HEIGHT_DIV_2 = X_AXIS_HEIGHT / 2;
 
 export const Y_AXIS_TEXT_PADDING = 5 * PIXEL_RATIO;
 export const ONE = 1 * PIXEL_RATIO;
+
+export const THEME_DAY = {
+	background: '#FFFFFF',
+	scrollBackground: '#E2EEF9',
+	scrollSelector: '#C0D1E1',
+	gridLines: '#182D3B',
+	tooltipArrow: '#D2D5D7',
+	zoomText: '#108BE3',
+};
+
+export const THEME_NIGHT = {
+	background: '#1B232F',
+	scrollBackground: '#304259',
+	scrollSelector: '#56626D',
+	gridLines: '#FFFFFF',
+	tooltipArrow: '#D2D5D7',
+	zoomText: '#48AAF0',
+};
+
+export const CURRENT = {
+	THEME: THEME_DAY,
+	// THEME: THEME_NIGHT,
+};

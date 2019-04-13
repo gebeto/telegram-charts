@@ -1,5 +1,5 @@
 import { throttle } from '../../utils';
-import { PIXEL_RATIO, FONT, PI2 } from '../../Globals';
+import { PIXEL_RATIO, FONT, PI2, CURRENT } from '../../Globals';
 
 
 export default function Dots({ config, ctx, norm, colors }) {
@@ -24,7 +24,6 @@ export default function Dots({ config, ctx, norm, colors }) {
 
 	const handleOver = throttle((mouse, e) => {
 		// Check if mouse on canvas
-		console.log(e.path[0].tagName)
 		onCanvasOld = onCanvas;
 		onCanvas = ctx.canvas.parentNode.contains(e.target);
 		if (e.target !== ctx.canvas && onCanvas) return;
@@ -52,6 +51,8 @@ export default function Dots({ config, ctx, norm, colors }) {
 				const popupBounds = popup.element.getBoundingClientRect();
 				popup.element.style.left = `${mouse.newX / PIXEL_RATIO - popupBounds.width / 2}px`;
 			}
+
+			currentIndexOld = currentIndex;
 		}
 	}, 40);
 
@@ -74,8 +75,10 @@ export default function Dots({ config, ctx, norm, colors }) {
 
 		if (currentIndex > -1 && currentIndex < count) {
 			const X = x + norm.X(currentIndex) * width;
+			ctx.globalAlpha = opacity;
 			ctx.save();
-			ctx.strokeStyle = '#182D3B';
+			// ctx.strokeStyle = '#182D3B';
+			ctx.strokeStyle = CURRENT.THEME.gridLines;
 			ctx.lineWidth = 1;
 			ctx.globalAlpha = 0.1;
 			ctx.beginPath();
@@ -89,7 +92,8 @@ export default function Dots({ config, ctx, norm, colors }) {
 			ctx.arc(X, y + height - norm.Y(items[currentIndex]) * height, dotRadius, 0, PI2);
 			ctx.lineWidth = lineWidth;
 			ctx.strokeStyle = colors[key];
-			ctx.fillStyle = '#FFF';
+			// ctx.fillStyle = '#FFF';
+			ctx.fillStyle = CURRENT.THEME.background;
 			ctx.fill();
 			ctx.stroke();
 			ctx.restore();
