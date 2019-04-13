@@ -27,13 +27,19 @@ import {
 import {
 	normalizeAnimated,
 	normalizeMemo,
-	flatMinRange,
-	flatMaxRange,
 	normalize,
-	flatMin,
-	flatMax,
 	throttle,
+	// flatMinRange,
+	// flatMaxRange,
+	// flatMin,
+	// flatMax,
 } from './utils';
+
+
+export const flatMax = (arr) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1))));
+export const flatMin = (arr) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1))));
+export const flatMaxRange = (arr, start, end) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1 + start, 1 + end))));
+export const flatMinRange = (arr, start, end) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1 + start, 1 + end))));
 
 
 function dateString(timestamp, index, arr) {

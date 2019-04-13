@@ -1,17 +1,22 @@
 import check from './check.svg';
 import { createElement } from './utils';
 
-export function createButtonFor(container, data, key, handler) {
-	let state = true;
+export function createButtonFor(container, data, y, handler) {
+	// let enabled = true;
+	const key = y[0];
+	const state = {
+		enabled: true,
+		data: y,
+	}
 	const button = createElement(container, 'button', 'chart__buttons-button');
 	// button.textContent = 'Chart ' + data.names[key];
 	button.textContent = data.names[key];
 	button.style.background = data.colors[key];
 	button.style.borderColor = data.colors[key];
 	button.addEventListener('click', () => {
-		state = !state;
+		state.enabled = !state.enabled;
 
-		if (state === true) {
+		if (state.enabled === true) {
 			button.className = 'chart__buttons-button';
 			button.style.color = '#FFF';
 		} else {
@@ -19,29 +24,18 @@ export function createButtonFor(container, data, key, handler) {
 			button.style.color = data.colors[key];
 		}
 
-		handler && handler(state);
-	})
+		handler && handler(state.enabled);
+	});
+
+	return state;
 }
 
 export function createButtons(container, data, ysAxis) {
 	const buttonsWrapper = createElement(container, 'div', 'chart__buttons');
 
-	const buttons = ysAxis.map(y => createButtonFor(buttonsWrapper, data, y[0], (state) => {
-		console.log(y[0], state);
+	const buttons = ysAxis.map(y => createButtonFor(buttonsWrapper, data, y, (enabled) => {
+		console.log(y[0], enabled);
 	}));
 
-	// const title = createElement(header, 'h2', 'chart__header-title');
-	// title.textContent = titleText;
-
-	// const subtitle = createElement(header, 'h3', 'chart__header-sub-title');
-	// subtitle.textContent = subtitleText;
-
-	return {
-		// setTitle(titleText) {
-		// 	title.textContent = titleText;
-		// },
-		// setSubtitle(subtitleText) {
-		// 	subtitle.textContent = subtitleText;
-		// }
-	}
+	return buttons;
 }
