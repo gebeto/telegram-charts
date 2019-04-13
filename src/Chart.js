@@ -99,7 +99,7 @@ function Chart(data, index) {
 	config.buttons = buttons;
 	// config.maxHeight = uninf(flatMax(buttons.filter(el => el.enabled).map(el => el.data)));
 	// config.minHeight = uninf(flatMin(buttons.filter(el => el.enabled).map(el => el.data)));
-	const filtered = ys.filter(y => buttons[y[0]].enabled)
+	const filtered = ys.filter(y => buttons[y[0]].enabled);
 	config.minHeight = uninf(flatMin(filtered));
 	config.maxHeight = uninf(flatMax(filtered));
 	// console.log(config.minHeight, config.maxHeight)
@@ -115,6 +115,7 @@ function Chart(data, index) {
 	};
 
 	function updateNorms() {
+		console.log('update norms');
 		const rStart = control.range[0];
 		const rEnd = control.range[1];
 		const startIndexRaw = rStart * xAxis.length;
@@ -128,6 +129,11 @@ function Chart(data, index) {
 		config.minHeight = uninf(flatMinRange(yyy, startIndex, endIndex));
 		config.maxHeight = uninf(flatMaxRange(yyy, startIndex, endIndex));
 		norm.Y.updateDelta(config.minHeight, config.maxHeight);
+
+		const min = flatMin(yyy);
+		const max = flatMax(yyy);
+		console.log(min, max)
+		controlNorm.Y.updateDelta(min, max);
 
 		header.setSubtitle(`${xAxis[startIndex].dateStringTitle} - ${xAxis[endIndex - 1].dateStringTitle}`)
 		// config.startIndex = startIndex;
@@ -195,6 +201,7 @@ function Chart(data, index) {
 		}
 
 		if (config.shouldControlUpdate) {
+			console.log('update control', index);
 			config.shouldControlUpdate = false;
 			ctx.clearRect(0, CANVAS_HEIGHT - CONTROL_HEIGHT, w, CONTROL_HEIGHT);
 			drawControl(SIDES_PADDING, CANVAS_HEIGHT - CONTROL_HEIGHT, w - SIDES_PADDING2, CONTROL_HEIGHT);

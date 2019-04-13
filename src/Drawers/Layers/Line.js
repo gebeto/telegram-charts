@@ -9,6 +9,10 @@ export default function Line({ config, control, ctx, norm, colors }, opts = {}) 
 		const opacity = config.buttons[key].opacity.value;
 		if (!opacity) return;
 
+		if (opacity < 1) {
+			config.shouldControlUpdate = true;
+		}
+
 		const count = items.length;
 		ctx.save();
 		ctx.beginPath();

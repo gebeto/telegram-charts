@@ -25,9 +25,18 @@ export default function Dots({ config, ctx, norm, colors }) {
 	const handleOver = throttle((mouse, e) => {
 		// Check if mouse on canvas
 		onCanvasOld = onCanvas;
+		// onCanvas = ctx.canvas.parentNode.contains(e.target);
 		onCanvas = ctx.canvas.parentNode.contains(e.target);
-		if (e.target !== ctx.canvas && onCanvas) return;
-		
+		// console.log('onCanvas', onCanvas, config.index);
+		if ((!onCanvas && onCanvasOld) || e.target.tagName === 'BUTTON') {
+		// if (!onCanvas && onCanvasOld) {
+			config.shouldChartUpdate = true;
+			currentIndex = -1;
+			popup.hide();
+		}
+		if (e.target !== ctx.canvas) return;
+		// console.log('OVERT', config.index);
+
 		if (onCanvas || (onCanvasOld === true && onCanvas === false)) {
 			currentIndexOld = currentIndex;
 			if (mouse.newY > currentY && mouse.newY < currentY + currentHeight) {
@@ -54,7 +63,7 @@ export default function Dots({ config, ctx, norm, colors }) {
 
 			currentIndexOld = currentIndex;
 		}
-	}, 40);
+	}, 50);
 
 	config.mouse.addListener('move', handleOver);
 	config.mouse.addListener('down', handleOver);
@@ -75,7 +84,6 @@ export default function Dots({ config, ctx, norm, colors }) {
 
 		if (currentIndex > -1 && currentIndex < count) {
 			const X = x + norm.X(currentIndex) * width;
-			ctx.globalAlpha = opacity;
 			ctx.save();
 			// ctx.strokeStyle = '#182D3B';
 			ctx.strokeStyle = CURRENT.THEME.gridLines;
@@ -89,6 +97,7 @@ export default function Dots({ config, ctx, norm, colors }) {
 
 			ctx.save();
 			ctx.beginPath();
+			ctx.globalAlpha = opacity;
 			ctx.arc(X, y + height - norm.Y(items[currentIndex]) * height, dotRadius, 0, PI2);
 			ctx.lineWidth = lineWidth;
 			ctx.strokeStyle = colors[key];

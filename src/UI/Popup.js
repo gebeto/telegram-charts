@@ -27,9 +27,11 @@ export function createPopup(container, config, data, ys) {
 	const publicInterface = {
 		element: popup,
 		update(index) {
-			popup.innerHMTL = `
-				${createPopupHeader()}
-				${createPopupItem('hello', '10000')}
+			const curr = ys.filter(y => config.buttons[y[0]].enabled).map(y => createPopupItem(data.colors[y[0]], data.names[y[0]], y[index + 1]));
+			if (!curr.length) return;
+			popup.innerHTML = `
+				${createPopupHeader(data.columns[0][index + 1].dateString)}
+				${curr.join('')}
 			`;
 		},
 		show(index) {
