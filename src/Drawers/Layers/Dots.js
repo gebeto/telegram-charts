@@ -26,6 +26,8 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
 
 	let isLeft = true;
 
+	let TOUCHED = false;
+
 	const handleOver = throttle((mouse, e) => {
 		// Check if mouse on canvas container
 		onCanvasOld = onCanvas;
@@ -76,8 +78,10 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
 		}
 	}, 50);
 
-	config.mouse.addListener('move', handleOver);
-	config.mouse.addListener('down', handleOver);
+	// config.mouse.addListener('move', handleOver);
+	config.mouse.addListener('move', (mouse, e) => { TOUCHED && handleOver(mouse, e); });
+	config.mouse.addListener('down', (mouse, e) => { TOUCHED = true; handleOver(mouse, e); });
+	config.mouse.addListener('up', (mouse, e) => { TOUCHED = false; });
 
 	return function drawDots(data, x, y, width, height) {
 		currentWidth = width;
