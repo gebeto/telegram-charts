@@ -3,30 +3,27 @@ import { PIXEL_RATIO, FONT, PI2, CURRENT } from '../../Globals';
 
 
 export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
-	const mouse = config.mouse.mouse;
 	const dotRadius = 4 * PIXEL_RATIO;
 	const lineWidth = 2 * PIXEL_RATIO;
+	const mouse = config.mouse.mouse;
+	const popup = config.popup;
+	const normX1 = norm.X(1);
 
 	let currentWidth = 0;
 	let currentHeight = 0;
 	let currentX = 0;
 	let currentY = 0;
+
 	let count = 0;
-	const normX1 = norm.X(1);
 	let chunkSize = normX1 * currentWidth;
 	let chunkSizeDiv2 = chunkSize / 2;
-
 	let currentIndexOld = -1;
 	let currentIndex = -1;
-
 	let onCanvasOld = false;
 	let onCanvas = false;
-
-	const popup = config.popup;
-
 	let isLeft = true;
-
 	let TOUCHED = false;
+	
 
 	const handleOver = throttle((mouse, e) => {
 		// Check if mouse on canvas container
