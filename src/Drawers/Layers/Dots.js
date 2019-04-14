@@ -1,9 +1,14 @@
 import { throttle } from '../../utils';
-import { PIXEL_RATIO, FONT, PI2, CURRENT } from '../../Globals';
+import {
+	PI2,
+	FONT,
+	CURRENT,
+	DOT_RADIUS,
+	PIXEL_RATIO,
+} from '../../Globals';
 
 
 export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
-	const dotRadius = 4 * PIXEL_RATIO;
 	const lineWidth = 2 * PIXEL_RATIO;
 	const mouse = config.mouse.mouse;
 	const popup = config.popup;
@@ -109,7 +114,7 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
 			ctx.save();
 			ctx.beginPath();
 			ctx.globalAlpha = opacity;
-			ctx.arc(X, y + height - norm.Y(items[currentIndex]) * height, dotRadius, 0, PI2);
+			ctx.arc(X, y + height - norm.Y(items[currentIndex]) * height, DOT_RADIUS, 0, PI2);
 			ctx.lineWidth = lineWidth;
 			ctx.strokeStyle = colors[key];
 			ctx.fillStyle = CURRENT.THEME.background;

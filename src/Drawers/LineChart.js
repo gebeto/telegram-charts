@@ -2,6 +2,11 @@ import {
 	PIXEL_RATIO,
 	BOTTOM_PADDING,
 	X_AXIS_HEIGHT,
+	ONE,
+	TWO,
+	DOT_RADIUS,
+	DOT_RADIUS_DIV_2,
+	DOT_RADIUS_MUL_2,
 } from '../Globals';
 
 import LineLayerDrawer from './Layers/Line';
@@ -30,8 +35,8 @@ export default function LineChartDrawer(drawersArgs) {
 		const xRanged = x - XS / control.scale;
 		const widthRanged = width / control.scale;
 
-		const HEIGHT = height - BOTTOM_PADDING
-		const Y = y;
+		const HEIGHT = height - BOTTOM_PADDING - DOT_RADIUS_MUL_2;
+		const Y = y + DOT_RADIUS + TWO;
 
 		// Draw layers
 		drawXAxisLayer(xAxis, xRanged, y + HEIGHT - X_AXIS_HEIGHT, widthRanged, X_AXIS_HEIGHT);
