@@ -7,10 +7,9 @@ export function createButtonFor(container, animator, data, y, handler) {
 	const state = {
 		enabled: true,
 		data: y,
-		opacity: animator.createAnimation(1.1, 200),
+		opacity: animator.createAnimation(1, 300),
 	}
 	const button = createElement(container, 'button', 'chart__buttons-button');
-	// button.textContent = 'Chart ' + data.names[key];
 	button.textContent = data.names[key];
 	button.style.backgroundColor = data.colors[key];
 	button.style.borderColor = data.colors[key];
@@ -25,7 +24,7 @@ export function createButtonFor(container, animator, data, y, handler) {
 			button.style.color = data.colors[key];
 		}
 
-		state.opacity.play(state.enabled ? 1.1 : 0);
+		state.opacity.play(state.enabled ? 1 : 0);
 
 		handler && handler(state.enabled);
 	});
