@@ -97,8 +97,6 @@ function Chart(data, index) {
 		updateNorms();
 	})
 	config.buttons = buttons;
-	// config.maxHeight = uninf(flatMax(buttons.filter(el => el.enabled).map(el => el.data)));
-	// config.minHeight = uninf(flatMin(buttons.filter(el => el.enabled).map(el => el.data)));
 	const filtered = ys.filter(y => buttons[y[0]].enabled);
 	config.minHeight = uninf(flatMin(filtered));
 	config.maxHeight = uninf(flatMax(filtered));
@@ -187,14 +185,14 @@ function Chart(data, index) {
 		if (isActiveAnimations) config.shouldChartUpdate = true
 
 		if (config.shouldChartUpdate) {
-			console.log('update chart', index);
+			// console.log('update chart', index);
 			config.shouldChartUpdate = false;
 			ctx.clearRect(0, 0, w, CANVAS_HEIGHT - CONTROL_HEIGHT);
 			drawChart(SIDES_PADDING, 0, w - SIDES_PADDING2, CANVAS_HEIGHT - CONTROL_HEIGHT);
 		}
 
 		if (config.shouldControlUpdate) {
-			console.log('update control', index);
+			// console.log('update control', index);
 			config.shouldControlUpdate = false;
 			ctx.clearRect(0, CANVAS_HEIGHT - CONTROL_HEIGHT, w, CONTROL_HEIGHT);
 			drawControl(SIDES_PADDING, CANVAS_HEIGHT - CONTROL_HEIGHT, w - SIDES_PADDING2, CONTROL_HEIGHT);
