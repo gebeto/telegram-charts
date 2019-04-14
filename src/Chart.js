@@ -61,7 +61,8 @@ function Chart(data, index) {
 		top: 0,
 	}, w, h, normControl;
 
-	const container = createElement(document.body, 'div', 'chart');
+	// const container = createElement(document.body, 'div', 'chart');
+	const container = createElement(window.CONTAINER, 'div', 'chart');
 	const header = createHeader(container, `Chart #${index + 1}`, 'Hello world!');
 	const canvas = createElement(container, 'canvas', 'chart__canvas');
 	const ctx = canvas.getContext('2d');

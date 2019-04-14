@@ -67,13 +67,18 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
 			if (currentIndex !== -1) {
 				const popupBounds = popup.element.getBoundingClientRect();
 				const currentPos = (currentIndex * chunkSize + currentX) / PIXEL_RATIO;
-				if (currentPos + popupBounds.width + chunkSizeDiv2 > canvasBounds.right) {
+				console.log(currentPos + popupBounds.width, canvasBounds.width);
+				if (currentPos + popupBounds.width + chunkSizeDiv2 > canvasBounds.width) {
 					isLeft = true;
-				} else if (currentPos - popupBounds.width - chunkSizeDiv2 < canvasBounds.left) {
+				} else if (currentPos - popupBounds.width - chunkSizeDiv2 < 0) {
 					isLeft = false;
 				}
 
-				popup.element.style.left = `${currentPos + (isLeft ? -(popupBounds.width + chunkSizeDiv2) : chunkSizeDiv2)}px`;
+				if (isLeft) {
+					popup.element.style.left = `${currentPos - popupBounds.width + chunkSizeDiv2}px`;
+				} else {
+					popup.element.style.left = `${currentPos + chunkSizeDiv2}px`;
+				}
 			}
 
 			currentIndexOld = currentIndex;
