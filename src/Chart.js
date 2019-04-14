@@ -65,12 +65,13 @@ function Chart(data, index) {
 	const header = createHeader(container, `Chart #${index + 1}`, 'Hello world!');
 	const canvas = createElement(container, 'canvas', 'chart__canvas');
 	const ctx = canvas.getContext('2d');
+	const animator = createAnimator();
 
 	const config = {
 		index: index,
 		shouldChartUpdate: true,
 		shouldControlUpdate: true,
-		animator: createAnimator(),
+		animator: animator,
 		mouse: Mouse({
 			config: config,
 			canvas: canvas,
@@ -78,6 +79,8 @@ function Chart(data, index) {
 		}),
 		maxHeight: 0,
 		minHeight: 0,
+		minHeightAnim: animator.createAnimation(0, 300),
+		maxHeightAnim: animator.createAnimation(0, 300),
 		startIndex: 0,
 		endIndex: 0,
 	};
@@ -100,6 +103,8 @@ function Chart(data, index) {
 	const filtered = ys.filter(y => buttons[y[0]].enabled);
 	config.minHeight = uninf(flatMin(filtered));
 	config.maxHeight = uninf(flatMax(filtered));
+	config.minHeightAnim.play(config.minHeight);
+	config.maxHeightAnim.play(config.maxHeight);
 
 	const norm = {
 		X: normalizeMemo(0, xAxis.length - 1),
@@ -124,6 +129,8 @@ function Chart(data, index) {
 		// config.maxHeight = uninf(flatMaxRange(yyy, startIndex, endIndex));
 		config.minHeight = uninf(flatMinRange(yyy, startIndex, endIndex));
 		config.maxHeight = uninf(flatMaxRange(yyy, startIndex, endIndex));
+		config.minHeightAnim.play(config.minHeight);
+		config.maxHeightAnim.play(config.maxHeight);
 		norm.Y.updateDelta(config.minHeight, config.maxHeight);
 
 		const min = uninf(flatMin(yyy));

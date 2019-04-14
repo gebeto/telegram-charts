@@ -35,7 +35,8 @@ export default function LineChartDrawer(drawersArgs) {
 
 		// Draw layers
 		drawXAxisLayer(xAxis, xRanged, y + HEIGHT - X_AXIS_HEIGHT, widthRanged, X_AXIS_HEIGHT);
-		drawYAxisLayer(config.minHeight, config.maxHeight, x, Y, width, HEIGHT - X_AXIS_HEIGHT);
+		// drawYAxisLayer(config.minHeight, config.maxHeight, x, Y, width, HEIGHT - X_AXIS_HEIGHT);
+		drawYAxisLayer(Math.round(config.minHeightAnim.value), Math.round(config.maxHeightAnim.value), x, Y, width, HEIGHT - X_AXIS_HEIGHT);
 		for (let i = 0; i < ys.length; i++ ) {
 			drawLineLayer(ys[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		}
