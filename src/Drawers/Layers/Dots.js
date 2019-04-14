@@ -14,6 +14,7 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
 	let count = 0;
 	const normX1 = norm.X(1);
 	let chunkSize = normX1 * currentWidth;
+	let chunkSizeDiv2 = chunkSize / 2;
 
 	let currentIndexOld = -1;
 	let currentIndex = -1;
@@ -23,10 +24,11 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
 
 	const popup = config.popup;
 
+	let isLeft = true;
+
 	const handleOver = throttle((mouse, e) => {
 		// Check if mouse on canvas container
 		onCanvasOld = onCanvas;
-		// onCanvas = ctx.canvas.parentNode.contains(e.target);
 		onCanvas = (ctx.canvas === e.target || ctx.canvas.nextSibling.contains(e.target));
 		if ((!onCanvas && onCanvasOld) || e.target.tagName === 'BUTTON') {
 			if (currentIndex !== -1) {
@@ -43,7 +45,7 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
 			currentIndexOld = currentIndex;
 			if (mouse.newY > currentY && mouse.newY < currentY + currentHeight) {
 				currentIndex = count - Math.round((currentWidth + currentX - mouse.newX) / chunkSize + 1);
-				if (currentIndex < count) {
+				if (currentIndex < count && currentIndex >= 0) {
 					popup.show(currentIndex);
 				} else {
 					currentIndex = -1;
@@ -60,15 +62,14 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
 
 			if (currentIndex !== -1) {
 				const popupBounds = popup.element.getBoundingClientRect();
-				const popos = popupBounds.width / 2;
 				const currentPos = (currentIndex * chunkSize + currentX) / PIXEL_RATIO;
-				if (currentPos - popos < canvasBounds.left + 10) {
-					popup.element.style.left = `${canvasBounds.left + 10}px`;
-				} else if (currentPos + popos > canvasBounds.right - 10) {
-					popup.element.style.left = `${canvasBounds.right - popupBounds.width - 10}px`;
-				} else {
-					popup.element.style.left = `${currentPos - popupBounds.width / 2}px`;
+				if (currentPos + popupBounds.width + chunkSizeDiv2 > canvasBounds.right) {
+					isLeft = true;
+				} else if (currentPos - popupBounds.width - chunkSizeDiv2 < canvasBounds.left) {
+					isLeft = false;
 				}
+
+				popup.element.style.left = `${currentPos + (isLeft ? -(popupBounds.width + chunkSizeDiv2) : chunkSizeDiv2)}px`;
 			}
 
 			currentIndexOld = currentIndex;
@@ -90,12 +91,11 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
 
 		count = items.length;
 		chunkSize = normX1 * width;
-		const chunkSizeDiv2 = chunkSize / 2;
+		chunkSizeDiv2 = chunkSize / 2;
 
 		if (currentIndex > -1 && currentIndex < count) {
 			const X = x + norm.X(currentIndex) * width;
 			ctx.save();
-			// ctx.strokeStyle = '#182D3B';
 			ctx.strokeStyle = CURRENT.THEME.gridLines;
 			ctx.lineWidth = 1;
 			ctx.globalAlpha = 0.1;
@@ -111,7 +111,6 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
 			ctx.arc(X, y + height - norm.Y(items[currentIndex]) * height, dotRadius, 0, PI2);
 			ctx.lineWidth = lineWidth;
 			ctx.strokeStyle = colors[key];
-			// ctx.fillStyle = '#FFF';
 			ctx.fillStyle = CURRENT.THEME.background;
 			ctx.fill();
 			ctx.stroke();
