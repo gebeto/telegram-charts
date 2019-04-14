@@ -102,7 +102,6 @@ function Chart(data, index) {
 	const filtered = ys.filter(y => buttons[y[0]].enabled);
 	config.minHeight = uninf(flatMin(filtered));
 	config.maxHeight = uninf(flatMax(filtered));
-	// console.log(config.minHeight, config.maxHeight)
 
 	const norm = {
 		X: normalizeMemo(0, xAxis.length - 1),
@@ -115,7 +114,6 @@ function Chart(data, index) {
 	};
 
 	function updateNorms() {
-		// console.log('update norms');
 		const rStart = control.range[0];
 		const rEnd = control.range[1];
 		const startIndexRaw = rStart * xAxis.length;
@@ -132,8 +130,6 @@ function Chart(data, index) {
 
 		const min = uninf(flatMin(yyy));
 		const max = uninf(flatMax(yyy));
-		console.log(min, max);
-		// console.log(min, max)
 		controlNorm.Y.updateDelta(min, max);
 
 		header.setSubtitle(`${xAxis[startIndex].dateStringTitle} - ${xAxis[endIndex - 1].dateStringTitle}`)
@@ -144,10 +140,6 @@ function Chart(data, index) {
 
 	const control = {
 		range: [0.1, 0.9],
-		rangedX: 0,
-		rangedWidth: 0,
-		// range: [0.93, 1.0],
-		// range: [0.0, 0.1],
 		count: 0,
 		scale: 0,
 		updateRange: function updateRange(start, end) {

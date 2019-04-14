@@ -38,6 +38,8 @@ export default function LineChartDrawer(drawersArgs) {
 		drawYAxisLayer(config.minHeight, config.maxHeight, x, Y, width, HEIGHT - X_AXIS_HEIGHT);
 		for (let i = 0; i < ys.length; i++ ) {
 			drawLineLayer(ys[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
+		}
+		for (let i = 0; i < ys.length; i++ ) {
 			drawDotsLayer(ys[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		}
 	}

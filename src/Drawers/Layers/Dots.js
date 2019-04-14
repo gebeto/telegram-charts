@@ -2,7 +2,7 @@ import { throttle } from '../../utils';
 import { PIXEL_RATIO, FONT, PI2, CURRENT } from '../../Globals';
 
 
-export default function Dots({ config, ctx, norm, colors }) {
+export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
 	const mouse = config.mouse.mouse;
 	const dotRadius = 4 * PIXEL_RATIO;
 	const lineWidth = 2 * PIXEL_RATIO;
@@ -12,7 +12,8 @@ export default function Dots({ config, ctx, norm, colors }) {
 	let currentX = 0;
 	let currentY = 0;
 	let count = 0;
-	let chunkSize = norm.X(1) * currentWidth;
+	const normX1 = norm.X(1);
+	let chunkSize = normX1 * currentWidth;
 
 	let currentIndexOld = -1;
 	let currentIndex = -1;
@@ -23,13 +24,11 @@ export default function Dots({ config, ctx, norm, colors }) {
 	const popup = config.popup;
 
 	const handleOver = throttle((mouse, e) => {
-		// Check if mouse on canvas
+		// Check if mouse on canvas container
 		onCanvasOld = onCanvas;
 		// onCanvas = ctx.canvas.parentNode.contains(e.target);
-		onCanvas = ctx.canvas.parentNode.contains(e.target);
-		// if ((!onCanvas && onCanvasOld) || e.target.tagName === 'BUTTON') {
+		onCanvas = (ctx.canvas === e.target || ctx.canvas.nextSibling.contains(e.target));
 		if ((!onCanvas && onCanvasOld) || e.target.tagName === 'BUTTON') {
-			// console.log('NOT ON CANVAS');
 			if (currentIndex !== -1) {
 				config.shouldChartUpdate = true;
 			}
@@ -37,7 +36,7 @@ export default function Dots({ config, ctx, norm, colors }) {
 			popup.hide();
 		}
 
-		// if (!onCanvas) return;
+		if (!onCanvas) return;
 		if (e.target !== ctx.canvas) return;
 
 		if (onCanvas || (onCanvasOld === true && onCanvas === false)) {
@@ -61,7 +60,15 @@ export default function Dots({ config, ctx, norm, colors }) {
 
 			if (currentIndex !== -1) {
 				const popupBounds = popup.element.getBoundingClientRect();
-				popup.element.style.left = `${mouse.newX / PIXEL_RATIO - popupBounds.width / 2}px`;
+				const popos = popupBounds.width / 2;
+				const currentPos = (currentIndex * chunkSize + currentX) / PIXEL_RATIO;
+				if (currentPos - popos < canvasBounds.left + 10) {
+					popup.element.style.left = `${canvasBounds.left + 10}px`;
+				} else if (currentPos + popos > canvasBounds.right - 10) {
+					popup.element.style.left = `${canvasBounds.right - popupBounds.width - 10}px`;
+				} else {
+					popup.element.style.left = `${currentPos - popupBounds.width / 2}px`;
+				}
 			}
 
 			currentIndexOld = currentIndex;
@@ -82,7 +89,7 @@ export default function Dots({ config, ctx, norm, colors }) {
 		if (!opacity) return;
 
 		count = items.length;
-		chunkSize = norm.X(1) * width;
+		chunkSize = normX1 * width;
 		const chunkSizeDiv2 = chunkSize / 2;
 
 		if (currentIndex > -1 && currentIndex < count) {
