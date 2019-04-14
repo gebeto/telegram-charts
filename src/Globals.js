@@ -42,6 +42,6 @@ export const THEME_NIGHT = {
 };
 
 export const CURRENT = {
-	THEME: THEME_DAY,
-	// THEME: THEME_NIGHT,
+	// THEME: localStorage.isNight ? THEME_NIGHT : THEME_DAY,
+	THEME: THEME_NIGHT,
 };
