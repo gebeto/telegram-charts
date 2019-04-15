@@ -14,7 +14,7 @@ const DRAG_ALL = 3;
 
 export default function ControlsDrawer(drawersArgs) {
 	const { ctx, config, canvasBounds, control, ys, yAxis, xAxis } = drawersArgs;
-	const drawFillLineLayer  = FillLineLayerDrawer(drawersArgs);
+	const drawFillLineLayer = FillLineLayerDrawer(drawersArgs);
 
 	let xs = 0;
 	let xe = 0;
@@ -127,9 +127,19 @@ export default function ControlsDrawer(drawersArgs) {
 		width = width - controlWidthMul2;
 		x = x + controlWidth
 
+		const percentage = new Array(xAxis.length).fill(0);
+		for (let i = 0; i < yAxis.items.length; i++) {
+			for (let j = 0; j < yAxis.items[i].items.length; j++) {
+				percentage[j] += yAxis.items[i].items[j] * yAxis.items[i].opacity.value;
+			}
+		}
+		for (let i = 0; i < xAxis.length; i++) {
+			percentage[i] /= 100;
+		}
+
 		const stacked = new Array(xAxis.length).fill(0);
 		for (let i = 0; i < yAxis.items.length; i++) {
-			drawFillLineLayer(yAxis.items[i], stacked, x, y + 3, width, height - 6);
+			drawFillLineLayer(yAxis.items[i], stacked, percentage, x, y + 3, width, height - 6);
 		}
 
 		xs = x + width * control.range[0];

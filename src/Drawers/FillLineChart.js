@@ -46,6 +46,9 @@ export default function BarChartDrawer(drawersArgs) {
 				percentage[j] += yAxis.items[i].items[j] * yAxis.items[i].opacity.value;
 			}
 		}
+		for (let i = 0; i < xAxis.length; i++) {
+			percentage[i] /= 100;
+		}
 
 		const stacked = new Array(xAxis.length).fill(0);
 		for (let i = 0; i < yAxis.items.length; i++) {
