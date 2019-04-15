@@ -44,6 +44,29 @@ export const flatMax = (arr) => Math.max.apply(null, arr.map(singleMax));
 export const flatMinRange = (arr, start, end) => Math.min.apply(null, arr.map(set => singleMinRange(set, start, end)));
 export const flatMaxRange = (arr, start, end) => Math.max.apply(null, arr.map(set => singleMaxRange(set, start, end)));
 
+// export const flatMaxSum = (arr, start, end) => arr.map(set => singleMax(set)).reduce((sum, el) => sum + el, 0);
+// export const flatMaxSumRange = (arr, start, end) => arr.map(set => singleMaxRange(set, start, end)).reduce((sum, el) => sum + el, 0);
+
+
+const zipSum = (arr) => {
+	// console.log(arr.length);
+	const res = new Array(arr[0].length).fill(0);
+	let i, j
+	for (i = 0; i < arr.length; i++) {
+		for (j = 0; j < arr[i].length; j++) {
+			res[j] += arr[i][j];
+		}
+	}
+	return res;
+}
+
+export const flatMaxZipSum = (arr, start, end) => {
+	return arr.map(set => singleMax(set));
+};
+
+export const flatMaxZipSumRange = (arr, start, end) => {
+	return arr.map(set => singleMaxRange(set, start, end)).reduce((sum, el) => sum + el, 0);
+};
 
 
 function prepareYAxis(ys, data, config) {
@@ -80,35 +103,69 @@ function prepareYAxis(ys, data, config) {
 
 	if (!data.y_scaled) {
 		const yyy = items.filter(y => y.enabled).map(y => y.items);
-		const min = uninf(flatMin(yyy));
-		const max = uninf(flatMax(yyy));
-		const minHeight = flatMin(yyy, min, max);
-		const maxHeight = flatMax(yyy, min, max);
-		const minHeightAnim = config.animator.createAnimation(0, 300);
-		const maxHeightAnim = config.animator.createAnimation(0, 300);
-		const sharedScaling = {
-			minHeight: minHeight,
-			maxHeight: maxHeight,
-			minHeightAnim: minHeightAnim,
-			maxHeightAnim: maxHeightAnim,
-		}
+		const sharedScaling = {};
 
-		sharedScaling.normY = normalizeAnimated(config.animator, minHeight, maxHeight);
-		sharedScaling.normControlY = normalizeAnimated(config.animator, min, max),
+		if (data.stacked) {
+			const min = 0;
+			// const max = uninf(flatMaxZipSum(yyy));
+			const max = uninf(singleMax(zipSum(yyy)));
+			const minHeight = 0;
+			const maxHeight = singleMaxRange(zipSum(yyy), min, max);
+			const minHeightAnim = config.animator.createAnimation(0, 300);
+			const maxHeightAnim = config.animator.createAnimation(0, 300);
 
+			sharedScaling.minHeight = minHeight;
+			sharedScaling.maxHeight = maxHeight;
+			sharedScaling.minHeightAnim = minHeightAnim;
+			sharedScaling.maxHeightAnim = maxHeightAnim;
+			sharedScaling.normY = normalizeAnimated(config.animator, minHeight, maxHeight);
+			sharedScaling.normControlY = normalizeAnimated(config.animator, 0, max);
 
-		sharedScaling.updateMinMax = function updateMinMax(startIndex, endIndex) {
-			const yyy = items.filter(y => y.enabled).map(y => y.items);
-			sharedScaling.minHeight = uninf(flatMinRange(yyy, startIndex, endIndex));
-			sharedScaling.maxHeight = uninf(flatMaxRange(yyy, startIndex, endIndex));
-			sharedScaling.minHeightAnim.play(sharedScaling.minHeight);
-			sharedScaling.maxHeightAnim.play(sharedScaling.maxHeight);
-			sharedScaling.normY.updateDelta(sharedScaling.minHeight, sharedScaling.maxHeight);
+			sharedScaling.updateMinMax = function updateMinMax(startIndex, endIndex) {
+				const yyy = items.filter(y => y.enabled).map(y => y.items);
+				sharedScaling.minHeight = 0;
+				// sharedScaling.maxHeight = uninf(flatMaxZipSumRange(yyy, startIndex, endIndex));
+				try {
+					sharedScaling.maxHeight = uninf(singleMaxRange(zipSum(yyy), startIndex, endIndex));
+				} catch(err) { return; }
+				sharedScaling.minHeightAnim.play(sharedScaling.minHeight);
+				sharedScaling.maxHeightAnim.play(sharedScaling.maxHeight);
+				sharedScaling.normY.updateDelta(sharedScaling.minHeight, sharedScaling.maxHeight);
 
+				const min = 0;
+				// const max = uninf(flatMaxZipSum(yyy));
+				const max = uninf(singleMax(zipSum(yyy)));
+				sharedScaling.normControlY.updateDelta(min, max);
+			};
+		} else {
 			const min = uninf(flatMin(yyy));
 			const max = uninf(flatMax(yyy));
-			sharedScaling.normControlY.updateDelta(min, max);
+			const minHeight = flatMin(yyy, min, max);
+			const maxHeight = flatMax(yyy, min, max);
+			const minHeightAnim = config.animator.createAnimation(0, 300);
+			const maxHeightAnim = config.animator.createAnimation(0, 300);
+
+			sharedScaling.minHeight = minHeight;
+			sharedScaling.maxHeight = maxHeight;
+			sharedScaling.minHeightAnim = minHeightAnim;
+			sharedScaling.maxHeightAnim = maxHeightAnim;
+			sharedScaling.normY = normalizeAnimated(config.animator, minHeight, maxHeight);
+			sharedScaling.normControlY = normalizeAnimated(config.animator, min, max);
+
+			sharedScaling.updateMinMax = function updateMinMax(startIndex, endIndex) {
+				const yyy = items.filter(y => y.enabled).map(y => y.items);
+				sharedScaling.minHeight = uninf(flatMinRange(yyy, startIndex, endIndex));
+				sharedScaling.maxHeight = uninf(flatMaxRange(yyy, startIndex, endIndex));
+				sharedScaling.minHeightAnim.play(sharedScaling.minHeight);
+				sharedScaling.maxHeightAnim.play(sharedScaling.maxHeight);
+				sharedScaling.normY.updateDelta(sharedScaling.minHeight, sharedScaling.maxHeight);
+
+				const min = uninf(flatMin(yyy));
+				const max = uninf(flatMax(yyy));
+				sharedScaling.normControlY.updateDelta(min, max);
+			}
 		}
+
 		items.forEach(item => { item.scaling = sharedScaling; })
 	}
 
@@ -195,7 +252,8 @@ function Chart(OPTS, data, index) {
 
 
 	const control = {
-		range: [0.1, 0.9],
+		// range: [0.1, 0.9],
+		range: [0.7, 1.0],
 		count: 0,
 		scale: 0,
 		updateRange: function updateRange(start, end) {

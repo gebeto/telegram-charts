@@ -180,6 +180,16 @@ body.night .chart__popup {
 	padding-right: 20px;
 	background: transparent !important;
 }
+.chart__buttons-button.error {
+	animation: wiggle 0.14s cubic-bezier(.36,.07,.19,.97) both;	
+}
+@keyframes wiggle {
+   0% { transform: rotate(0deg); }
+   20% { transform: rotate(5deg); }
+   60% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}
+
 .chart__buttons-button.unchecked:before {
 	width: 0px;
 	left: 16px;

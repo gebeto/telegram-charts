@@ -42,8 +42,9 @@ export default function BarChartDrawer(drawersArgs) {
 		// Draw layers
 		drawXAxisLayer(xAxis, xRanged, y + HEIGHT - X_AXIS_HEIGHT, widthRanged, X_AXIS_HEIGHT);
 		drawYAxisLayer(yAxis.items[0], x, Y, width, HEIGHT - X_AXIS_HEIGHT, true);
-		for (let i = 0; i < yAxis.items.length; i++ ) {
-			drawBarLayer(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
+		const stacked = new Array(xAxis.length).fill(0);
+		for (let i = 0; i < yAxis.items.length; i++) {
+			drawBarLayer(yAxis.items[i], stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		}
 	}
 }
