@@ -110,7 +110,7 @@ export default function BarDots({ canvasBounds, config, ctx, norm, colors, ys, n
 			ctx.save();
 			ctx.strokeStyle = CURRENT.THEME.gridLines;
 			ctx.lineWidth = 1;
-			ctx.globalAlpha = 0.1;
+			ctx.globalAlpha = 0.2;
 			ctx.beginPath();
 			// ctx.rect(X, y, chunkSize, height)
 			ctx.rect(X, y + height, chunkSize, -(normY(stacked[currentIndex]) * height));
