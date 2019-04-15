@@ -10,6 +10,12 @@ body {
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-webkit-touch-callout: none;
+
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+p {
+	padding: 0px 10px;
 }
 
 body.night {

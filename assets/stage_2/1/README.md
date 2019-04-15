@@ -4,6 +4,7 @@
  > Bonus goal:
  >
  > A line chart with 2 lines that zooms into another line chart with 2 lines (Screenshot 2), as shown on the first video below.
+ > [Video 1](https://t.me/contest/61)
 
 Day                        |  Night
 :-------------------------:|:-------------------------:
