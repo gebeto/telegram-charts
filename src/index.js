@@ -16,11 +16,11 @@ createBar(window.CONTAINER, (isDay) => {
 });
 
 const item = 3;
-fetch('assets/chart_data.json').then(res => res.json()).then(ChartsData => {
-// fetch('assets/stage_2_data/2/overview.json').then(res => res.json()).then(ChartsData => {
-	// charts = [ChartsData].map((data, index) => {
+// fetch('assets/chart_data.json').then(res => res.json()).then(ChartsData => {
+fetch('assets/stage_2_data/2/overview.json').then(res => res.json()).then(ChartsData => {
+	charts = [ChartsData].map((data, index) => {
 	// charts = ChartsData.slice(item, item + 1).map((data, index) => {
-	charts = ChartsData.map((data, index) => {
+	// charts = ChartsData.map((data, index) => {
 		const chart = Chart(data, index);
 		return chart;
 	});

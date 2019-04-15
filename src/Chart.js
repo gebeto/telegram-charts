@@ -47,9 +47,6 @@ export const flatMaxRange = (arr, start, end) => Math.max.apply(null, arr.map(se
 
 
 function prepareYAxis(ys, data, config) {
-	// const normY = 
-	// y_scaled
-
 	const items = ys.map(y => {
 		const opacity = config.animator.createAnimation(1, 300);
 
@@ -81,9 +78,7 @@ function prepareYAxis(ys, data, config) {
 		return item;
 	});
 
-	if (data.y_scaled) {
-	} else {
-		console.log('y scale')
+	if (!data.y_scaled) {
 		const yyy = items.filter(y => y.enabled).map(y => y.items);
 		const min = uninf(flatMin(yyy));
 		const max = uninf(flatMax(yyy));
@@ -184,23 +179,7 @@ function Chart(data, index) {
 		updateNorms();
 	})
 	config.buttons = buttons;
-	// const filtered = yAxis.items.filter(y => y.enabled);
-	// config.minHeight = uninf(flatMin(filtered));
-	// config.maxHeight = uninf(flatMax(filtered));
-	// config.minHeightAnim.play(config.minHeight);
-	// config.maxHeightAnim.play(config.maxHeight);
-	// yAxis.forEach(y => y.updateMinMax(startIndex, endIndex));
-
-	const norm = {
-		X: normalizeMemo(0, xAxis.length - 1),
-		Y: normalizeAnimated(config.animator, config.minHeight, config.maxHeight)
-	};
-
-	const controlNorm = {
-		X: normalizeMemo(0, xAxis.length - 1),
-		// Y: normalizeAnimated(config.animator, config.minHeight, config.maxHeight)
-		Y: normalizeAnimated(config.animator, 0, 100)
-	};
+	const norm = { X: normalizeMemo(0, xAxis.length - 1) };
 
 	function updateNorms() {
 		const rStart = control.range[0];

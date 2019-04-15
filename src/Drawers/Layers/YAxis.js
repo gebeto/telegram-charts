@@ -10,7 +10,10 @@ export default function YAxis({ control, ctx, normX, normY, colors }, opts = {})
 	const partsCount = 6;
 	const textAlign = opts.textAlign || 'left';
 	
-	return function drawYAxis(min, max, x, y, width, height) {
+	return function drawYAxis(data, x, y, width, height, drawLine) {
+		const min = Math.round(data.scaling.minHeightAnim.value);
+		const max = Math.round(data.scaling.maxHeightAnim.value);
+		const opacity = data.opacity.value;
 		const a = height / partsCount;
 		const part = (height + a/2) / partsCount;
 		const partNumber = Math.ceil((max - min) / partsCount);
@@ -20,12 +23,13 @@ export default function YAxis({ control, ctx, normX, normY, colors }, opts = {})
 
 		// ctx.fillStyle = '#182D3B';
 		ctx.fillStyle = CURRENT.THEME.gridLines;
-		ctx.globalAlpha = 0.5;
+		// ctx.globalAlpha = 0.5;
+		ctx.globalAlpha = opacity / 2;
 		ctx.font = FONT;
 		ctx.textBaseline = 'bottom';
 		ctx.textAlign = textAlign;
 		for (let i = 0; i < partsCount; i++) {
-			if (opts.drawLine) {
+			if (drawLine) {
 				ctx.moveTo(x, y + height - i * part);
 				ctx.lineTo(x + width, y + height - i * part);
 			}
@@ -33,10 +37,12 @@ export default function YAxis({ control, ctx, normX, normY, colors }, opts = {})
 		}
 
 		ctx.lineWidth = 1 * PIXEL_RATIO;
-		ctx.globalAlpha = 0.1;
-		// ctx.strokeStyle = '#182D3B';
-		ctx.strokeStyle = CURRENT.THEME.gridLines;
-		ctx.stroke();
+		if (drawLine) {
+			ctx.globalAlpha = 0.1;
+			// ctx.strokeStyle = '#182D3B';
+			ctx.strokeStyle = CURRENT.THEME.gridLines;
+			ctx.stroke();
+		}
 		ctx.restore();
 	}
 }

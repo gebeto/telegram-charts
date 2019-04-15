@@ -22,12 +22,10 @@ export default function DualLineChartDrawer(drawersArgs) {
 
 	const drawLeftYAxisLayer = YAxisLayerDrawer(drawersArgs, {
 		textAlign: 'left',
-		drawLine: true,
 	});
 
 	const drawRightYAxisLayer = YAxisLayerDrawer(drawersArgs, {
 		textAlign: 'right',
-		drawLine: false,
 	});
 
 	const drawXAxisLayer = XAxisLayerDrawer(drawersArgs);
@@ -52,8 +50,16 @@ export default function DualLineChartDrawer(drawersArgs) {
 
 		// drawLeftYAxisLayer(Math.round(config.minHeightAnim.value), Math.round(config.maxHeightAnim.value), x, Y, width, HEIGHT - X_AXIS_HEIGHT);
 		// drawRightYAxisLayer(Math.round(config.minHeightAnim.value), Math.round(config.maxHeightAnim.value), x + width, Y, width, HEIGHT - X_AXIS_HEIGHT);
-		drawLeftYAxisLayer(Math.round(yAxis.items[0].scaling.minHeightAnim.value), Math.round(yAxis.items[0].scaling.maxHeightAnim.value), x, Y, width, HEIGHT - X_AXIS_HEIGHT);
-		drawRightYAxisLayer(Math.round(yAxis.items[1].scaling.minHeightAnim.value), Math.round(yAxis.items[1].scaling.maxHeightAnim.value), x + width, Y, width, HEIGHT - X_AXIS_HEIGHT);
+		let drawYLine = true;
+		if (yAxis.items[0].enabled) {
+			// drawLeftYAxisLayer(Math.round(yAxis.items[0].scaling.minHeightAnim.value), Math.round(yAxis.items[0].scaling.maxHeightAnim.value), x, Y, width, HEIGHT - X_AXIS_HEIGHT, drawYLine);
+			drawLeftYAxisLayer(yAxis.items[0], x, Y, width, HEIGHT - X_AXIS_HEIGHT, drawYLine);
+			drawYLine = false;
+		}
+		if (yAxis.items[1].enabled) {
+			drawRightYAxisLayer(yAxis.items[1], x + width, Y, -width, HEIGHT - X_AXIS_HEIGHT, drawYLine);
+			drawYLine = false;
+		}
 
 		for (let i = 0; i < yAxis.items.length; i++ ) {
 			drawLineLayer(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
