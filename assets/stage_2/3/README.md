@@ -7,5 +7,5 @@
 
 Day                        |  Night
 :-------------------------:|:-------------------------:
-![alt text](../JS_5.png)   |  ![alt text](../JS_5_Night.png)
-![alt text](../JS_6.png)   |  ![alt text](../JS_6_Night.png)
+![alt text](../images/JS_5.png)   |  ![alt text](../images/JS_5_Night.png)
+![alt text](../images/JS_6.png)   |  ![alt text](../images/JS_6_Night.png)

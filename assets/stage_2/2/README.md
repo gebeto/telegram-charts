@@ -8,5 +8,5 @@
 
 Day                        |  Night
 :-------------------------:|:-------------------------:
-![alt text](../JS_3.png)   |  ![alt text](../JS_3_Night.png)
-![alt text](../JS_2.png)   |  ![alt text](../JS_2_Night.png)
+![alt text](../images/JS_3.png)   |  ![alt text](../images/JS_3_Night.png)
+![alt text](../images/JS_2.png)   |  ![alt text](../images/JS_2_Night.png)

@@ -8,6 +8,6 @@
 
 Day                        |  Night
 :-------------------------:|:-------------------------:
-![alt text](../JS_9.png)   |  ![alt text](../JS_9_Night.png)
-![alt text](../JS_10.png)   |  ![alt text](../JS_10_Night.png)
-![alt text](../JS_11.png)   |  ![alt text](../JS_11_Night.png)
+![alt text](../images/JS_9.png)   |  ![alt text](../images/JS_9_Night.png)
+![alt text](../images/JS_10.png)   |  ![alt text](../images/JS_10_Night.png)
+![alt text](../images/JS_11.png)   |  ![alt text](../images/JS_11_Night.png)
