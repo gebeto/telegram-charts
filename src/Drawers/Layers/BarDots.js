@@ -8,7 +8,7 @@ import {
 } from '../../Globals';
 
 
-export default function Dots({ canvasBounds, config, ctx, norm, colors, ys, normYKey }) {
+export default function BarDots({ canvasBounds, config, ctx, norm, colors, ys, normYKey }) {
 	const lineWidth = 2 * PIXEL_RATIO;
 	const mouse = config.mouse.mouse;
 	const popup = config.popup;
@@ -48,7 +48,7 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys, norm
 		if (onCanvas || (onCanvasOld === true && onCanvas === false)) {
 			currentIndexOld = currentIndex;
 			if (mouse.newY > currentY && mouse.newY < currentY + currentHeight) {
-				currentIndex = count - Math.round((currentWidth + currentX - mouse.newX) / chunkSize + 1);
+				currentIndex = count - Math.ceil((currentWidth + currentX - mouse.newX) / chunkSize + 1);
 				if (currentIndex < count && currentIndex >= 0) {
 					popup.show(currentIndex);
 				} else {
@@ -67,16 +67,16 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys, norm
 			if (currentIndex !== -1) {
 				const popupBounds = popup.element.getBoundingClientRect();
 				const currentPos = (currentIndex * chunkSize + currentX) / PIXEL_RATIO;
-				if (currentPos - popupBounds.width - DOT_RADIUS < 0) {
+				if (currentPos - popupBounds.width - chunkSize < 0) {
 					isLeft = false;
-				} else if (currentPos + popupBounds.width + DOT_RADIUS > canvasBounds.width / PIXEL_RATIO) {
+				} else if (currentPos + popupBounds.width + chunkSize > canvasBounds.width / PIXEL_RATIO) {
 					isLeft = true;
 				}
 
 				if (isLeft) {
-					popup.element.style.left = `${currentPos - popupBounds.width - DOT_RADIUS}px`;
+					popup.element.style.left = `${currentPos - popupBounds.width - chunkSize}px`;
 				} else {
-					popup.element.style.left = `${currentPos + DOT_RADIUS}px`;
+					popup.element.style.left = `${currentPos + chunkSize}px`;
 				}
 			}
 
@@ -89,7 +89,7 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys, norm
 	config.mouse.addListener('down', (mouse, e) => { TOUCHED = true; handleOver(mouse, e); });
 	config.mouse.addListener('up', (mouse, e) => { TOUCHED = false; });
 
-	return function drawDots(data, x, y, width, height) {
+	return function drawBarDots(data, stacked, x, y, width, height) {
 		currentWidth = width;
 		currentHeight = height;
 		currentX = x;
@@ -111,21 +111,22 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys, norm
 			ctx.lineWidth = 1;
 			ctx.globalAlpha = 0.1;
 			ctx.beginPath();
-			ctx.moveTo(X, y);
-			ctx.lineTo(X, y + height);
+			ctx.rect(X, y, chunkSize, height)
+			// ctx.moveTo(X, y);
+			// ctx.lineTo(X, y + height);
 			ctx.stroke();
 			ctx.restore();
 
-			ctx.save();
-			ctx.beginPath();
-			ctx.globalAlpha = currOpacity;
-			ctx.arc(X, y + height - normY(items[currentIndex]) * height, DOT_RADIUS, 0, PI2);
-			ctx.lineWidth = lineWidth;
-			ctx.strokeStyle = colors[key];
-			ctx.fillStyle = CURRENT.THEME.background;
-			ctx.fill();
-			ctx.stroke();
-			ctx.restore();
+			// ctx.save();
+			// ctx.beginPath();
+			// ctx.globalAlpha = currOpacity;
+			// ctx.arc(X, y + height - normY(items[currentIndex]) * height, DOT_RADIUS, 0, PI2);
+			// ctx.lineWidth = lineWidth;
+			// ctx.strokeStyle = colors[key];
+			// ctx.fillStyle = CURRENT.THEME.background;
+			// ctx.fill();
+			// ctx.stroke();
+			// ctx.restore();
 		}
 	}
 }

@@ -17,13 +17,13 @@ export default function Bar({ config, control, ctx, norm, colors, normYKey, yAxi
 		const count = items.length;
 		ctx.save();
 		ctx.beginPath();
-		for (let i = 1; i < count; i++) {
+		for (let i = 0; i < count; i++) {
 			stacked[i] += items[i] * copacity;
 			const chunk = chunkSize * width;
-			const X = x + chunk * i - chunk;
+			const X = x + chunk * i;
 			const Y = y + height - normY(stacked[i]) * height;
 			const HEIGHT = normY(items[i]) * height * copacity;
-			ctx.rect(X, Y, chunk, HEIGHT > 0 ? HEIGHT : 0);
+			ctx.rect(X, Y, chunk - chunkSize, HEIGHT > 0 ? HEIGHT : 0);
 		}
 		// ctx.globalAlpha = copacity;
 		ctx.fillStyle = colors[key]

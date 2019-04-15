@@ -27,18 +27,18 @@ export function createPopup(container, config, data, ys) {
 	const publicInterface = {
 		element: popup,
 		update(index) {
-			const curr = ys.items.filter(y => y.enabled).map(y => createPopupItem(data.colors[y.key], data.names[y.key], y.items[index + 1]));
+			const curr = ys.items.filter(y => y.enabled).map(y => createPopupItem(data.colors[y.key], data.names[y.key], y.items[index]));
 			if (!curr.length) return;
 			popup.innerHTML = `
-				${createPopupHeader(data.columns[0][index + 1].dateString)}
+				${createPopupHeader(data.columns[0][index].dateString)}
 				${curr.join('')}
 			`;
 		},
 		show(index) {
-			const curr = ys.items.filter(y => y.enabled).map(y => createPopupItem(data.colors[y.key], data.names[y.key], y.items[index + 1]));
+			const curr = ys.items.filter(y => y.enabled).map(y => createPopupItem(data.colors[y.key], data.names[y.key], y.items[index]));
 			if (!curr.length) return;
 			popup.innerHTML = `
-				${createPopupHeader(data.columns[0][index + 1].dateString)}
+				${createPopupHeader(data.columns[0][index].dateString)}
 				${curr.join('')}
 			`;
 			popup.style.opacity = 1;
