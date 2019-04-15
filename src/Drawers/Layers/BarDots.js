@@ -21,7 +21,7 @@ export default function BarDots({ canvasBounds, config, ctx, norm, colors, ys, n
 
 	let count = 0;
 	let chunkSize = normX1 * currentWidth;
-	// let chunkSizeDiv2 = chunkSize / 2;
+	let chunkSizeDiv2 = chunkSize / 2;
 	let currentIndexOld = -1;
 	let currentIndex = -1;
 	let onCanvasOld = false;
@@ -48,7 +48,7 @@ export default function BarDots({ canvasBounds, config, ctx, norm, colors, ys, n
 		if (onCanvas || (onCanvasOld === true && onCanvas === false)) {
 			currentIndexOld = currentIndex;
 			if (mouse.newY > currentY && mouse.newY < currentY + currentHeight) {
-				currentIndex = count - Math.ceil((currentWidth + currentX - mouse.newX) / chunkSize + 1);
+				currentIndex = count - Math.ceil((currentWidth + currentX - mouse.newX) / chunkSize);
 				if (currentIndex < count && currentIndex >= 0) {
 					popup.show(currentIndex);
 				} else {
@@ -67,16 +67,16 @@ export default function BarDots({ canvasBounds, config, ctx, norm, colors, ys, n
 			if (currentIndex !== -1) {
 				const popupBounds = popup.element.getBoundingClientRect();
 				const currentPos = (currentIndex * chunkSize + currentX) / PIXEL_RATIO;
-				if (currentPos - popupBounds.width - chunkSize < 0) {
+				if (currentPos - popupBounds.width - chunkSize - chunkSizeDiv2 < 0) {
 					isLeft = false;
-				} else if (currentPos + popupBounds.width + chunkSize > canvasBounds.width / PIXEL_RATIO) {
+				} else if (currentPos + popupBounds.width + chunkSize + chunkSizeDiv2 > canvasBounds.width / PIXEL_RATIO) {
 					isLeft = true;
 				}
 
 				if (isLeft) {
-					popup.element.style.left = `${currentPos - popupBounds.width - chunkSize}px`;
+					popup.element.style.left = `${currentPos - popupBounds.width - chunkSizeDiv2}px`;
 				} else {
-					popup.element.style.left = `${currentPos + chunkSize}px`;
+					popup.element.style.left = `${currentPos + chunkSize + chunkSizeDiv2}px`;
 				}
 			}
 
@@ -99,21 +99,26 @@ export default function BarDots({ canvasBounds, config, ctx, norm, colors, ys, n
 		const normY = data.scaling[normYKey];
 		const currOpacity = opacity.value;
 		if (!currOpacity) return;
+		const WIDTH = width - chunkSize;
 
 		count = items.length;
-		chunkSize = normX1 * width;
-		// chunkSizeDiv2 = chunkSize / 2;
+		chunkSize = normX1 * WIDTH;
+		chunkSizeDiv2 = chunkSize / 2;
 
 		if (currentIndex > -1 && currentIndex < count) {
-			const X = x + norm.X(currentIndex) * width;
+			const X = x + norm.X(currentIndex) * WIDTH;
 			ctx.save();
 			ctx.strokeStyle = CURRENT.THEME.gridLines;
 			ctx.lineWidth = 1;
 			ctx.globalAlpha = 0.1;
 			ctx.beginPath();
-			ctx.rect(X, y, chunkSize, height)
+			// ctx.rect(X, y, chunkSize, height)
+			ctx.rect(X, y + height, chunkSize, -(normY(stacked[currentIndex]) * height));
 			// ctx.moveTo(X, y);
 			// ctx.lineTo(X, y + height);
+			ctx.fillStyle = CURRENT.THEME.gridLines;
+			// ctx.globalCompositeOperation = 'hard-light';
+			ctx.fill();
 			ctx.stroke();
 			ctx.restore();
 

@@ -271,6 +271,7 @@ function Chart(OPTS, data, index) {
 		updateNorms();
 	})
 	config.buttons = buttons;
+
 	const norm = { X: normalizeMemo(0, xAxis.length - 1) };
 
 	function updateNorms() {

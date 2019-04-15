@@ -45,8 +45,8 @@ export default function BarChartDrawer(drawersArgs) {
 		const stacked = new Array(xAxis.length).fill(0);
 		for (let i = 0; i < yAxis.items.length; i++) {
 			drawBarLayer(yAxis.items[i], stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
-			drawBarDotsLayer(yAxis.items[i], stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		}
+		drawBarDotsLayer(yAxis.items[0], stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		
 		drawXAxisLayer(xAxis, xRanged, y + HEIGHT - X_AXIS_HEIGHT, widthRanged, X_AXIS_HEIGHT);
 		drawYAxisLayer(yAxis.items[0], x, Y, width, HEIGHT - X_AXIS_HEIGHT, true);
