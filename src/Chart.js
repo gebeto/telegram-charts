@@ -106,37 +106,74 @@ function prepareYAxis(ys, data, config) {
 		const sharedScaling = {};
 
 		if (data.stacked) {
-			const min = 0;
-			// const max = uninf(flatMaxZipSum(yyy));
-			const max = uninf(singleMax(zipSum(yyy)));
-			const minHeight = 0;
-			const maxHeight = singleMaxRange(zipSum(yyy), min, max);
-			const minHeightAnim = config.animator.createAnimation(0, 300);
-			const maxHeightAnim = config.animator.createAnimation(0, 300);
+			// STACKED
+			if (data.percentage) {
+				// PERCENTAGE
+				const min = 0;
+				const max = uninf(singleMax(zipSum(yyy)));
+				const minHeight = 0;
+				const maxHeight = 100;
+				const minHeightAnim = config.animator.createAnimation(0, 300);
+				const maxHeightAnim = config.animator.createAnimation(0, 300);
 
-			sharedScaling.minHeight = minHeight;
-			sharedScaling.maxHeight = maxHeight;
-			sharedScaling.minHeightAnim = minHeightAnim;
-			sharedScaling.maxHeightAnim = maxHeightAnim;
-			sharedScaling.normY = normalizeAnimated(config.animator, minHeight, maxHeight);
-			sharedScaling.normControlY = normalizeAnimated(config.animator, 0, max);
+				sharedScaling.minHeight = minHeight;
+				sharedScaling.maxHeight = maxHeight;
+				sharedScaling.minHeightAnim = minHeightAnim;
+				sharedScaling.maxHeightAnim = maxHeightAnim;
+				sharedScaling.normY = normalizeAnimated(config.animator, minHeight, maxHeight);
+				sharedScaling.normControlY = normalizeAnimated(config.animator, 0, max);
 
-			sharedScaling.updateMinMax = function updateMinMax(startIndex, endIndex) {
-				const yyy = items.filter(y => y.enabled).map(y => y.items);
-				sharedScaling.minHeight = 0;
-				// sharedScaling.maxHeight = uninf(flatMaxZipSumRange(yyy, startIndex, endIndex));
-				try {
-					sharedScaling.maxHeight = uninf(singleMaxRange(zipSum(yyy), startIndex, endIndex));
-				} catch(err) { return; }
-				sharedScaling.minHeightAnim.play(sharedScaling.minHeight);
-				sharedScaling.maxHeightAnim.play(sharedScaling.maxHeight);
-				sharedScaling.normY.updateDelta(sharedScaling.minHeight, sharedScaling.maxHeight);
+				sharedScaling.updateMinMax = function updateMinMax(startIndex, endIndex) {
+					const yyy = items.filter(y => y.enabled).map(y => y.items);
+					sharedScaling.minHeight = 0;
+					// sharedScaling.maxHeight = uninf(flatMaxZipSumRange(yyy, startIndex, endIndex));
+					try {
+						sharedScaling.maxHeight = 100;
+					} catch(err) { return; }
+					sharedScaling.minHeightAnim.play(sharedScaling.minHeight);
+					sharedScaling.maxHeightAnim.play(sharedScaling.maxHeight);
+					sharedScaling.normY.updateDelta(sharedScaling.minHeight, sharedScaling.maxHeight);
 
+					const min = 0;
+					// const max = uninf(flatMaxZipSum(yyy));
+					const max = uninf(singleMax(zipSum(yyy)));
+					sharedScaling.normControlY.updateDelta(min, max);
+				};
+
+			} else {
+				// BASE STACKED
 				const min = 0;
 				// const max = uninf(flatMaxZipSum(yyy));
 				const max = uninf(singleMax(zipSum(yyy)));
-				sharedScaling.normControlY.updateDelta(min, max);
-			};
+				const minHeight = 0;
+				const maxHeight = singleMaxRange(zipSum(yyy), min, max);
+				const minHeightAnim = config.animator.createAnimation(0, 300);
+				const maxHeightAnim = config.animator.createAnimation(0, 300);
+
+				sharedScaling.minHeight = minHeight;
+				sharedScaling.maxHeight = maxHeight;
+				sharedScaling.minHeightAnim = minHeightAnim;
+				sharedScaling.maxHeightAnim = maxHeightAnim;
+				sharedScaling.normY = normalizeAnimated(config.animator, minHeight, maxHeight);
+				sharedScaling.normControlY = normalizeAnimated(config.animator, 0, max);
+
+				sharedScaling.updateMinMax = function updateMinMax(startIndex, endIndex) {
+					const yyy = items.filter(y => y.enabled).map(y => y.items);
+					sharedScaling.minHeight = 0;
+					// sharedScaling.maxHeight = uninf(flatMaxZipSumRange(yyy, startIndex, endIndex));
+					try {
+						sharedScaling.maxHeight = uninf(singleMaxRange(zipSum(yyy), startIndex, endIndex));
+					} catch(err) { return; }
+					sharedScaling.minHeightAnim.play(sharedScaling.minHeight);
+					sharedScaling.maxHeightAnim.play(sharedScaling.maxHeight);
+					sharedScaling.normY.updateDelta(sharedScaling.minHeight, sharedScaling.maxHeight);
+
+					const min = 0;
+					// const max = uninf(flatMaxZipSum(yyy));
+					const max = uninf(singleMax(zipSum(yyy)));
+					sharedScaling.normControlY.updateDelta(min, max);
+				};
+			}
 		} else {
 			const min = uninf(flatMin(yyy));
 			const max = uninf(flatMax(yyy));

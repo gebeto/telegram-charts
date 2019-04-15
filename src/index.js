@@ -8,11 +8,16 @@ import {
 	THEME_NIGHT,
 } from './Globals';
 
-import ControlsDrawer from './Drawers/Controls';
-import BarControlsDrawer from './Drawers/BarControls';
-import LineChartDrawer from './Drawers/LineChart';
-import DualLineChartDrawer from './Drawers/DualLineChart';
+
 import BarChartDrawer from './Drawers/BarChart';
+import BarControlsDrawer from './Drawers/BarControls';
+
+import DualLineChartDrawer from './Drawers/DualLineChart';
+import LineChartDrawer from './Drawers/LineChart';
+import ControlsDrawer from './Drawers/Controls';
+
+import FillLineChartDrawer from './Drawers/FillLineChart';
+import FillLineControlsDrawer from './Drawers/FillLineControls';
 
 
 window.CONTAINER = document.querySelector('#container');
@@ -44,6 +49,10 @@ const fabrics = [
 		drawChartFabric: (args) => BarChartDrawer(args),
 		drawControlFabric: (args) => BarControlsDrawer(args),
 	},
+	{
+		drawChartFabric: (args) => FillLineChartDrawer(args),
+		drawControlFabric: (args) => FillLineControlsDrawer(args),
+	},
 ];
 
 
@@ -53,6 +62,7 @@ Promise.all([
 	fetch('assets/stage_2_data/2/overview.json').then(res => res.json()),
 	fetch('assets/stage_2_data/3/overview.json').then(res => res.json()),
 	fetch('assets/stage_2_data/4/overview.json').then(res => res.json()),
+	fetch('assets/stage_2_data/5/overview.json').then(res => res.json()),
 ]).then(ChartsData => {
 	charts = ChartsData.map((data, index) => {
 		const chart = Chart(fabrics[index], data, index);
