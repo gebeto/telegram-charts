@@ -12,5 +12,6 @@
     },
     "colors": {
         "y0": "#64ADED"
-    }
+    },
+    "stacked": true
 }

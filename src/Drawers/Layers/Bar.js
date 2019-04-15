@@ -22,7 +22,8 @@ export default function Bar({ config, control, ctx, norm, colors, normYKey, yAxi
 			const chunk = chunkSize * width;
 			const X = x + chunk * i - chunk;
 			const Y = y + height - normY(stacked[i]) * height;
-			ctx.rect(X, Y, chunk, normY(items[i]) * height * copacity);
+			const HEIGHT = normY(items[i]) * height * copacity;
+			ctx.rect(X, Y, chunk, HEIGHT > 0 ? HEIGHT : 0);
 		}
 		// ctx.globalAlpha = copacity;
 		ctx.fillStyle = colors[key]
