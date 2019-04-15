@@ -10,7 +10,7 @@ export default function YAxis({ control, ctx, normX, normY, colors }, opts = {})
 	const partsCount = 6;
 	const textAlign = opts.textAlign || 'left';
 	
-	return function drawYAxis(data, x, y, width, height, drawLine) {
+	return function drawYAxis(data, x, y, width, height, drawLine, separateAxis) {
 		const min = Math.round(data.scaling.minHeightAnim.value);
 		const max = Math.round(data.scaling.maxHeightAnim.value);
 		const opacity = data.opacity.value;
@@ -24,7 +24,11 @@ export default function YAxis({ control, ctx, normX, normY, colors }, opts = {})
 		// ctx.fillStyle = '#182D3B';
 		ctx.fillStyle = CURRENT.THEME.gridLines;
 		// ctx.globalAlpha = 0.5;
-		ctx.globalAlpha = opacity / 2;
+		if (separateAxis) {
+			ctx.globalAlpha = opacity / 2;
+		} else {
+			ctx.globalAlpha = 0.5;
+		}
 		ctx.font = FONT;
 		ctx.textBaseline = 'bottom';
 		ctx.textAlign = textAlign;

@@ -11,6 +11,7 @@ import {
 import ControlsDrawer from './Drawers/Controls';
 import LineChartDrawer from './Drawers/LineChart';
 import DualLineChartDrawer from './Drawers/DualLineChart';
+import BarChartDrawer from './Drawers/BarChart';
 
 
 window.CONTAINER = document.querySelector('#container');
@@ -35,28 +36,28 @@ const fabrics = [
 		drawControlFabric: (args) => ControlsDrawer(args),
 	},
 	{
-		drawChartFabric: (args) => DualLineChartDrawer(args),
+		drawChartFabric: (args) => BarChartDrawer(args),
 		drawControlFabric: (args) => ControlsDrawer(args),
 	},
 ];
 
 
 
-Promise.all([
-	fetch('assets/stage_2_data/1/overview.json').then(res => res.json()),
-	fetch('assets/stage_2_data/2/overview.json').then(res => res.json()),
-]).then(ChartsData => {
-	charts = ChartsData.map((data, index) => {
-		const chart = Chart(fabrics[index], data, index);
-		return chart;
-	});
+// Promise.all([
+// 	fetch('assets/stage_2_data/1/overview.json').then(res => res.json()),
+// 	fetch('assets/stage_2_data/2/overview.json').then(res => res.json()),
+// ]).then(ChartsData => {
+// 	charts = ChartsData.map((data, index) => {
+// 		const chart = Chart(fabrics[index], data, index);
+// 		return chart;
+// 	});
 
-	charts.forEach(chart => {
-		AnimationLoop.add(() => {
-			chart.render();
-		});
-	});
-});
+// 	charts.forEach(chart => {
+// 		AnimationLoop.add(() => {
+// 			chart.render();
+// 		});
+// 	});
+// });
 
 
 
@@ -74,9 +75,10 @@ Promise.all([
 // 	});
 // });
 
+
 // fetch('assets/stage_2_data/3/overview.json').then(res => res.json()).then(ChartsData => {
 // 	charts = [ChartsData].map((data, index) => {
-// 		const chart = Chart(fabrics[0], data, index);
+// 		const chart = Chart(fabrics[2], data, index);
 // 		return chart;
 // 	});
 
@@ -86,3 +88,16 @@ Promise.all([
 // 		});
 // 	});
 // });
+
+fetch('assets/stage_2_data/2/overview.json').then(res => res.json()).then(ChartsData => {
+	charts = [ChartsData].map((data, index) => {
+		const chart = Chart(fabrics[1], data, index);
+		return chart;
+	});
+
+	charts.forEach(chart => {
+		AnimationLoop.add(() => {
+			chart.render();
+		});
+	});
+});
