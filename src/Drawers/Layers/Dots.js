@@ -21,7 +21,7 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys, norm
 
 	let count = 0;
 	let chunkSize = normX1 * currentWidth;
-	let chunkSizeDiv2 = chunkSize / 2;
+	// let chunkSizeDiv2 = chunkSize / 2;
 	let currentIndexOld = -1;
 	let currentIndex = -1;
 	let onCanvasOld = false;
@@ -67,16 +67,16 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys, norm
 			if (currentIndex !== -1) {
 				const popupBounds = popup.element.getBoundingClientRect();
 				const currentPos = (currentIndex * chunkSize + currentX) / PIXEL_RATIO;
-				if (currentPos + popupBounds.width + chunkSizeDiv2 > canvasBounds.width) {
-					isLeft = true;
-				} else if (currentPos - popupBounds.width - chunkSizeDiv2 < 0) {
+				if (currentPos - popupBounds.width - DOT_RADIUS < 0) {
 					isLeft = false;
+				} else if (currentPos + popupBounds.width + DOT_RADIUS > canvasBounds.width / PIXEL_RATIO) {
+					isLeft = true;
 				}
 
 				if (isLeft) {
-					popup.element.style.left = `${currentPos - popupBounds.width - chunkSizeDiv2}px`;
+					popup.element.style.left = `${currentPos - popupBounds.width - DOT_RADIUS}px`;
 				} else {
-					popup.element.style.left = `${currentPos + chunkSizeDiv2}px`;
+					popup.element.style.left = `${currentPos + DOT_RADIUS}px`;
 				}
 			}
 
@@ -102,7 +102,7 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys, norm
 
 		count = items.length;
 		chunkSize = normX1 * width;
-		chunkSizeDiv2 = chunkSize / 2;
+		// chunkSizeDiv2 = chunkSize / 2;
 
 		if (currentIndex > -1 && currentIndex < count) {
 			const X = x + norm.X(currentIndex) * width;
