@@ -31,26 +31,17 @@ export default function XAxis({ config, control, ctx, norm, colors }) {
 		ctx.textBaseline = 'middle';
 		ctx.globalAlpha = 0.5;
 
-		// for (let i = S; i < E; i++) {
-		// 	ctx.fillRect(x + norm.X(i) * width - AXIS_TEXT_WIDTH_DIV_2, y, AXIS_TEXT_WIDTH, height);
-		// 	ctx.fillText(items[i].dayString, x + norm.X(i) * width, y + X_AXIS_HEIGHT_DIV_2);
-		// }
-
 		const currRaw = width * diff;
 		const curr = Math.floor(currRaw);
 		const step = Math.ceil(AXIS_TEXT_WIDTH / currRaw);
 		const nextStep = step + 1;
-		let realStep = steps[step];
-		let nextRealStep = steps[nextStep];
+		const realStep = steps[step];
+		const nextRealStep = steps[nextStep];
 
 		const breakPoint = currRaw;
 		const currItemWidth = AXIS_TEXT_WIDTH / step;
 		const fade = breakPoint / currItemWidth;
 		const alpha = (fade - 1) * (step);
-// 		console.log(`Step: ${step}
-// curr: ${currItemWidth}
-// breakPoint: ${breakPoint}
-// alpha: ${alpha}`);
 
 		for (let i = 0; i < count; i += realStep) {
 			// const X = x + AXIS_TEXT_WIDTH_DIV_2 + norm.X(i) * (width - AXIS_TEXT_WIDTH);

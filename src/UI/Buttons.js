@@ -3,11 +3,9 @@ import { createElement } from './utils';
 
 export function createButtonFor(container, animator, data, y, handler) {
 	// let enabled = true;
-	const key = y[0];
+	const key = y.key;
 	const state = {
 		enabled: true,
-		data: y,
-		opacity: animator.createAnimation(1, 300),
 	}
 	const button = createElement(container, 'button', 'chart__buttons-button');
 	button.textContent = data.names[key];
@@ -24,7 +22,8 @@ export function createButtonFor(container, animator, data, y, handler) {
 			button.style.color = data.colors[key];
 		}
 
-		state.opacity.play(state.enabled ? 1 : 0);
+		y.enabled = state.enabled;
+		y.opacity.play(state.enabled ? 1 : 0);
 
 		handler && handler(state.enabled);
 	});
@@ -36,7 +35,7 @@ export function createButtons(container, animator, data, ysAxis, handler) {
 	const buttonsWrapper = createElement(container, 'div', 'chart__buttons');
 	const buttonsObj = {};
 
-	ysAxis.map(y => {
+	ysAxis.items.map(y => {
 		buttonsObj[y[0]] = createButtonFor(buttonsWrapper, animator, data, y, (enabled) => {
 			// console.log(y[0], enabled);
 			handler && handler();

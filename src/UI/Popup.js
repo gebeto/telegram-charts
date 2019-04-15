@@ -27,7 +27,7 @@ export function createPopup(container, config, data, ys) {
 	const publicInterface = {
 		element: popup,
 		update(index) {
-			const curr = ys.filter(y => config.buttons[y[0]].enabled).map(y => createPopupItem(data.colors[y[0]], data.names[y[0]], y[index + 1]));
+			const curr = ys.items.filter(y => y.enabled).map(y => createPopupItem(data.colors[y.key], data.names[y.key], y.items[index + 1]));
 			if (!curr.length) return;
 			popup.innerHTML = `
 				${createPopupHeader(data.columns[0][index + 1].dateString)}
@@ -35,7 +35,7 @@ export function createPopup(container, config, data, ys) {
 			`;
 		},
 		show(index) {
-			const curr = ys.filter(y => config.buttons[y[0]].enabled).map(y => createPopupItem(data.colors[y[0]], data.names[y[0]], y[index + 1]));
+			const curr = ys.items.filter(y => y.enabled).map(y => createPopupItem(data.colors[y.key], data.names[y.key], y.items[index + 1]));
 			if (!curr.length) return;
 			popup.innerHTML = `
 				${createPopupHeader(data.columns[0][index + 1].dateString)}

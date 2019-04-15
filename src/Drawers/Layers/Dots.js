@@ -8,7 +8,7 @@ import {
 } from '../../Globals';
 
 
-export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
+export default function Dots({ canvasBounds, config, ctx, norm, colors, ys, normYKey }) {
 	const lineWidth = 2 * PIXEL_RATIO;
 	const mouse = config.mouse.mouse;
 	const popup = config.popup;
@@ -50,7 +50,7 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
 			if (mouse.newY > currentY && mouse.newY < currentY + currentHeight) {
 				currentIndex = count - Math.round((currentWidth + currentX - mouse.newX) / chunkSize + 1);
 				if (currentIndex < count && currentIndex >= 0) {
-					popup.show(currentIndex);
+					popup.show(currentIndex - 1);
 				} else {
 					currentIndex = -1;
 					popup.hide();
@@ -67,7 +67,6 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
 			if (currentIndex !== -1) {
 				const popupBounds = popup.element.getBoundingClientRect();
 				const currentPos = (currentIndex * chunkSize + currentX) / PIXEL_RATIO;
-				console.log(currentPos + popupBounds.width, canvasBounds.width);
 				if (currentPos + popupBounds.width + chunkSizeDiv2 > canvasBounds.width) {
 					isLeft = true;
 				} else if (currentPos - popupBounds.width - chunkSizeDiv2 < 0) {
@@ -75,7 +74,7 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
 				}
 
 				if (isLeft) {
-					popup.element.style.left = `${currentPos - popupBounds.width + chunkSizeDiv2}px`;
+					popup.element.style.left = `${currentPos - popupBounds.width - chunkSizeDiv2}px`;
 				} else {
 					popup.element.style.left = `${currentPos + chunkSizeDiv2}px`;
 				}
@@ -96,9 +95,10 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
 		currentX = x;
 		currentY = y;
 
-		const [key, ...items] = data;
-		const opacity = config.buttons[key].opacity.value;
-		if (!opacity) return;
+		const { key, items, opacity } = data;
+		const normY = data.scaling[normYKey];
+		const currOpacity = opacity.value;
+		if (!currOpacity) return;
 
 		count = items.length;
 		chunkSize = normX1 * width;
@@ -118,8 +118,8 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys }) {
 
 			ctx.save();
 			ctx.beginPath();
-			ctx.globalAlpha = opacity;
-			ctx.arc(X, y + height - norm.Y(items[currentIndex]) * height, DOT_RADIUS, 0, PI2);
+			ctx.globalAlpha = currOpacity;
+			ctx.arc(X, y + height - normY(items[currentIndex]) * height, DOT_RADIUS, 0, PI2);
 			ctx.lineWidth = lineWidth;
 			ctx.strokeStyle = colors[key];
 			ctx.fillStyle = CURRENT.THEME.background;

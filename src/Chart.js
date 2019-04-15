@@ -4,6 +4,7 @@ import { createAnimator } from './Utils/Animated';
 
 import ControlsDrawer from './Drawers/Controls';
 import LineChartDrawer from './Drawers/LineChart';
+import DualLineChartDrawer from './Drawers/DualLineChart';
 
 import { createElement } from './UI/utils';
 import { createPopup } from './UI/Popup';
@@ -29,17 +30,98 @@ import {
 	normalizeMemo,
 	normalize,
 	throttle,
-	// flatMinRange,
-	// flatMaxRange,
-	// flatMin,
-	// flatMax,
 } from './utils';
 
-const uninf = (val) => (val === Infinity || val === -Infinity) ? 0 : val;
-export const flatMax = (arr) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1))));
-export const flatMin = (arr) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1))));
-export const flatMaxRange = (arr, start, end) => Math.max.apply(null, arr.map(set => Math.max.apply(null, set.slice(1 + start, 1 + end))));
-export const flatMinRange = (arr, start, end) => Math.min.apply(null, arr.map(set => Math.min.apply(null, set.slice(1 + start, 1 + end))));
+export const uninf = (val) => (val === Infinity || val === -Infinity) ? 0 : val;
+
+export const singleMin = set => Math.min.apply(null, set);
+export const singleMax = set => Math.max.apply(null, set);
+export const singleMinRange = (set, start, end) => Math.min.apply(null, set.slice(start, 1 + end));
+export const singleMaxRange = (set, start, end) => Math.max.apply(null, set.slice(start, 1 + end));
+
+export const flatMin = (arr) => Math.min.apply(null, arr.map(singleMin));
+export const flatMax = (arr) => Math.max.apply(null, arr.map(singleMax));
+export const flatMinRange = (arr, start, end) => Math.min.apply(null, arr.map(set => singleMinRange(set, start, end)));
+export const flatMaxRange = (arr, start, end) => Math.max.apply(null, arr.map(set => singleMaxRange(set, start, end)));
+
+
+
+function prepareYAxis(ys, data, config) {
+	// const normY = 
+	// y_scaled
+
+	const items = ys.map(y => {
+		const opacity = config.animator.createAnimation(1, 300);
+
+		const item = {
+			key: y[0],
+			items: y.slice(1),
+			enabled: true,
+			opacity: opacity,
+			scaling: {},
+		};
+
+		if (data.y_scaled) {
+			item.scaling.minHeight = uninf(singleMin(item.items));
+			item.scaling.maxHeight = uninf(singleMax(item.items));
+			item.scaling.minHeightAnim = config.animator.createAnimation(0, 300);
+			item.scaling.maxHeightAnim = config.animator.createAnimation(0, 300);
+			item.scaling.normY = normalizeAnimated(config.animator, item.scaling.minHeight, item.scaling.maxHeight);
+			item.scaling.normControlY = normalizeAnimated(config.animator, item.scaling.minHeight, item.scaling.maxHeight);
+
+			item.scaling.updateMinMax = function updateMinMax(startIndex, endIndex) {
+				item.scaling.minHeight = uninf(singleMinRange(item.items, startIndex, endIndex));
+				item.scaling.maxHeight = uninf(singleMaxRange(item.items, startIndex, endIndex));
+				item.scaling.minHeightAnim.play(item.scaling.minHeight);
+				item.scaling.maxHeightAnim.play(item.scaling.maxHeight);
+				item.scaling.normY.updateDelta(item.scaling.minHeight, item.scaling.maxHeight);
+			}
+		}
+
+		return item;
+	});
+
+	if (data.y_scaled) {
+	} else {
+		console.log('y scale')
+		const yyy = items.filter(y => y.enabled).map(y => y.items);
+		const min = uninf(flatMin(yyy));
+		const max = uninf(flatMax(yyy));
+		const minHeight = flatMin(yyy, min, max);
+		const maxHeight = flatMax(yyy, min, max);
+		const minHeightAnim = config.animator.createAnimation(0, 300);
+		const maxHeightAnim = config.animator.createAnimation(0, 300);
+		const sharedScaling = {
+			minHeight: minHeight,
+			maxHeight: maxHeight,
+			minHeightAnim: minHeightAnim,
+			maxHeightAnim: maxHeightAnim,
+		}
+
+		sharedScaling.normY = normalizeAnimated(config.animator, minHeight, maxHeight);
+		sharedScaling.normControlY = normalizeAnimated(config.animator, min, max),
+
+
+		sharedScaling.updateMinMax = function updateMinMax(startIndex, endIndex) {
+			const yyy = items.filter(y => y.enabled).map(y => y.items);
+			sharedScaling.minHeight = uninf(flatMinRange(yyy, startIndex, endIndex));
+			sharedScaling.maxHeight = uninf(flatMaxRange(yyy, startIndex, endIndex));
+			sharedScaling.minHeightAnim.play(sharedScaling.minHeight);
+			sharedScaling.maxHeightAnim.play(sharedScaling.maxHeight);
+			sharedScaling.normY.updateDelta(sharedScaling.minHeight, sharedScaling.maxHeight);
+
+			const min = uninf(flatMin(yyy));
+			const max = uninf(flatMax(yyy));
+			sharedScaling.normControlY.updateDelta(min, max);
+		}
+		items.forEach(item => { item.scaling = sharedScaling; })
+	}
+
+
+	return {
+		items: items,
+	}
+}
 
 
 function dateString(timestamp, index, arr) {
@@ -93,19 +175,21 @@ function Chart(data, index) {
 
 	data.columns[0] = data.columns[0].map(el => el.length ? el : dateString(el));
 	const [[xAxisKey, ...xAxis], ...ys] = data.columns;
+	const yAxis = prepareYAxis(ys, data, config);
 	config.endIndex = xAxis.length;
 	header.setSubtitle(`${xAxis[0].dateStringTitle} - ${xAxis[xAxis.length - 1].dateStringTitle}`)
 
-	config.popup = createPopup(container, config, data, ys);
-	const buttons = createButtons(container, config.animator, data, ys, () => {
+	config.popup = createPopup(container, config, data, yAxis);
+	const buttons = createButtons(container, config.animator, data, yAxis, () => {
 		updateNorms();
 	})
 	config.buttons = buttons;
-	const filtered = ys.filter(y => buttons[y[0]].enabled);
-	config.minHeight = uninf(flatMin(filtered));
-	config.maxHeight = uninf(flatMax(filtered));
-	config.minHeightAnim.play(config.minHeight);
-	config.maxHeightAnim.play(config.maxHeight);
+	// const filtered = yAxis.items.filter(y => y.enabled);
+	// config.minHeight = uninf(flatMin(filtered));
+	// config.maxHeight = uninf(flatMax(filtered));
+	// config.minHeightAnim.play(config.minHeight);
+	// config.maxHeightAnim.play(config.maxHeight);
+	// yAxis.forEach(y => y.updateMinMax(startIndex, endIndex));
 
 	const norm = {
 		X: normalizeMemo(0, xAxis.length - 1),
@@ -114,7 +198,8 @@ function Chart(data, index) {
 
 	const controlNorm = {
 		X: normalizeMemo(0, xAxis.length - 1),
-		Y: normalizeAnimated(config.animator, config.minHeight, config.maxHeight)
+		// Y: normalizeAnimated(config.animator, config.minHeight, config.maxHeight)
+		Y: normalizeAnimated(config.animator, 0, 100)
 	};
 
 	function updateNorms() {
@@ -124,23 +209,8 @@ function Chart(data, index) {
 		const startIndex = startIndexRaw < 0 ? 0 : Math.floor(startIndexRaw);
 		const endIndexRaw = rEnd * xAxis.length;
 		const endIndex = endIndexRaw > xAxis.length ? xAxis.length : Math.ceil(endIndexRaw);
-
-		const yyy = ys.filter(y => buttons[y[0]].enabled);
-		// config.minHeight = uninf(flatMinRange(yyy, startIndex, endIndex));
-		// config.maxHeight = uninf(flatMaxRange(yyy, startIndex, endIndex));
-		config.minHeight = uninf(flatMinRange(yyy, startIndex, endIndex));
-		config.maxHeight = uninf(flatMaxRange(yyy, startIndex, endIndex));
-		config.minHeightAnim.play(config.minHeight);
-		config.maxHeightAnim.play(config.maxHeight);
-		norm.Y.updateDelta(config.minHeight, config.maxHeight);
-
-		const min = uninf(flatMin(yyy));
-		const max = uninf(flatMax(yyy));
-		controlNorm.Y.updateDelta(min, max);
-
+		yAxis.items.forEach(y => y.scaling.updateMinMax(startIndex, endIndex));
 		header.setSubtitle(`${xAxis[startIndex].dateStringTitle} - ${xAxis[endIndex - 1].dateStringTitle}`)
-		// config.startIndex = startIndex;
-		// config.endIndex = endIndex;
 	};
 
 
@@ -213,11 +283,14 @@ function Chart(data, index) {
 	updateNorms();
 
 	const drawersArgs = {
-		config, control, ctx, norm, colors, ys, buttons, xAxis,
+		config, control, ctx, norm, colors, ys, buttons, xAxis, yAxis,
 		canvasBounds: bounds,
+		normYKey: 'normY'
 	};
-	const drawChart = LineChartDrawer(drawersArgs);
-	const drawControl = ControlsDrawer({ ...drawersArgs, norm: controlNorm });
+
+	const drawChart = DualLineChartDrawer(drawersArgs);
+	const drawControl = ControlsDrawer({ ...drawersArgs, normYKey: 'normControlY' });
+
 	render()
 
 	return {

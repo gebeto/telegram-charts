@@ -13,7 +13,7 @@ const DRAG_ALL = 3;
 
 
 export default function ControlsDrawer(drawersArgs) {
-	const { ctx, config, canvasBounds, control, ys } = drawersArgs;
+	const { ctx, config, canvasBounds, control, ys, yAxis } = drawersArgs;
 	const drawLineLayer = LineLayerDrawer(drawersArgs, {
 		lineWidth: 1,
 	});
@@ -129,8 +129,8 @@ export default function ControlsDrawer(drawersArgs) {
 		width = width - controlWidthMul2;
 		x = x + controlWidth
 
-		for (let i = 0; i < ys.length; i++ ) {
-			drawLineLayer(ys[i], x, y + 3, width, height - 6);
+		for (let i = 0; i < yAxis.items.length; i++ ) {
+			drawLineLayer(yAxis.items[i], x, y + 3, width, height - 6);
 		}
 
 		xs = x + width * control.range[0];

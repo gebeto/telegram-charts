@@ -6,8 +6,9 @@ import {
 } from '../../Globals';
 
 
-export default function YAxis({ control, ctx, normX, normY, colors }) {
+export default function YAxis({ control, ctx, normX, normY, colors }, opts = {}) {
 	const partsCount = 6;
+	const textAlign = opts.textAlign || 'left';
 	
 	return function drawYAxis(min, max, x, y, width, height) {
 		const a = height / partsCount;
@@ -22,10 +23,13 @@ export default function YAxis({ control, ctx, normX, normY, colors }) {
 		ctx.globalAlpha = 0.5;
 		ctx.font = FONT;
 		ctx.textBaseline = 'bottom';
+		ctx.textAlign = textAlign;
 		for (let i = 0; i < partsCount; i++) {
-			ctx.moveTo(x, y + height - i * part);
-			ctx.lineTo(x + width, y + height - i * part);
-			ctx.fillText(min + partNumber * i, x + 3, y + height - i * part - Y_AXIS_TEXT_PADDING)
+			if (opts.drawLine) {
+				ctx.moveTo(x, y + height - i * part);
+				ctx.lineTo(x + width, y + height - i * part);
+			}
+			ctx.fillText(min + partNumber * i, x + 3, y + height - i * part - Y_AXIS_TEXT_PADDING);
 		}
 
 		ctx.lineWidth = 1 * PIXEL_RATIO;
