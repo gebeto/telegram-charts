@@ -40,6 +40,10 @@ const fabrics = [
 		drawChartFabric: (args) => BarChartDrawer(args),
 		drawControlFabric: (args) => BarControlsDrawer(args),
 	},
+	{
+		drawChartFabric: (args) => BarChartDrawer(args),
+		drawControlFabric: (args) => BarControlsDrawer(args),
+	},
 ];
 
 
@@ -48,6 +52,7 @@ Promise.all([
 	fetch('assets/stage_2_data/1/overview.json').then(res => res.json()),
 	fetch('assets/stage_2_data/2/overview.json').then(res => res.json()),
 	fetch('assets/stage_2_data/3/overview.json').then(res => res.json()),
+	fetch('assets/stage_2_data/4/overview.json').then(res => res.json()),
 ]).then(ChartsData => {
 	charts = ChartsData.map((data, index) => {
 		const chart = Chart(fabrics[index], data, index);
