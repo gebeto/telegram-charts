@@ -10,6 +10,7 @@ import {
 } from '../Globals';
 
 import FillLineLayerDrawer from './Layers/FillLine';
+import DotsLayerDrawer from './Layers/Dots';
 import YAxisLayerDrawer from './Layers/YAxis';
 import XAxisLayerDrawer from './Layers/XAxis';
 
@@ -20,7 +21,8 @@ export default function BarChartDrawer(drawersArgs) {
 	const chartPadding2 = chartPadding * 2;
 
 	const drawXAxisLayer = XAxisLayerDrawer(drawersArgs);
-	const drawFillLineLayer  = FillLineLayerDrawer(drawersArgs);
+	const drawFillLineLayer = FillLineLayerDrawer(drawersArgs);
+	const drawDotsLayer = DotsLayerDrawer(drawersArgs);
 	const drawYAxisLayer = YAxisLayerDrawer(drawersArgs, {
 		textAlign: 'left',
 	});
@@ -52,10 +54,9 @@ export default function BarChartDrawer(drawersArgs) {
 
 		const stacked = new Array(xAxis.length).fill(0);
 		for (let i = 0; i < yAxis.items.length; i++) {
-			// console.log(yAxis.items[i].items[1])
 			drawFillLineLayer(yAxis.items[i], stacked, percentage, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
+			drawDotsLayer(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		}
-		// console.groupEnd();
 		
 		drawXAxisLayer(xAxis, xRanged, y + HEIGHT - X_AXIS_HEIGHT, widthRanged, X_AXIS_HEIGHT);
 		drawYAxisLayer(yAxis.items[0], x, Y, width, HEIGHT - X_AXIS_HEIGHT, true);
