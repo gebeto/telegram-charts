@@ -10,6 +10,7 @@ export const SIDES_PADDING = 16 * PIXEL_RATIO;
 export const SIDES_PADDING2 = SIDES_PADDING * 2;
 export const CHART_HEIGHT = CANVAS_HEIGHT - CONTROL_HEIGHT;
 export const PI2 = Math.PI * 2;
+export const PI1 = Math.PI / 100;
 
 export const FONT = `${11 * PIXEL_RATIO}px Arial`;
 export const AXIS_TEXT_WIDTH = 40 * PIXEL_RATIO;

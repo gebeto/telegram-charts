@@ -12,7 +12,7 @@ const DRAG_END = 2;
 const DRAG_ALL = 3;
 
 
-export default function ControlsDrawer(drawersArgs) {
+export default function FillLineControlsDrawer(drawersArgs) {
 	const { ctx, config, canvasBounds, control, ys, yAxis, xAxis } = drawersArgs;
 	const drawFillLineLayer = FillLineLayerDrawer(drawersArgs);
 

@@ -17,6 +17,7 @@ import LineChartDrawer from './Drawers/LineChart';
 import ControlsDrawer from './Drawers/Controls';
 
 import FillLineChartDrawer from './Drawers/FillLineChart';
+import AreaChartDrawer from './Drawers/AreaChart';
 import FillLineControlsDrawer from './Drawers/FillLineControls';
 
 
@@ -53,6 +54,10 @@ const fabrics = [
 		drawChartFabric: (args) => FillLineChartDrawer(args),
 		drawControlFabric: (args) => FillLineControlsDrawer(args),
 	},
+	{
+		drawChartFabric: (args) => AreaChartDrawer(args),
+		drawControlFabric: (args) => FillLineControlsDrawer(args),
+	},
 ];
 
 
@@ -62,6 +67,7 @@ Promise.all([
 	fetch('assets/stage_2_data/2/overview.json').then(res => res.json()),
 	fetch('assets/stage_2_data/3/overview.json').then(res => res.json()),
 	fetch('assets/stage_2_data/4/overview.json').then(res => res.json()),
+	fetch('assets/stage_2_data/5/overview.json').then(res => res.json()),
 	fetch('assets/stage_2_data/5/overview.json').then(res => res.json()),
 ]).then(ChartsData => {
 	charts = ChartsData.map((data, index) => {

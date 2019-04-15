@@ -15,7 +15,7 @@ import YAxisLayerDrawer from './Layers/YAxis';
 import XAxisLayerDrawer from './Layers/XAxis';
 
 
-export default function BarChartDrawer(drawersArgs) {
+export default function AreaChartDrawer(drawersArgs) {
 	const { ctx, config, control, ys, yAxis, xAxis } = drawersArgs;
 	const chartPadding = 6 * PIXEL_RATIO;
 	const chartPadding2 = chartPadding * 2;

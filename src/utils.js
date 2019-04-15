@@ -86,3 +86,5 @@ export function memo(fun) {
 		return memos[arg];
 	}
 }
+
+export const average = (curr, item) => curr + item;
