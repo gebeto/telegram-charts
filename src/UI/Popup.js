@@ -30,7 +30,7 @@ export function createPopup(container, config, data, ys) {
 			const curr = ys.items.filter(y => y.enabled).map(y => createPopupItem(data.colors[y.key], data.names[y.key], y.items[index]));
 			if (!curr.length) return;
 			popup.innerHTML = `
-				${createPopupHeader(data.columns[0][index].dateString)}
+				${createPopupHeader(data.columns[0][index + 1].dateString)}
 				${curr.join('')}
 			`;
 		},
@@ -38,7 +38,7 @@ export function createPopup(container, config, data, ys) {
 			const curr = ys.items.filter(y => y.enabled).map(y => createPopupItem(data.colors[y.key], data.names[y.key], y.items[index]));
 			if (!curr.length) return;
 			popup.innerHTML = `
-				${createPopupHeader(data.columns[0][index].dateString)}
+				${createPopupHeader(data.columns[0][index + 1].dateString)}
 				${curr.join('')}
 			`;
 			popup.style.opacity = 1;
