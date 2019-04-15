@@ -4,3 +4,8 @@
  > Bonus goal:
  >
  > A stacked bar chart with 7 data types which zooms into another stacked bar chart with 7 data types.
+
+Day                        |  Night
+:-------------------------:|:-------------------------:
+![alt text](../JS_5.png)   |  ![alt text](../JS_5_Night.png)
+![alt text](../JS_6.png)   |  ![alt text](../JS_6_Night.png)
