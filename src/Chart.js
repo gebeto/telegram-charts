@@ -131,7 +131,8 @@ function dateString(timestamp, index, arr) {
 };
 
 
-function Chart(data, index) {
+function Chart(OPTS, data, index) {
+	console.log('INIT', OPTS, data);
 	// Init canvas
 	let bounds = {
 		left: 0,
@@ -267,8 +268,17 @@ function Chart(data, index) {
 		normYKey: 'normY'
 	};
 
-	const drawChart = DualLineChartDrawer(drawersArgs);
-	const drawControl = ControlsDrawer({ ...drawersArgs, normYKey: 'normControlY' });
+	console.log(OPTS);
+	
+	const drawChart = OPTS.drawChartFabric
+		? OPTS.drawChartFabric(drawersArgs)
+		: LineChartDrawer(drawersArgs);
+
+	const drawControl = OPTS.drawControlFabric
+		? OPTS.drawControlFabric({ ...drawersArgs, normYKey: 'normControlY' })
+		: ControlsDrawer({ ...drawersArgs, normYKey: 'normControlY' });
+
+	console.log(drawChart, drawControl)
 
 	render()
 
