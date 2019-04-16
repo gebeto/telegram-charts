@@ -17,10 +17,14 @@ export default function Line({ config, control, ctx, norm, colors, normYKey }, o
 		const count = items.length;
 		ctx.save();
 		ctx.beginPath();
-		ctx.moveTo(x + 0, y + height - normY(items[0]) * height);
+		const yh = y + height;
+		ctx.moveTo(x + 0, yh - normY(items[0]) * height);
 		for (let i = 1; i < count; i++) {
 			const X = x + norm.X(i) * width;
-			const Y = y + height - normY(items[i]) * height;
+			const Y = yh - normY(items[i]) * height;
+			if (Y > yh) {
+				config.shouldControlUpdate = true;
+			}
 			ctx.lineTo(X, Y);
 		}
 		ctx.lineWidth = lineWidth;

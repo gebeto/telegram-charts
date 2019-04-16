@@ -336,14 +336,14 @@ function Chart(OPTS, data, index) {
 		if (isActiveAnimations) config.shouldChartUpdate = true
 
 		if (config.shouldChartUpdate) {
-			// console.log('update chart', index);
+			console.log('update chart', index);
 			config.shouldChartUpdate = false;
 			ctx.clearRect(0, 0, w, CANVAS_HEIGHT - CONTROL_HEIGHT);
 			drawChart(SIDES_PADDING, 0, w - SIDES_PADDING2, CANVAS_HEIGHT - CONTROL_HEIGHT);
 		}
 
 		if (config.shouldControlUpdate) {
-			// console.log('update control', index);
+			console.log('update control', index);
 			config.shouldControlUpdate = false;
 			ctx.clearRect(0, CANVAS_HEIGHT - CONTROL_HEIGHT, w, CONTROL_HEIGHT);
 			drawControl(SIDES_PADDING, CANVAS_HEIGHT - CONTROL_HEIGHT, w - SIDES_PADDING2, CONTROL_HEIGHT);
