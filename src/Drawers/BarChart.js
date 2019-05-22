@@ -14,6 +14,8 @@ import BarDotsLayerDrawer from './Layers/BarDots';
 import YAxisLayerDrawer from './Layers/YAxis';
 import XAxisLayerDrawer from './Layers/XAxis';
 
+import { debugLayer } from './utils';
+
 
 export default function BarChartDrawer(drawersArgs) {
 	const { ctx, config, control, ys, yAxis, xAxis } = drawersArgs;
@@ -29,10 +31,7 @@ export default function BarChartDrawer(drawersArgs) {
 
 
 	return function drawChart(x, y, width, height) {
-		// ctx.save();
-		// ctx.fillStyle = 'green';
-		// ctx.fillRect(x, y, width, height);
-		// ctx.restore();
+		// debugLayer(ctx, x, y, width, height);
 
 		const XS = width * control.range[0];
 		const xRanged = x - XS / control.scale;

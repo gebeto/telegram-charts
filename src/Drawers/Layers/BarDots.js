@@ -97,8 +97,8 @@ export default function BarDots({ canvasBounds, config, ctx, norm, colors, ys, n
 
 		const { key, items, opacity } = data;
 		const normY = data.scaling[normYKey];
-		const currOpacity = opacity.value;
-		if (!currOpacity) return;
+		// const currOpacity = opacity.value;
+		// if (!currOpacity) return;
 		const WIDTH = width - chunkSize;
 
 		count = items.length;
@@ -112,26 +112,11 @@ export default function BarDots({ canvasBounds, config, ctx, norm, colors, ys, n
 			ctx.lineWidth = 1;
 			ctx.globalAlpha = 0.2;
 			ctx.beginPath();
-			// ctx.rect(X, y, chunkSize, height)
 			ctx.rect(X, y + height, chunkSize, -(normY(stacked[currentIndex]) * height));
-			// ctx.moveTo(X, y);
-			// ctx.lineTo(X, y + height);
 			ctx.fillStyle = CURRENT.THEME.gridLines;
-			// ctx.globalCompositeOperation = 'hard-light';
 			ctx.fill();
 			ctx.stroke();
 			ctx.restore();
-
-			// ctx.save();
-			// ctx.beginPath();
-			// ctx.globalAlpha = currOpacity;
-			// ctx.arc(X, y + height - normY(items[currentIndex]) * height, DOT_RADIUS, 0, PI2);
-			// ctx.lineWidth = lineWidth;
-			// ctx.strokeStyle = colors[key];
-			// ctx.fillStyle = CURRENT.THEME.background;
-			// ctx.fill();
-			// ctx.stroke();
-			// ctx.restore();
 		}
 	}
 }

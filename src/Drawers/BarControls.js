@@ -1,10 +1,13 @@
-import BarLayerDrawer from './Layers/Bar';
 import {
 	PIXEL_RATIO,
 	SIDES_PADDING,
 	ONE,
 	CURRENT,
 } from '../Globals';
+
+import BarLayerDrawer from './Layers/Bar';
+import { debugLayer } from './utils';
+
 
 const NONE = 0;
 const DRAG_START = 1;
@@ -117,10 +120,7 @@ export default function ControlsDrawer(drawersArgs) {
 	config.mouse.addListener('up', mouseUp);
 
 	return function drawControl(x, y, width, height) {
-		// ctx.save();
-		// ctx.fillStyle = 'green';
-		// ctx.fillRect(x, y, width, height);
-		// ctx.restore();
+		// debugLayer(ctx, x, y, width, height);
 		
 		const oldWidth = width;
 		const oldX = x;

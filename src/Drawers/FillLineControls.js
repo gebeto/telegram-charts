@@ -6,6 +6,9 @@ import {
 	CURRENT,
 } from '../Globals';
 
+import { debugLayer } from './utils';
+
+
 const NONE = 0;
 const DRAG_START = 1;
 const DRAG_END = 2;
@@ -117,10 +120,7 @@ export default function FillLineControlsDrawer(drawersArgs) {
 	config.mouse.addListener('up', mouseUp);
 
 	return function drawControl(x, y, width, height) {
-		// ctx.save();
-		// ctx.fillStyle = 'green';
-		// ctx.fillRect(x, y, width, height);
-		// ctx.restore();
+		// debugLayer(ctx, x, y, width, height);
 		
 		const oldWidth = width;
 		const oldX = x;

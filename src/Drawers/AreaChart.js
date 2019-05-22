@@ -11,6 +11,7 @@ import {
 
 import AreaLayerDrawer from './Layers/Area';
 import { average } from '../utils';
+import { debugLayer } from './utils';
 
 
 export default function AreaChartDrawer(drawersArgs) {
@@ -21,10 +22,7 @@ export default function AreaChartDrawer(drawersArgs) {
 	const drawAreaLayer = AreaLayerDrawer(drawersArgs);
 
 	return function drawChart(x, y, width, height) {
-		// ctx.save();
-		// ctx.fillStyle = 'green';
-		// ctx.fillRect(x, y, width, height);
-		// ctx.restore();
+		// debugLayer(ctx, x, y, width, height);
 
 		const XS = width * control.range[0];
 		// const xRanged = x - XS / control.scale;
