@@ -2,7 +2,7 @@ import { memo } from './utils';
 import Mouse from './Utils/Mouse';
 import { createAnimator } from './Utils/Animated';
 
-import ControlsDrawer from './Drawers/Controls';
+import ControlsDrawer from './Drawers/LineControls';
 import LineChartDrawer from './Drawers/LineChart';
 import DualLineChartDrawer from './Drawers/DualLineChart';
 

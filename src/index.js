@@ -14,7 +14,7 @@ import BarControlsDrawer from './Drawers/BarControls';
 
 import DualLineChartDrawer from './Drawers/DualLineChart';
 import LineChartDrawer from './Drawers/LineChart';
-import ControlsDrawer from './Drawers/Controls';
+import LineControlsDrawer from './Drawers/LineControls';
 
 import FillLineChartDrawer from './Drawers/FillLineChart';
 import AreaChartDrawer from './Drawers/AreaChart';
@@ -36,11 +36,11 @@ createBar(window.CONTAINER, (isDay) => {
 const fabrics = [
 	{
 		drawChartFabric: (args) => LineChartDrawer(args),
-		drawControlFabric: (args) => ControlsDrawer(args),
+		drawControlFabric: (args) => LineControlsDrawer(args),
 	},
 	{
 		drawChartFabric: (args) => DualLineChartDrawer(args),
-		drawControlFabric: (args) => ControlsDrawer(args),
+		drawControlFabric: (args) => LineControlsDrawer(args),
 	},
 	{
 		drawChartFabric: (args) => BarChartDrawer(args),
