@@ -1,8 +1,8 @@
 import check from './check.svg';
-import { createElement } from './utils';
+import { createElement, createLongPress } from './utils';
 
-export function createButtonFor(container, animator, data, y, globState, handler) {
-	// let enabled = true;
+
+export function createButtonForAxis(container, animator, data, y, globState, handler) {
 	const key = y.key;
 	const state = {
 		enabled: true,
@@ -11,41 +11,23 @@ export function createButtonFor(container, animator, data, y, globState, handler
 	button.textContent = data.names[key];
 	button.style.backgroundColor = data.colors[key];
 	button.style.borderColor = data.colors[key];
+	createLongPress(button, onPress, onLongPress);
 
-	let timeout = null;
-	let dropClick = false;
-	function mouseUp() {
-		clearTimeout(timeout);
-		if (dropClick) {
-			dropClick = false;
-			return;
-		}
+	function onPress() {
 		if (globState.activeButtonsCount === 1 && state.enabled) {
 			button.className = 'chart__buttons-button error';
 			setTimeout(() => {button.className = 'chart__buttons-button';}, 140)
 			return;
 		}
-		state.enabled = !state.enabled;
 
+		state.enabled = !state.enabled;
 		update();
 	}
 
-	function mouseDown() {
-		timeout = setTimeout(() => {
-			globState.resetAll();
-			dropClick = true;
-		}, 200);
+	function onLongPress() {
+		state.show();
+		globState.hideAllExcept(button);
 	}
-
-	function mouseMove() {
-		clearTimeout(timeout);
-	}
-
-	button.addEventListener('click', mouseUp);
-	button.addEventListener('mousedown', mouseDown);
-	button.addEventListener('mousemove', mouseMove);
-	button.addEventListener('touchstart', mouseDown);
-	button.addEventListener('touchmove', mouseMove);
 	
 	function update() {
 		if (state.enabled === true) {
@@ -62,27 +44,42 @@ export function createButtonFor(container, animator, data, y, globState, handler
 		handler && handler(state.enabled);
 	}
 
-	state.reset = function reset() {
+	function hide(caller) {
+		if (state.enabled && caller !== button) {
+			state.enabled = false;
+			update();
+		}
+	}
+
+	function show() {
 		if (!state.enabled) {
 			state.enabled = true;
 			update();
 		}
 	}
 
+	state.hide = hide;
+	state.show = show;
+
 	return state;
 }
 
 export function createButtons(container, animator, data, ysAxis, handler) {
-	const state = {
+	const globalState = {
 		activeButtonsCount: ysAxis.items.length,
+
+		hideAllExcept: hideAllExcept,
+		hideAll: hideAll,
 	};
+
+
 	const buttonsWrapper = createElement(container, 'div', 'chart__buttons');
-	const buttonsObj = {};
+	const allButtons = {};
 
 	const buttons = ysAxis.items.map(y => {
-		return buttonsObj[y[0]] = createButtonFor(buttonsWrapper, animator, data, y, state, (enabled) => {
-			state.activeButtonsCount += enabled ? 1 : -1;
-			if (state.activeButtonsCount < 1) {
+		return allButtons[y[0]] = createButtonForAxis(buttonsWrapper, animator, data, y, globalState, (enabled) => {
+			globalState.activeButtonsCount += enabled ? 1 : -1;
+			if (globalState.activeButtonsCount < 1) {
 				return;
 			}
 
@@ -90,11 +87,17 @@ export function createButtons(container, animator, data, ysAxis, handler) {
 		});
 	});
 
-	state.resetAll = function resetAll() {
+	function hideAll() {
 		buttons.forEach(button => {
-			button.reset();
+			button.hide();
 		});
 	}
 
-	return buttonsObj;
+	function hideAllExcept(caller) {
+		buttons.forEach(button => {
+			button.hide(caller);
+		});
+	}
+
+	return allButtons;
 }
