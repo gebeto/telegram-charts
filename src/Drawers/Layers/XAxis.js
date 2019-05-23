@@ -59,7 +59,11 @@ export default function XAxis({ config, control, ctx, norm, colors }) {
 
 			const X = x + norm.X(i) * width;
 			const Y = y + X_AXIS_HEIGHT_DIV_2;
-
+			// console.log(x, X);
+			// console.log(ctx.canvas.width, X)
+			if (X < -AXIS_TEXT_WIDTH || X > ctx.canvas.width + AXIS_TEXT_WIDTH) {
+				continue;
+			}
 			// ctx.fillRect(X - AXIS_TEXT_WIDTH_DIV_2, Y - height / 2, AXIS_TEXT_WIDTH, height);
 			ctx.fillText(items[i].dayString, X, Y);
 		}

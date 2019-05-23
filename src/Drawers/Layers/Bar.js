@@ -31,6 +31,10 @@ export default function Bar({ config, control, ctx, norm, colors, normYKey, yAxi
 			const Y = y + height - normY(stacked[i]) * height;
 			const BAR_HEIGHT = normY(items[i]) * height * copacity;
 			const BAR_WIDTH = chunk - chunkSize;
+			
+			if (X < -chunk || X > ctx.canvas.width) {
+				continue;
+			}
 			ctx.rect(X, Y, BAR_WIDTH, BAR_HEIGHT > 0 ? BAR_HEIGHT : 0);
 		}
 		// ctx.globalAlpha = copacity;
