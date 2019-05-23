@@ -23,23 +23,20 @@ export function createPopupItem(color, title, value) {
 export function createPopup(container, config, data, ys) {
 	const popup = createElement(container, 'div', 'chart__popup');
 
+	function changeHtml(index) {
+		const curr = ys.items.filter(y => y.enabled).map(y => createPopupItem(data.colors[y.key], data.names[y.key], y.items[index]));
+		if (!curr.length) return;
+		popup.innerHTML = `
+			${createPopupHeader(data.columns[0][index + 1].dateString)}
+			${curr.join('')}
+		`;
+	}
+
 	const publicInterface = {
 		element: popup,
-		update(index) {
-			const curr = ys.items.filter(y => y.enabled).map(y => createPopupItem(data.colors[y.key], data.names[y.key], y.items[index]));
-			if (!curr.length) return;
-			popup.innerHTML = `
-				${createPopupHeader(data.columns[0][index + 1].dateString)}
-				${curr.join('')}
-			`;
-		},
+		update: changeHtml,
 		show(index) {
-			const curr = ys.items.filter(y => y.enabled).map(y => createPopupItem(data.colors[y.key], data.names[y.key], y.items[index]));
-			if (!curr.length) return;
-			popup.innerHTML = `
-				${createPopupHeader(data.columns[0][index + 1].dateString)}
-				${curr.join('')}
-			`;
+			changeHtml(index);
 			popup.style.opacity = 1;
 			popup.style.visibility = 'visible';
 		},
