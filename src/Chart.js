@@ -49,8 +49,9 @@ function Chart(OPTS, data, FABRIC) {
 	const {
 		container,
 		index,
-		title = `Chart #${index + 1}`,
 	} = OPTS;
+
+	const title = data.title || OPTS.title || `Chart #${index + 1}`
 
 	// Init canvas
 	let bounds = {
