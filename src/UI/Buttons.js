@@ -1,4 +1,3 @@
-import check from './check.svg';
 import { createElement, createLongPress } from './utils';
 
 

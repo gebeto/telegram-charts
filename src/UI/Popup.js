@@ -1,11 +1,10 @@
-import arrow from './arrow.svg';
 import { createElement } from './utils';
 
 export function createPopupHeader(title) {
 	return `
 		<strong class="chart__popup-header">
 			<span class="chart__popup-header-title">${title}</span>
-			<span class="chart__popup-header-icon"><img src="${arrow}" /></span>
+			<span class="chart__popup-header-icon"></span>
 		</strong>
 	`;
 }

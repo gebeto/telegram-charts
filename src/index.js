@@ -1,7 +1,9 @@
+import './styles.scss';
+
 import AnimationLoop from './Utils/AnimationLoop';
 import Chart from './Chart';
 
-import { createBar } from './UI/ChangeThemeBar';
+import { createThemeChanger } from './UI/ChangeThemeBar';
 import {
 	CURRENT,
 	THEME_DAY,
@@ -21,14 +23,10 @@ import AreaChartDrawer from './Drawers/AreaChart';
 import FillLineControlsDrawer from './Drawers/FillLineControls';
 
 
-window.CONTAINER = document.querySelector('#container');
-
 let graphsInstances = [];
 
-createBar(window.CONTAINER, (isDay) => {
-	console.log(isDay);
-	CURRENT.THEME = isDay ? THEME_DAY : THEME_NIGHT;
-	document.body.className = isDay ? 'day' : 'night';
+createThemeChanger((isLight) => {
+	CURRENT.THEME = isLight ? THEME_DAY : THEME_NIGHT;
 	graphsInstances.forEach(chart => chart.update());
 });
 

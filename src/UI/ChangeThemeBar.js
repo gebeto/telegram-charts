@@ -1,17 +1,15 @@
-import { createElement } from './utils';
-
-
-export function createBar(container, onClick) {
-	let isDay = true;
-	const bar = createElement(container, 'button', 'change-theme');
+export function createThemeChanger(onClick) {
+	const html = document.querySelector('html');
+	let isLight = true;
 
 	function handleChange() {
-		bar.textContent = `Switch to ${isDay ? 'Night' : 'Day'} Mode`;
-		onClick && onClick(isDay);
+		onClick && onClick(isLight);
 	}
 
-	bar.addEventListener('click', () => {
-		isDay = !isDay;
+	document.addEventListener('darkmode', () => {
+		const isDark = html.className.match(/\bdark\b/);
+		console.log(isDark);
+		isLight = !isDark;
 		handleChange();
 	});
 

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Plain Charts</title>
+	<link rel="stylesheet" href="dist/chart.css">
+	<script src="dist/chart.js"></script>
+</head>
+<body>
+	<button id="dark-mode">Dark</button>
+	<button id="light-mode">Light</button>
+
+	<script>
+		var html = document.querySelector('html');
+		var chartsContainer = document.querySelector('#container');
+
+		document.getElementById('dark-mode').addEventListener('click', function handleChangeTheme() {
+			html.className = (html.className.replace(/\bdark\b/, '') + ' dark').replace(/\s+/, '');
+			document.dispatchEvent(new Event('darkmode'))
+		});
+		
+		document.getElementById('light-mode').addEventListener('click', function handleChangeTheme() {
+			html.className = html.className.replace(/\bdark\b/, '');
+			document.dispatchEvent(new Event('darkmode'))
+		});
+
+		Promise.all([
+			fetch('assets/stage_2_data/1/overview.json').then(res => res.json()),
+			fetch('assets/stage_2_data/2/overview.json').then(res => res.json()),
+			fetch('assets/stage_2_data/3/overview.json').then(res => res.json()),
+			fetch('assets/stage_2_data/4/overview.json').then(res => res.json()),
+			fetch('assets/stage_2_data/5/overview.json').then(res => res.json()),
+			fetch('assets/stage_2_data/5/overview.json').then(res => res.json()),
+		]).then(ChartsData => {
+			ChartsData.map((chartData, index) => {
+				return Graph.render(chartsContainer, chartData, GraphFabrics[index]);
+			});
+		});
+	</script>
+</body>
+</html>

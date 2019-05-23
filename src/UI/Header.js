@@ -1,4 +1,3 @@
-// import arrow from './arrow.svg';
 import { createElement } from './utils';
 
 

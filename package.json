@@ -20,7 +20,15 @@
     "url": "https://github.com/gebeto/telegram-charts/issues"
   },
   "homepage": "https://github.com/gebeto/telegram-charts#readme",
-  "dependencies": {},
+  "dependencies": {
+    "css-loader": "^2.1.1",
+    "mini-css-extract-plugin": "^0.6.0",
+    "node-sass": "^4.12.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.1",
+    "sass-loader": "^7.1.0",
+    "terser-webpack-plugin": "^1.2.4",
+    "url-loader": "^1.1.2"
+  },
   "devDependencies": {
     "@babel/core": "^7.4.3",
     "@babel/plugin-proposal-class-properties": "^7.4.0",

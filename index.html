@@ -5,7 +5,43 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<title>Telegram Charts</title>
-	<link rel="stylesheet" href="assets/styles.css">
+	<link rel="stylesheet" href="dist/chart.css">
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+			font-family: Helvetica, Arial, sans-serif;
+		}
+
+		.container {
+			max-width: 600px;
+			width: 100%;
+			margin: 0 auto;
+		}
+
+		.change-theme {
+			width: 50%;
+			height: 100px;
+			border: none;
+			outline: none;
+			font-weight: 700;
+			font-size: 1.6em;
+			color: #108BE3;
+
+			cursor: pointer;
+			background: transparent;
+
+			float: left;
+		}
+
+		html.dark .change-theme {
+			color: #48AAF0;
+		}
+
+		p {
+			padding: 0px 10px;
+		}
+	</style>
 </head>
 <body>
 	<div class="container" id="container">
@@ -16,10 +52,23 @@
 			</ol>
 		</p>
 
+		<button class="change-theme" id="dark-mode">Dark theme</button>
+		<button class="change-theme" id="light-mode">Light theme</button>
+
 	</div>
-	<script src="dist/bundle.js"></script>
+	<script src="dist/chart.js"></script>
 
 	<script>
+		const html = document.querySelector('html');
+		document.getElementById('dark-mode').addEventListener('click', function handleChangeTheme() {
+			html.className = (html.className.replace(/\bdark\b/, '') + ' dark').replace(/\s+/, '');
+			document.dispatchEvent(new Event('darkmode'))
+		});
+		document.getElementById('light-mode').addEventListener('click', function handleChangeTheme() {
+			html.className = html.className.replace(/\bdark\b/, '');
+			document.dispatchEvent(new Event('darkmode'))
+		});
+
 		var chartsContainer = document.querySelector('#container');
 
 		Promise.all([
