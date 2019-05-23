@@ -1,0 +1,70 @@
+.chart__popup {
+	z-index: 1000;
+	display: table;
+	position: absolute;
+	right: 0;
+	top: 64px;
+	transition-duration: .2s;
+	opacity: 0;
+	visibility: hidden;
+	background: #FFF;
+	padding: 8px;
+	padding-top: 0;
+	border-radius: 0.8em;
+	box-shadow: 0 0 0.8em rgba(0, 0, 0, 0.2);
+	letter-spacing: 0.1px;
+	border-spacing: 0.3em;
+
+	&-header {
+		display: table-row;
+		font-weight: bold;
+		height: 2em;
+		vertical-align: middle;
+
+		&-title {
+			display: table-cell;
+			text-align: left;
+			min-width: 10em;
+			vertical-align: middle;
+		}
+
+		&-icon {
+			display: table-cell;
+			text-align: right;
+			min-width: 3em;
+			vertical-align: middle;
+
+			background-image: url(images/arrow.svg);
+			background-size: 0.8em;
+			background-repeat: no-repeat;
+			background-position: center right;
+
+			img {
+				height: 0.8em;
+			}
+
+			@media (max-width:500px) {
+				min-width: 2em;
+			}
+		}
+
+	}
+
+
+	&-item {
+		display: table-row;
+		vertical-align: middle;
+
+		&-title {
+			display: table-cell;
+			text-align: left;
+		}
+
+		&-value {
+			display: table-cell;
+			text-align: right;
+			font-weight: bold;
+		}
+	}
+
+}

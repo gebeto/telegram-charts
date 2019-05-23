@@ -1,4 +1,4 @@
-import './styles.scss';
+import './styles/index.scss';
 
 import AnimationLoop from './Utils/AnimationLoop';
 import Chart from './Chart';

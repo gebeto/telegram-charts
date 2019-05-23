@@ -1,0 +1,60 @@
+.chart__buttons {
+	padding: 0px 1em;
+	margin-top: 15px;
+
+	&-button {
+		margin: 4px;
+		min-width: 80px;
+		font-size: 12px;
+		font-weight: 900;
+		padding: 0px;
+		padding-left: 30px;
+		padding-right: 10px;
+		height: 36px;
+		border: 0;
+		background: #333;
+		border-radius: 18px;
+		outline: none;
+		border: 2px solid #333;
+		position: relative;
+		transition-duration: 0.2s;
+		color: #FFF;
+
+		&:before {
+			content: " ";
+			width: 12px;
+			height: 100%;
+			position: absolute;
+			left: 10px;
+			top: 0;
+			background-image: url(images/check.svg);
+			background-size: contain;
+			background-repeat: no-repeat;
+			background-position: center;
+			transition-duration: 0.2s;
+		}
+
+		&.error {
+			animation: wiggle 0.14s cubic-bezier(.36, .07, .19, .97) both;
+		}
+
+		&.unchecked {
+			padding-left: 20px;
+			padding-right: 20px;
+			background: transparent !important;
+
+			&:before {
+				width: 0px;
+				left: 16px;
+			}
+		}
+	}
+}
+
+
+@keyframes wiggle {
+	0% { transform: rotate(0deg); }
+	20% { transform: rotate(5deg);}
+	60% { transform: rotate(-5deg);}
+	100% { transform: rotate(0deg);}
+}
