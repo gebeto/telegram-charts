@@ -3,9 +3,8 @@ import Mouse from './Utils/Mouse';
 import { createAnimator } from './Utils/Animated';
 import { prepareYAxis } from './Utils/YAxis';
 
-import ControlsDrawer from './Drawers/LineControls';
-import LineChartDrawer from './Drawers/LineChart';
-import DualLineChartDrawer from './Drawers/DualLineChart';
+import ControlsDrawer from './Drawers/Controls/LineControls';
+import LineChartDrawer from './Drawers/Charts/LineChart';
 
 import { createElement } from './UI/utils';
 import { createPopup } from './UI/Popup';
@@ -191,13 +190,8 @@ function Chart(OPTS, data, FABRIC) {
 
 	// console.log(FABRIC);
 	
-	const drawChart = FABRIC.drawChartFabric
-		? FABRIC.drawChartFabric(drawersArgs)
-		: LineChartDrawer(drawersArgs);
-
-	const drawControl = FABRIC.drawControlFabric
-		? FABRIC.drawControlFabric({ ...drawersArgs, normYKey: 'normControlY' })
-		: ControlsDrawer({ ...drawersArgs, normYKey: 'normControlY' });
+	const drawChart = FABRIC.drawChartFabric(drawersArgs);
+	const drawControl = FABRIC.drawControlFabric({ ...drawersArgs, normYKey: 'normControlY' });
 
 	render()
 

@@ -1,6 +1,6 @@
-import FillLineLayerDrawer from './Layers/FillLine';
-import { PIXEL_RATIO, ONE, CURRENT } from '../Globals';
-import { debugLayer, createControlLayer } from './utils';
+import FillLineLayerDrawer from '../Layers/FillLine';
+import { PIXEL_RATIO, ONE, CURRENT } from '../../Globals';
+import { debugLayer, createControlLayer } from '../utils';
 
 
 export default function FillLineControlsDrawer(drawersArgs) {

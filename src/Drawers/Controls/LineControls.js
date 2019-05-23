@@ -1,11 +1,11 @@
-import { PIXEL_RATIO, ONE, CURRENT } from '../Globals';
-import BarLayerDrawer from './Layers/Bar';
-import { debugLayer, createControlLayer } from './utils';
+import LineLayerDrawer from '../Layers/Line';
+import { PIXEL_RATIO, ONE, CURRENT } from '../../Globals';
+import { debugLayer, createControlLayer } from '../utils';
 
 
 export default function ControlsDrawer(drawersArgs) {
 	const { ctx, config, canvasBounds, control, ys, yAxis, xAxis } = drawersArgs;
-	const drawBarLayer  = BarLayerDrawer(drawersArgs);
+	const drawLineLayer = LineLayerDrawer(drawersArgs, { lineWidth: 1 });
 
 	let xs = 0;
 	let xe = 0;
@@ -26,15 +26,14 @@ export default function ControlsDrawer(drawersArgs) {
 
 	return function drawControl(x, y, width, height) {
 		// debugLayer(ctx, x, y, width, height);
-		
+
 		const oldWidth = width;
 		const oldX = x;
 		width = width - controlWidthMul2;
 		x = x + controlWidth
 
-		const stacked = new Array(xAxis.length).fill(0);
-		for (let i = 0; i < yAxis.items.length; i++) {
-			drawBarLayer(yAxis.items[i], stacked, x, y + 3, width, height - 6);
+		for (let i = 0; i < yAxis.items.length; i++ ) {
+			drawLineLayer(yAxis.items[i], x, y + 3, width, height - 6);
 		}
 
 		xs = x + width * control.range[0];

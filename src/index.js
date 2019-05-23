@@ -6,16 +6,16 @@ import Chart from './Chart';
 import { createThemeChanger } from './UI/Theme';
 
 
-import BarChartDrawer from './Drawers/BarChart';
-import BarControlsDrawer from './Drawers/BarControls';
+import BarChartDrawer from './Drawers/Charts/BarChart';
+import BarControlsDrawer from './Drawers/Controls/BarControls';
 
-import DualLineChartDrawer from './Drawers/DualLineChart';
-import LineChartDrawer from './Drawers/LineChart';
-import LineControlsDrawer from './Drawers/LineControls';
+import DualLineChartDrawer from './Drawers/Charts/DualLineChart';
+import LineChartDrawer from './Drawers/Charts/LineChart';
+import LineControlsDrawer from './Drawers/Controls/LineControls';
 
-import AreaChartDrawer from './Drawers/AreaChart';
-import FillLineChartDrawer from './Drawers/FillLineChart';
-import FillLineControlsDrawer from './Drawers/FillLineControls';
+import AreaChartDrawer from './Drawers/Charts/AreaChart';
+import FillLineChartDrawer from './Drawers/Charts/FillLineChart';
+import FillLineControlsDrawer from './Drawers/Controls/FillLineControls';
 
 
 let graphsInstances = [];

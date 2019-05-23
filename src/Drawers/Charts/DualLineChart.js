@@ -7,14 +7,14 @@ import {
 	DOT_RADIUS,
 	DOT_RADIUS_DIV_2,
 	DOT_RADIUS_MUL_2,
-} from '../Globals';
+} from '../../Globals';
 
-import LineLayerDrawer from './Layers/Line';
-import DotsLayerDrawer from './Layers/Dots';
-import YAxisLayerDrawer from './Layers/YAxis';
-import XAxisLayerDrawer from './Layers/XAxis';
+import LineLayerDrawer from '../Layers/Line';
+import DotsLayerDrawer from '../Layers/LineDots';
+import YAxisLayerDrawer from '../Layers/YAxis';
+import XAxisLayerDrawer from '../Layers/XAxis';
 
-import { debugLayer } from './utils';
+import { debugLayer } from '../utils';
 
 
 export default function DualLineChartDrawer(drawersArgs) {
