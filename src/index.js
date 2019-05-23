@@ -13,8 +13,8 @@ import DualLineChartDrawer from './Drawers/DualLineChart';
 import LineChartDrawer from './Drawers/LineChart';
 import LineControlsDrawer from './Drawers/LineControls';
 
-import FillLineChartDrawer from './Drawers/FillLineChart';
 import AreaChartDrawer from './Drawers/AreaChart';
+import FillLineChartDrawer from './Drawers/FillLineChart';
 import FillLineControlsDrawer from './Drawers/FillLineControls';
 
 
@@ -30,19 +30,20 @@ function fabricByDatasource(datasource) {
 		drawChartFabric: null,
 		drawControlFabric: null,
 	};
-	// const [xaxis, ...yaxis] = datasource.columns;
-	// const axis = yaxis.map(axi => axi[0]);
-	// console.log(axis, datasource.types);
+
 	const types = Object.keys(datasource.types).map(key => datasource.types[key]).filter(el => el !== 'x');
 	if (!types.length) {
-		throw new Error("No data types for chart")
+		throw new Error("DataSet error. No columns for chart")
 	} else if (types.length > 50) {
-		throw new Error("Too much data. Supported up to 50 columns on one graph.")
+		throw new Error("DataSet error. Supported up to 50 columns on one graph.")
 	}
 
 	const type = types[0];
 	// console.log(type);
 	if (datasource.y_scaled) {
+		if (type !== 'line' || types.length !== 2) {
+			throw new Error("DataSet error. 'y_scaled' is only used with exactly 2 'line' columns.")
+		}
 		fabric.drawChartFabric = (args) => DualLineChartDrawer(args);
 		fabric.drawControlFabric = (args) => LineControlsDrawer(args);
 	} else if (type == 'bar') {
