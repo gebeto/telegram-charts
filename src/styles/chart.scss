@@ -10,6 +10,10 @@
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-webkit-touch-callout: none;
+
+	@media (max-width:500px) {
+		font-size: 0.6em;
+	}
 }
 
 .chart__header {

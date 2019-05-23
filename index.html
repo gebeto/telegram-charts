@@ -61,12 +61,22 @@
 	<script>
 		const html = document.querySelector('html');
 		document.getElementById('dark-mode').addEventListener('click', function handleChangeTheme() {
-			html.className = (html.className.replace(/\bdark\b/, '') + ' dark').replace(/\s+/, '');
-			document.dispatchEvent(new Event('darkmode'))
+			const splitted = html.className ? html.className.split(' ') : [];
+			const darkIndex = splitted.indexOf('dark');
+			if (darkIndex == -1) {
+				splitted.push('dark');
+				html.className = splitted.join(' ');
+				document.dispatchEvent(new Event('darkmode'))
+			}
 		});
 		document.getElementById('light-mode').addEventListener('click', function handleChangeTheme() {
-			html.className = html.className.replace(/\bdark\b/, '');
-			document.dispatchEvent(new Event('darkmode'))
+			const splitted = html.className ? html.className.split(' ') : [];
+			const darkIndex = splitted.indexOf('dark');
+			if (darkIndex > -1) {
+				splitted.splice(darkIndex, 1);
+				html.className = splitted.join(' ');
+				document.dispatchEvent(new Event('darkmode'))
+			}
 		});
 
 		var chartsContainer = document.querySelector('#container');

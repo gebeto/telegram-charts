@@ -3,12 +3,7 @@ import './styles/index.scss';
 import AnimationLoop from './Utils/AnimationLoop';
 import Chart from './Chart';
 
-import { createThemeChanger } from './UI/ChangeThemeBar';
-import {
-	CURRENT,
-	THEME_DAY,
-	THEME_NIGHT,
-} from './Globals';
+import { createThemeChanger } from './UI/Theme';
 
 
 import BarChartDrawer from './Drawers/BarChart';
@@ -26,7 +21,6 @@ import FillLineControlsDrawer from './Drawers/FillLineControls';
 let graphsInstances = [];
 
 createThemeChanger((isLight) => {
-	CURRENT.THEME = isLight ? THEME_DAY : THEME_NIGHT;
 	graphsInstances.forEach(chart => chart.update());
 });
 
