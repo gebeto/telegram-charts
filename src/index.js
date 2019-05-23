@@ -23,13 +23,13 @@ import FillLineControlsDrawer from './Drawers/FillLineControls';
 
 window.CONTAINER = document.querySelector('#container');
 
-let charts = [];
-// createBar(document.body, (isDay) => {
+let graphsInstances = [];
+
 createBar(window.CONTAINER, (isDay) => {
 	console.log(isDay);
 	CURRENT.THEME = isDay ? THEME_DAY : THEME_NIGHT;
 	document.body.className = isDay ? 'day' : 'night';
-	charts.forEach(chart => chart.update());
+	graphsInstances.forEach(chart => chart.update());
 });
 
 
@@ -61,66 +61,26 @@ const fabrics = [
 ];
 
 
+function initGraphModule() {
+	let index = 0;
 
-Promise.all([
-	fetch('assets/stage_2_data/1/overview.json').then(res => res.json()),
-	fetch('assets/stage_2_data/2/overview.json').then(res => res.json()),
-	fetch('assets/stage_2_data/3/overview.json').then(res => res.json()),
-	fetch('assets/stage_2_data/4/overview.json').then(res => res.json()),
-	fetch('assets/stage_2_data/5/overview.json').then(res => res.json()),
-	fetch('assets/stage_2_data/5/overview.json').then(res => res.json()),
-]).then(ChartsData => {
-	charts = ChartsData.map((data, index) => {
-		const chart = Chart(fabrics[index], data, index);
-		return chart;
-	});
-
-	charts.forEach(chart => {
-		AnimationLoop.add(() => {
-			chart.render();
-		});
-	});
-});
-
+	return {
+		render: function Graph(container, chartData, fabric, opts = {}) {
+			const graphOpts = {
+				container: container || document.body,
+				index: index++,
+				title: opts.title || undefined
+			};
+			const graph = Chart(graphOpts, chartData, fabric);
+			AnimationLoop.add(() => {
+				graph.render();
+			});
+			graphsInstances.push(graph);
+			return graph;
+		}
+	}
+}
 
 
-
-// fetch('assets/stage_2_data/2/overview.json').then(res => res.json()).then(ChartsData => {
-// 	charts = [ChartsData].map((data, index) => {
-// 		const chart = Chart(fabrics[1], data, index);
-// 		return chart;
-// 	});
-
-// 	charts.forEach(chart => {
-// 		AnimationLoop.add(() => {
-// 			chart.render();
-// 		});
-// 	});
-// });
-
-
-// fetch('assets/stage_2_data/3/overview.json').then(res => res.json()).then(ChartsData => {
-// 	charts = [ChartsData].map((data, index) => {
-// 		const chart = Chart(fabrics[2], data, index);
-// 		return chart;
-// 	});
-
-// 	charts.forEach(chart => {
-// 		AnimationLoop.add(() => {
-// 			chart.render();
-// 		});
-// 	});
-// });
-
-// fetch('assets/stage_2_data/3/overview.json').then(res => res.json()).then(ChartsData => {
-// 	charts = [ChartsData].map((data, index) => {
-// 		const chart = Chart(fabrics[2], data, index);
-// 		return chart;
-// 	});
-
-// 	charts.forEach(chart => {
-// 		AnimationLoop.add(() => {
-// 			chart.render();
-// 		});
-// 	});
-// });
+window.GraphFabrics = fabrics;
+window.Graph = initGraphModule();

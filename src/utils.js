@@ -88,3 +88,39 @@ export function memo(fun) {
 }
 
 export const average = (curr, item) => curr + item;
+
+
+
+
+export const uninf = (val) => (val === Infinity || val === -Infinity) ? 0 : val;
+
+export const singleMin = set => Math.min.apply(null, set);
+export const singleMax = set => Math.max.apply(null, set);
+export const singleMinRange = (set, start, end) => Math.min.apply(null, set.slice(start, 1 + end));
+export const singleMaxRange = (set, start, end) => Math.max.apply(null, set.slice(start, 1 + end));
+
+export const flatMin = (arr) => Math.min.apply(null, arr.map(singleMin));
+export const flatMax = (arr) => Math.max.apply(null, arr.map(singleMax));
+export const flatMinRange = (arr, start, end) => Math.min.apply(null, arr.map(set => singleMinRange(set, start, end)));
+export const flatMaxRange = (arr, start, end) => Math.max.apply(null, arr.map(set => singleMaxRange(set, start, end)));
+
+
+export const zipSum = (arr) => {
+	// console.log(arr.length);
+	const res = new Array(arr[0].length).fill(0);
+	let i, j
+	for (i = 0; i < arr.length; i++) {
+		for (j = 0; j < arr[i].length; j++) {
+			res[j] += arr[i][j];
+		}
+	}
+	return res;
+}
+
+export const flatMaxZipSum = (arr, start, end) => {
+	return arr.map(set => singleMax(set));
+};
+
+export const flatMaxZipSumRange = (arr, start, end) => {
+	return arr.map(set => singleMaxRange(set, start, end)).reduce((sum, el) => sum + el, 0);
+};

@@ -30,43 +30,21 @@ import {
 	normalizeMemo,
 	normalize,
 	throttle,
+
+	zipSum,
+	flatMaxZipSum,
+	flatMaxZipSumRange,
+
+	uninf,
+	singleMin,
+	singleMax,
+	singleMinRange,
+	singleMaxRange,
+	flatMin,
+	flatMax,
+	flatMinRange,
+	flatMaxRange,
 } from './utils';
-
-export const uninf = (val) => (val === Infinity || val === -Infinity) ? 0 : val;
-
-export const singleMin = set => Math.min.apply(null, set);
-export const singleMax = set => Math.max.apply(null, set);
-export const singleMinRange = (set, start, end) => Math.min.apply(null, set.slice(start, 1 + end));
-export const singleMaxRange = (set, start, end) => Math.max.apply(null, set.slice(start, 1 + end));
-
-export const flatMin = (arr) => Math.min.apply(null, arr.map(singleMin));
-export const flatMax = (arr) => Math.max.apply(null, arr.map(singleMax));
-export const flatMinRange = (arr, start, end) => Math.min.apply(null, arr.map(set => singleMinRange(set, start, end)));
-export const flatMaxRange = (arr, start, end) => Math.max.apply(null, arr.map(set => singleMaxRange(set, start, end)));
-
-// export const flatMaxSum = (arr, start, end) => arr.map(set => singleMax(set)).reduce((sum, el) => sum + el, 0);
-// export const flatMaxSumRange = (arr, start, end) => arr.map(set => singleMaxRange(set, start, end)).reduce((sum, el) => sum + el, 0);
-
-
-const zipSum = (arr) => {
-	// console.log(arr.length);
-	const res = new Array(arr[0].length).fill(0);
-	let i, j
-	for (i = 0; i < arr.length; i++) {
-		for (j = 0; j < arr[i].length; j++) {
-			res[j] += arr[i][j];
-		}
-	}
-	return res;
-}
-
-export const flatMaxZipSum = (arr, start, end) => {
-	return arr.map(set => singleMax(set));
-};
-
-export const flatMaxZipSumRange = (arr, start, end) => {
-	return arr.map(set => singleMaxRange(set, start, end)).reduce((sum, el) => sum + el, 0);
-};
 
 
 function prepareYAxis(ys, data, config) {
@@ -219,21 +197,25 @@ function dateString(timestamp, index, arr) {
 		date: date,
 		timestamp: timestamp,
 	};
-};
+}
 
 
-function Chart(OPTS, data, index) {
-	// console.log('INIT', OPTS, data);
+function Chart(OPTS, data, FABRIC) {
+	const {
+		container,
+		index,
+		title = `Chart #${index + 1}`,
+	} = OPTS;
+
 	// Init canvas
 	let bounds = {
 		left: 0,
 		top: 0,
 	}, w, h, normControl;
 
-	// const container = createElement(document.body, 'div', 'chart');
-	const container = createElement(window.CONTAINER, 'div', 'chart');
-	const header = createHeader(container, `Chart #${index + 1}`, 'Hello world!');
-	const canvas = createElement(container, 'canvas', 'chart__canvas');
+	const canvasContainer = createElement(container, 'div', 'chart');
+	const header = createHeader(canvasContainer, title, 'Hello world!');
+	const canvas = createElement(canvasContainer, 'canvas', 'chart__canvas');
 	const ctx = canvas.getContext('2d');
 	const animator = createAnimator();
 
@@ -266,8 +248,8 @@ function Chart(OPTS, data, index) {
 	config.endIndex = xAxis.length;
 	header.setSubtitle(`${xAxis[0].dateStringTitle} - ${xAxis[xAxis.length - 1].dateStringTitle}`)
 
-	config.popup = createPopup(container, config, data, yAxis);
-	const buttons = createButtons(container, config.animator, data, yAxis, () => {
+	config.popup = createPopup(canvasContainer, config, data, yAxis);
+	const buttons = createButtons(canvasContainer, config.animator, data, yAxis, () => {
 		updateNorms();
 	})
 	config.buttons = buttons;
@@ -336,14 +318,14 @@ function Chart(OPTS, data, index) {
 		if (isActiveAnimations) config.shouldChartUpdate = true
 
 		if (config.shouldChartUpdate) {
-			console.log('update chart', index);
+			// console.log('update chart', index);
 			config.shouldChartUpdate = false;
 			ctx.clearRect(0, 0, w, CANVAS_HEIGHT - CONTROL_HEIGHT);
 			drawChart(SIDES_PADDING, 0, w - SIDES_PADDING2, CANVAS_HEIGHT - CONTROL_HEIGHT);
 		}
 
 		if (config.shouldControlUpdate) {
-			console.log('update control', index);
+			// console.log('update control', index);
 			config.shouldControlUpdate = false;
 			ctx.clearRect(0, CANVAS_HEIGHT - CONTROL_HEIGHT, w, CONTROL_HEIGHT);
 			drawControl(SIDES_PADDING, CANVAS_HEIGHT - CONTROL_HEIGHT, w - SIDES_PADDING2, CONTROL_HEIGHT);
@@ -361,17 +343,15 @@ function Chart(OPTS, data, index) {
 		normYKey: 'normY'
 	};
 
-	// console.log(OPTS);
+	// console.log(FABRIC);
 	
-	const drawChart = OPTS.drawChartFabric
-		? OPTS.drawChartFabric(drawersArgs)
+	const drawChart = FABRIC.drawChartFabric
+		? FABRIC.drawChartFabric(drawersArgs)
 		: LineChartDrawer(drawersArgs);
 
-	const drawControl = OPTS.drawControlFabric
-		? OPTS.drawControlFabric({ ...drawersArgs, normYKey: 'normControlY' })
+	const drawControl = FABRIC.drawControlFabric
+		? FABRIC.drawControlFabric({ ...drawersArgs, normYKey: 'normControlY' })
 		: ControlsDrawer({ ...drawersArgs, normYKey: 'normControlY' });
-
-	// console.log(drawChart, drawControl)
 
 	render()
 
