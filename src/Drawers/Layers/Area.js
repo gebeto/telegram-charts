@@ -5,8 +5,6 @@ import {
 } from '../../Globals';
 import { normalize, throttle } from '../../utils';
 
-console.log('pi1', PI1)
-
 
 export default function Area({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {
 	const lineWidth = 2 * PIXEL_RATIO;
