@@ -87,10 +87,9 @@
 			fetch('assets/stage_2_data/3/overview.json').then(res => res.json()),
 			fetch('assets/stage_2_data/4/overview.json').then(res => res.json()),
 			fetch('assets/stage_2_data/5/overview.json').then(res => res.json()),
-			fetch('assets/stage_2_data/5/overview.json').then(res => res.json()),
 		]).then(ChartsData => {
 			ChartsData.map((chartData, index) => {
-				return Graph.render(chartsContainer, chartData, GraphFabrics[index]);
+				return Graph.render(chartsContainer, chartData);
 			});
 		});
 	</script>

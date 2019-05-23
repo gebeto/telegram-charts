@@ -1,22 +1,4 @@
-.chart {
-	padding-top: 10px;
-	padding-bottom: 10px;
-	position: relative;
-	width: 100%;
-	overflow: hidden;
-	font-family: Helvetica, Arial, sans-serif;
-
-	user-select: none;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-webkit-touch-callout: none;
-
-	@media (max-width:500px) {
-		font-size: 0.6em;
-	}
-}
-
-.chart__header {
+&__header {
 	padding: 0px 1em;
 	height: 64px;
 	line-height: 64px;
@@ -36,7 +18,7 @@
 }
 
 
-.chart__canvas {
+&__canvas {
 	width: 100%;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }

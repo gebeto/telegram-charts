@@ -1,4 +1,32 @@
-@import "html.scss";
-@import "chart.scss";
-@import "popup.scss";
-@import "buttons.scss";
+html {
+	&.dark {
+		background: #1e2734;
+		color: #FFFFFF;
+		
+		.chart__popup {
+			background: #181F2A;
+		}
+	}
+}
+
+.chart {	
+	padding-top: 10px;
+	padding-bottom: 10px;
+	position: relative;
+	width: 100%;
+	overflow: hidden;
+	font-family: Helvetica, Arial, sans-serif;
+
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-webkit-touch-callout: none;
+
+	@media (max-width:500px) {
+		font-size: 0.6em;
+	}
+
+	@import "chart.scss";
+	@import "popup.scss";
+	@import "buttons.scss";
+}
