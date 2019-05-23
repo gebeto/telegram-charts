@@ -12,7 +12,7 @@ export const CHART_HEIGHT = CANVAS_HEIGHT - CONTROL_HEIGHT;
 export const PI2 = Math.PI * 2;
 export const PI1 = Math.PI / 100;
 
-export const FONT = `${11 * PIXEL_RATIO}px Arial`;
+export const FONT = `${11 * PIXEL_RATIO}px sans-serif`;
 export const AXIS_TEXT_WIDTH = 40 * PIXEL_RATIO;
 export const AXIS_TEXT_WIDTH_DIV_2 = AXIS_TEXT_WIDTH / 2;
 export const AXIS_TEXT_WIDTH_MUL_2 = AXIS_TEXT_WIDTH * 2;

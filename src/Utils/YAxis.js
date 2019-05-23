@@ -31,6 +31,7 @@ export function prepareYAxis(ys, data, config) {
 		};
 
 		if (data.y_scaled) {
+			item.scaling.color = data.colors[item.key];
 			item.scaling.minHeight = uninf(singleMin(item.items));
 			item.scaling.maxHeight = uninf(singleMax(item.items));
 			item.scaling.minHeightAnim = config.animator.createAnimation(0, 300);

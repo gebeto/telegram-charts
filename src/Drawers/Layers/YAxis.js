@@ -6,6 +6,26 @@ import {
 } from '../../Globals';
 
 
+function formatNumber(n, short) {
+	var abs = Math.abs(n);
+	if (abs > 1000000000 && short) return (n / 1000000000).toFixed(2) + 'B';
+	if (abs > 1000000 && short) return (n / 1000000).toFixed(2) + 'M';
+	if (abs > 1000 && short) return (n / 1000).toFixed(1) + 'K';
+
+	if (abs > 1) {
+		var s = abs.toFixed(0);
+		var formatted = n < 0 ? '-' : '';
+		for (var i = 0; i < s.length; i++) {
+			formatted += s.charAt(i);
+			if ((s.length - 1 - i) % 3 === 0) formatted += ' ';
+		}
+		return formatted;
+	}
+
+	return n.toString()
+}
+
+
 export default function YAxis({ control, ctx, normX, normY, colors }, opts = {}) {
 	const partsCount = 6;
 	const textAlign = opts.textAlign || 'left';
@@ -22,13 +42,13 @@ export default function YAxis({ control, ctx, normX, normY, colors }, opts = {})
 		ctx.beginPath();
 
 		// ctx.fillStyle = '#182D3B';
-		ctx.fillStyle = CURRENT.THEME.gridLines;
-		// ctx.globalAlpha = 0.5;
+		ctx.fillStyle = data.scaling.color || CURRENT.THEME.gridLines;
 		if (separateAxis) {
 			ctx.globalAlpha = opacity / 2;
 		} else {
-			ctx.globalAlpha = 0.5;
+			ctx.globalAlpha = data.scaling.color ? 0.8 : 0.5;
 		}
+
 		ctx.font = FONT;
 		ctx.textBaseline = 'bottom';
 		ctx.textAlign = textAlign;
@@ -37,7 +57,8 @@ export default function YAxis({ control, ctx, normX, normY, colors }, opts = {})
 				ctx.moveTo(x, y + height - i * part);
 				ctx.lineTo(x + width, y + height - i * part);
 			}
-			ctx.fillText(min + partNumber * i, x + 3, y + height - i * part - Y_AXIS_TEXT_PADDING);
+			const number = formatNumber(min + partNumber * i, true);
+			ctx.fillText(number, x + 3, y + height - i * part - Y_AXIS_TEXT_PADDING);
 		}
 
 		ctx.lineWidth = 1 * PIXEL_RATIO;

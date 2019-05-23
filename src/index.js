@@ -41,7 +41,7 @@ function fabricByDatasource(datasource) {
 	}
 
 	const type = types[0];
-	console.log(type);
+	// console.log(type);
 	if (datasource.y_scaled) {
 		fabric.drawChartFabric = (args) => DualLineChartDrawer(args);
 		fabric.drawControlFabric = (args) => LineControlsDrawer(args);
@@ -51,7 +51,9 @@ function fabricByDatasource(datasource) {
 	} else if (type == 'area') {
 		fabric.drawChartFabric = (args) => FillLineChartDrawer(args);
 		fabric.drawControlFabric = (args) => FillLineControlsDrawer(args);
-		fabric.drawZoomedChartFabric = (args) => AreaChartDrawer(args);
+		if (datasource.percentage) {
+			fabric.drawZoomedChartFabric = (args) => AreaChartDrawer(args);
+		}
 	} else {
 		fabric.drawChartFabric = (args) => LineChartDrawer(args);
 		fabric.drawControlFabric = (args) => LineControlsDrawer(args);
