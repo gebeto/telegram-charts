@@ -15,7 +15,6 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys, norm
 
 	let count = 0;
 	let chunkSize = normX1 * currentWidth;
-	// let chunkSizeDiv2 = chunkSize / 2;
 	let currentIndexOld = -1;
 	let currentIndex = -1;
 	let onCanvasOld = false;
@@ -88,35 +87,18 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys, norm
 		currentX = x;
 		currentY = y;
 
-		const { key, items, opacity } = data;
-		const normY = data.scaling[normYKey];
-		const currOpacity = opacity.value;
-		if (!currOpacity) return;
-
-		count = items.length;
+		count = data.length;
 		chunkSize = normX1 * width;
-		// chunkSizeDiv2 = chunkSize / 2;
 
 		if (currentIndex > -1 && currentIndex < count) {
 			const X = x + norm.X(currentIndex) * width;
 			ctx.save();
 			ctx.strokeStyle = CURRENT.THEME.gridLines;
 			ctx.lineWidth = 1;
-			ctx.globalAlpha = 0.1;
+			ctx.globalAlpha = 0.2;
 			ctx.beginPath();
 			ctx.moveTo(X, y);
 			ctx.lineTo(X, y + height);
-			ctx.stroke();
-			ctx.restore();
-
-			ctx.save();
-			ctx.beginPath();
-			ctx.globalAlpha = currOpacity;
-			ctx.arc(X, y + height - normY(items[currentIndex]) * height, DOT_RADIUS, 0, PI2);
-			ctx.lineWidth = lineWidth;
-			ctx.strokeStyle = colors[key];
-			ctx.fillStyle = CURRENT.THEME.background;
-			ctx.fill();
 			ctx.stroke();
 			ctx.restore();
 		}

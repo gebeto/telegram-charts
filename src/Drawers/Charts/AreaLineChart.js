@@ -10,7 +10,7 @@ import {
 } from '../../Globals';
 
 import AreaLineLayerDrawer from '../Layers/AreaLine';
-import DotsLayerDrawer from '../Layers/LineDots';
+import AreaLineDotsLayerDrawer from '../Layers/AreaLineDots';
 import YAxisLayerDrawer from '../Layers/YAxis';
 import XAxisLayerDrawer from '../Layers/XAxis';
 
@@ -24,7 +24,7 @@ export default function AreaChartDrawer(drawersArgs) {
 
 	const drawXAxisLayer = XAxisLayerDrawer(drawersArgs);
 	const drawAreaLineLayer = AreaLineLayerDrawer(drawersArgs);
-	const drawDotsLayer = DotsLayerDrawer(drawersArgs);
+	const drawAreaLineDotsLayer = AreaLineDotsLayerDrawer(drawersArgs);
 	const drawYAxisLayer = YAxisLayerDrawer(drawersArgs, {
 		textAlign: 'left',
 	});
@@ -54,8 +54,10 @@ export default function AreaChartDrawer(drawersArgs) {
 		const stacked = new Array(xAxis.length).fill(0);
 		for (let i = 0; i < yAxis.items.length; i++) {
 			drawAreaLineLayer(yAxis.items[i], stacked, percentage, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
-			drawDotsLayer(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		}
+		
+		// console.log(xAxis)
+		drawAreaLineDotsLayer(xAxis, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		
 		drawXAxisLayer(xAxis, xRanged, y + HEIGHT - X_AXIS_HEIGHT, widthRanged, X_AXIS_HEIGHT);
 		drawYAxisLayer(yAxis.items[0], x, Y, width, HEIGHT - X_AXIS_HEIGHT, true);
