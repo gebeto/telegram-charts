@@ -194,11 +194,8 @@ export function createControlLayer(config, control) {
 		ctx.save();
 		ctx.beginPath();
 		ctx.fillStyle = "#FFFFFF";
-		// ctx.rect(xs - controlPipaPos, y + pipaH2, -controlPipaWidth, height - pipaH);
-		// ctx.rect(xe + controlPipaPos, y + pipaH2, controlPipaWidth, height - pipaH);
 		ctx.rect(xs - controlPipaPos, y + height/2 - pipaH2, -controlPipaWidth, pipaH);
 		ctx.rect(xe + controlPipaPos, y + height/2 - pipaH2, controlPipaWidth, pipaH);
-		// ctx.rect(xe + controlPipaPos, y + pipaH2, controlPipaWidth, height - pipaH);
 		ctx.fill();
 		ctx.restore();
 	}
@@ -209,4 +206,27 @@ export function createControlLayer(config, control) {
 
 
 	return OPTS;
+}
+
+
+export class BaseControl {
+	constructor() {
+
+	}
+
+	shouldRecalculate() {
+
+	}
+
+	shouldBulkRecalculate() {
+		
+	}
+
+	calculate() {
+
+	}
+
+	draw(data, x, y, width, height) {
+		ctx.fillRect(x, y, width, height);
+	}
 }

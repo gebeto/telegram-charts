@@ -1,13 +1,27 @@
 import { PIXEL_RATIO } from '../../Globals';
+import { throttle } from '../../utils';
 
 
-export default function Line({ config, control, ctx, norm, colors, normYKey }, opts = {}) {
+
+export default function Line({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {
 	const lineWidth = (opts.lineWidth || 2) * PIXEL_RATIO;
 
 	const draws = {
 		items: [],
 		opacity: 1.0,
 	};
+
+	let prevWidth = 0;
+
+	function shouldBulkRecalculate(datas) {
+		return true;
+	}
+
+	function shouldRecalculate(data) {
+		const result = data.opacity.inProgress || !data.calculated || ctx.canvas.width !== prevWidth;
+		prevWidth = ctx.canvas.width;
+		return result;
+	}
 
 	function calculate(data, x, y, width, height) {
 		const { key, items, opacity } = data;
@@ -38,6 +52,8 @@ export default function Line({ config, control, ctx, norm, colors, normYKey }, o
 
 			draws.items.push([X, Y]);
 		}
+
+		data.calculated = true;
 	}
 
 	function drawLine(data, x, y, width, height) {
@@ -62,6 +78,8 @@ export default function Line({ config, control, ctx, norm, colors, normYKey }, o
 	}
 
 	return {
+		shouldBulkRecalculate: shouldBulkRecalculate,
+		shouldRecalculate: shouldRecalculate,
 		calculate: calculate,
 		draw: drawLine,
 	}

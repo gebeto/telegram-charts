@@ -113,9 +113,11 @@ export default function BarDots({ canvasBounds, config, ctx, norm, colors, ys, n
 			ctx.globalAlpha = 0.2;
 			ctx.beginPath();
 			ctx.rect(X, y + height, chunkSize, -(normY(stacked[currentIndex]) * height));
+			// ctx.rect(X + chunkSize, y, 1000, height);
+			// ctx.rect(X, y, -1000, height);
 			ctx.fillStyle = CURRENT.THEME.gridLines;
 			ctx.fill();
-			ctx.stroke();
+			// ctx.stroke();
 			ctx.restore();
 		}
 	}

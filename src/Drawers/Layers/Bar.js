@@ -2,13 +2,33 @@ import { PIXEL_RATIO } from '../../Globals';
 import { normalize, throttleL } from '../../utils';
 
 
-export default function Bar({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {
+export default function  Bar({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {
 	const chunkScale = norm.X(1);
 
 	const draws = {
 		items: [],
 		width: 0,
 		opacity: 1.0,
+	}
+
+	let prevWidth = 0;
+
+	function shouldBulkRecalculate(yAxis) {
+		let result = false;
+		if (prevWidth !== ctx.canvas.width) {
+			prevWidth = ctx.canvas.width;
+			return true;
+		}
+		for (let i = 0; i < yAxis.items.length; i++) {
+			if (result = yAxis.items[i].opacity.inProgress || !yAxis.items[i].calculated) {
+				break;
+			}
+		}
+		return result;
+	}
+
+	function shouldRecalculate(data) {
+		return true;
 	}
 
 	function calculate(data, stacked, x, y, width, height) {
@@ -45,6 +65,8 @@ export default function Bar({ config, control, ctx, norm, colors, normYKey, yAxi
 
 			draws.items.push([X, Y, Y + BAR_HEIGHT]);
 		}
+
+		data.calculated = true;
 	}
 
 	function drawBar(data, x, y, width, height) {
@@ -67,6 +89,8 @@ export default function Bar({ config, control, ctx, norm, colors, normYKey, yAxi
 	}
 
 	return {
+		shouldBulkRecalculate: shouldBulkRecalculate,
+		shouldRecalculate: shouldRecalculate,
 		calculate: calculate,
 		draw: drawBar,
 	};
