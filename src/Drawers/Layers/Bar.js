@@ -20,7 +20,9 @@ export default function  Bar({ config, control, ctx, norm, colors, normYKey, yAx
 			return true;
 		}
 		for (let i = 0; i < yAxis.items.length; i++) {
-			if (result = yAxis.items[i].opacity.inProgress || !yAxis.items[i].calculated) {
+			if (result = yAxis.items[i].opacity.inProgress
+				|| !yAxis.items[i].calculated
+			) {
 				break;
 			}
 		}

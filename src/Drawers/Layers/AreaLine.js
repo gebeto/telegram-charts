@@ -2,9 +2,9 @@ import { PIXEL_RATIO } from '../../Globals';
 import { normalize } from '../../utils';
 
 
-export default function FillLine({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {
+export default function AreaLine({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {
 	const chunkSize = norm.X(1);
-	return function drawFillLine(data, stacked, percentage, x, y, width, height) {
+	return function drawAreaLine(data, stacked, percentage, x, y, width, height) {
 		const { key, items, opacity } = data;
 		const normY = data.scaling[normYKey];
 		const normYM = normY(1);

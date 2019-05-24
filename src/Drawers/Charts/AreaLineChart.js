@@ -9,7 +9,7 @@ import {
 	DOT_RADIUS_MUL_2,
 } from '../../Globals';
 
-import FillLineLayerDrawer from '../Layers/FillLine';
+import AreaLineLayerDrawer from '../Layers/AreaLine';
 import DotsLayerDrawer from '../Layers/LineDots';
 import YAxisLayerDrawer from '../Layers/YAxis';
 import XAxisLayerDrawer from '../Layers/XAxis';
@@ -23,7 +23,7 @@ export default function AreaChartDrawer(drawersArgs) {
 	const chartPadding2 = chartPadding * 2;
 
 	const drawXAxisLayer = XAxisLayerDrawer(drawersArgs);
-	const drawFillLineLayer = FillLineLayerDrawer(drawersArgs);
+	const drawAreaLineLayer = AreaLineLayerDrawer(drawersArgs);
 	const drawDotsLayer = DotsLayerDrawer(drawersArgs);
 	const drawYAxisLayer = YAxisLayerDrawer(drawersArgs, {
 		textAlign: 'left',
@@ -53,7 +53,7 @@ export default function AreaChartDrawer(drawersArgs) {
 
 		const stacked = new Array(xAxis.length).fill(0);
 		for (let i = 0; i < yAxis.items.length; i++) {
-			drawFillLineLayer(yAxis.items[i], stacked, percentage, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
+			drawAreaLineLayer(yAxis.items[i], stacked, percentage, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 			drawDotsLayer(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		}
 		

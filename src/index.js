@@ -14,8 +14,8 @@ import LineChartDrawer from './Drawers/Charts/LineChart';
 import LineControlsDrawer from './Drawers/Controls/LineControls';
 
 import AreaChartDrawer from './Drawers/Charts/AreaChart';
-import FillLineChartDrawer from './Drawers/Charts/FillLineChart';
-import FillLineControlsDrawer from './Drawers/Controls/FillLineControls';
+import AreaLineChartDrawer from './Drawers/Charts/AreaLineChart';
+import AreaLineControlsDrawer from './Drawers/Controls/AreaLineControls';
 
 
 let graphsInstances = [];
@@ -50,8 +50,8 @@ function fabricByDatasource(datasource) {
 		fabric.drawChartFabric = (args) => BarChartDrawer(args);
 		fabric.drawControlFabric = (args) => BarControlsDrawer(args);
 	} else if (type == 'area') {
-		fabric.drawChartFabric = (args) => FillLineChartDrawer(args);
-		fabric.drawControlFabric = (args) => FillLineControlsDrawer(args);
+		fabric.drawChartFabric = (args) => AreaLineChartDrawer(args);
+		fabric.drawControlFabric = (args) => AreaLineControlsDrawer(args);
 		if (datasource.percentage) {
 			fabric.drawZoomedChartFabric = (args) => AreaChartDrawer(args);
 		}

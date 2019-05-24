@@ -1,12 +1,12 @@
 import { PIXEL_RATIO, ONE, CURRENT } from '../../Globals';
-import FillLineLayerDrawer from '../Layers/FillLine';
+import AreaLineLayerDrawer from '../Layers/AreaLine';
 import { debugLayer } from '../utils';
 import { createControlLayer, controlWidthMul2, controlWidth } from './utils';
 
 
-export default function FillLineControlsDrawer(drawersArgs) {
+export default function AreaLineControlsDrawer(drawersArgs) {
 	const { ctx, config, canvasBounds, control, ys, yAxis, xAxis } = drawersArgs;
-	const drawFillLineLayer = FillLineLayerDrawer(drawersArgs);
+	const drawAreaLineLayer = AreaLineLayerDrawer(drawersArgs);
 
 	const { updateControlBounds, renderControl } = createControlLayer(config, control);
 	
@@ -30,7 +30,7 @@ export default function FillLineControlsDrawer(drawersArgs) {
 
 		const stacked = new Array(xAxis.length).fill(0);
 		for (let i = 0; i < yAxis.items.length; i++) {
-			drawFillLineLayer(yAxis.items[i], stacked, percentage, x, y + 3, width, height - 6);
+			drawAreaLineLayer(yAxis.items[i], stacked, percentage, x, y + 3, width, height - 6);
 		}
 
 		renderControl(ctx, x, y, width, height);

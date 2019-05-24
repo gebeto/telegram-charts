@@ -18,7 +18,11 @@ export default function Line({ config, control, ctx, norm, colors, normYKey, yAx
 	}
 
 	function shouldRecalculate(data) {
-		const result = data.opacity.inProgress || !data.calculated || ctx.canvas.width !== prevWidth;
+		const result = (
+			data.opacity.inProgress
+			|| !data.calculated
+			|| ctx.canvas.width !== prevWidth
+		);
 		prevWidth = ctx.canvas.width;
 		return result;
 	}
