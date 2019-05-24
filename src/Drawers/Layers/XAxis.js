@@ -49,8 +49,6 @@ export default function XAxis({ config, control, ctx, norm, colors, forBars }) {
 		const alpha = (fade - 1) * (step);
 
 		for (let i = 0; i < count; i += realStep) {
-			// const X = x + AXIS_TEXT_WIDTH_DIV_2 + norm.X(i) * (width - AXIS_TEXT_WIDTH);
-			// const Y = y + X_AXIS_HEIGHT_DIV_2;
 			const ost = i % nextRealStep;
 			if (ost === 0) {
 				ctx.globalAlpha = 0.5;
@@ -62,15 +60,11 @@ export default function XAxis({ config, control, ctx, norm, colors, forBars }) {
 				}
 			}
 
-			// const X = x + norm.X(i) * width;
 			const X = x + (forBars ? chunkSize / 2 : 0) + chunkSize * i;
 			const Y = y + X_AXIS_HEIGHT_DIV_2;
-			// console.log(x, X);
-			// console.log(ctx.canvas.width, X)
 			if (X < -AXIS_TEXT_WIDTH || X > ctx.canvas.width + AXIS_TEXT_WIDTH) {
 				continue;
 			}
-			// ctx.fillRect(X - AXIS_TEXT_WIDTH_DIV_2, Y - height / 2, AXIS_TEXT_WIDTH, height);
 			ctx.fillText(items[i].dayString, X, Y);
 		}
 

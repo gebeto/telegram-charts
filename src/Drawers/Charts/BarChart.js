@@ -34,12 +34,8 @@ export default function BarChartDrawer(drawersArgs) {
 		// debugLayer(ctx, x, y, width, height);
 
 		const XS = width * control.range[0];
-		// const itemsStart = Math.floor(xAxis.length * control.range[0]);
-		// const itemsDiff = Math.ceil(xAxis.length * (control.range[1] - control.range[0]));
-		// const itemsEnd = itemsStart + itemsDiff;
 		const xRanged = x - XS / control.scale;
 		const widthRanged = width / control.scale;
-		// console.log(itemsStart, itemsEnd, xRanged, widthRanged);
 
 		const HEIGHT = height - BOTTOM_PADDING - DOT_RADIUS_MUL_2;
 		const Y = y + TWO;
