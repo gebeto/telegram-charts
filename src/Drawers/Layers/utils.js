@@ -71,8 +71,8 @@ export function createMouseDotHandling(config, canvasBounds, ctx, paddingLeftSel
 			if (current.index !== -1) {
 				const popupBounds = popup.element.getBoundingClientRect();
 				const currentPos = (current.index * context.chunkSize + current.x) / PIXEL_RATIO;
-				const paddingRight = paddingLeftSelector(context) / PIXEL_RATIO;
 				const paddingLeft = paddingRightSelector(context) / PIXEL_RATIO;
+				const paddingRight = paddingLeftSelector(context) / PIXEL_RATIO;
 				if (currentPos - popupBounds.width - paddingRight < 0) {
 					context.isLeft = false;
 				} else if (currentPos + popupBounds.width + paddingRight > canvasBounds.width / PIXEL_RATIO) {

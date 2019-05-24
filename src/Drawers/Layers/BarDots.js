@@ -9,8 +9,8 @@ export default function BarDots({ canvasBounds, config, ctx, norm, colors, normY
 		config,
 		canvasBounds,
 		ctx,
-		(context) => context.chunkSize + context.chunkSizeDiv2,
-		(context) => context.chunkSizeDiv2,
+		(context) => context.chunkSize + (context.chunkSizeDiv2 > 10 ? 10 : context.chunkSizeDiv2),
+		(context) => context.chunkSizeDiv2 > 10 ? 10 : context.chunkSizeDiv2,
 		Math.ceil, 0
 	);
 
