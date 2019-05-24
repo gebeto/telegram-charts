@@ -2,7 +2,7 @@ import { throttle } from '../../utils';
 import { CURRENT, PIXEL_RATIO } from '../../Globals';
 
 
-export default function BarDots({ canvasBounds, config, ctx, norm, colors, ys, normYKey }) {
+export default function BarDots({ canvasBounds, config, ctx, norm, colors, normYKey }) {
 	const lineWidth = 2 * PIXEL_RATIO;
 	const mouse = config.mouse.mouse;
 	const popup = config.popup;
@@ -91,8 +91,6 @@ export default function BarDots({ canvasBounds, config, ctx, norm, colors, ys, n
 
 		const { key, items, opacity } = data;
 		const normY = data.scaling[normYKey];
-		// const currOpacity = opacity.value;
-		// if (!currOpacity) return;
 		const WIDTH = width - chunkSize;
 
 		count = items.length;

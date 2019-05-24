@@ -5,7 +5,7 @@ import { createControlLayer, controlWidthMul2, controlWidth } from './utils';
 
 
 export default function ControlsDrawer(drawersArgs) {
-	const { ctx, config, canvasBounds, control, ys, yAxis, xAxis } = drawersArgs;
+	const { ctx, config, canvasBounds, control, yAxis, xAxis } = drawersArgs;
 	const  barLayers = yAxis.items.map(el => BarLayerDrawer(drawersArgs));
 	const { updateControlBounds, renderControl } = createControlLayer(config, control);
 	

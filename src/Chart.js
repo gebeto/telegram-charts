@@ -48,6 +48,23 @@ function dateString(timestamp, index, arr) {
 }
 
 
+function prepareDataset(data, config) {
+	const { title, columns, types, colors, names } = data; // main data
+	const { percentage, stacked, y_scaled } = data; // options
+
+
+	const [[xAxisKey, ...rawXAxis], ...rawYAxisList] = columns;
+	const xAxis = rawXAxis.map(el => dateString(el));
+	const yAxis = prepareYAxis(rawYAxisList, data, config)
+
+	return {
+		title, columns, types, colors, names,
+		xAxis,
+		yAxis,
+	};
+}
+
+
 function Chart(OPTS, data, FABRIC) {
 	const {
 		container,
@@ -63,7 +80,7 @@ function Chart(OPTS, data, FABRIC) {
 	}, w, h, normControl;
 
 	const canvasContainer = createElement(container, 'div', 'chart');
-	const header = createHeader(canvasContainer, title, 'Hello world!');
+	const header = createHeader(canvasContainer, title, '');
 	const canvas = createElement(canvasContainer, 'canvas', 'chart__canvas');
 	const ctx = canvas.getContext('2d');
 	const animator = createAnimator();
@@ -78,34 +95,26 @@ function Chart(OPTS, data, FABRIC) {
 			canvas: canvas,
 			canvasBounds: bounds,
 		}),
-		maxHeight: 0,
-		minHeight: 0,
-		minHeightAnim: animator.createAnimation(0, 300),
-		maxHeightAnim: animator.createAnimation(0, 300),
-		startIndex: 0,
-		endIndex: 0,
 
 		popup: {},
 	};
 
 	// Init data
-	const colors = data.colors;
-	const names = data.names;
-	const types = data.types;
+	const {
+		columns, types, colors, names,
+		xAxis,
+		yAxis,
+	} = prepareDataset(data, config);
 
-	data.columns[0] = data.columns[0].map(el => el.length ? el : dateString(el));
-	const [[xAxisKey, ...xAxis], ...ys] = data.columns;
-	const yAxis = prepareYAxis(ys, data, config);
-	config.endIndex = xAxis.length;
-	header.setSubtitle(`${xAxis[0].dateStringTitle} - ${xAxis[xAxis.length - 1].dateStringTitle}`)
+	// header.setSubtitle(`${xAxis[0].dateStringTitle} - ${xAxis[xAxis.length - 1].dateStringTitle}`)
+	config.popup = createPopup(canvasContainer, config, data, xAxis, yAxis);
+	if (yAxis.items.length > 1) {
+		const buttons = createButtons(canvasContainer, config.animator, data, yAxis, () => {
+			updateNorms(true);
+		});
+	}
 
-	config.popup = createPopup(canvasContainer, config, data, yAxis);
-	const buttons = ys.length > 1 ? createButtons(canvasContainer, config.animator, data, yAxis, () => {
-		updateNorms(true);
-	}) : {};
-	config.buttons = buttons;
-
-	const norm = { X: normalizeMemo(0, xAxis.length - 1) };
+	const norm = { X: normalize(0, xAxis.length - 1) };
 
 	const updateNorms = throttleLForceable(
 		function updateNorms() {
@@ -143,7 +152,9 @@ function Chart(OPTS, data, FABRIC) {
 		},
 	};
 
+	// const updateBounds = throttleLForceable(
 	function updateBounds() {
+		// console.log('BOUNDS')
 		const newBounds = canvas.getBoundingClientRect();
 		const newWidth = newBounds.width * PIXEL_RATIO;
 		const newHeight = newBounds.height * PIXEL_RATIO;
@@ -160,11 +171,13 @@ function Chart(OPTS, data, FABRIC) {
 		if (w !== newWidth || h !== newHeight) {
 			config.shouldChartUpdate = true;
 			config.shouldControlUpdate = true;
-			normControl = normalizeMemo(SIDES_PADDING2, bounds.width - SIDES_PADDING2);
+			// normControl = normalizeMemo(SIDES_PADDING2, bounds.width - SIDES_PADDING2);
+			normControl = normalize(SIDES_PADDING2, bounds.width - SIDES_PADDING2);
 			w = canvas.width = bounds.width;
 			h = canvas.height = CANVAS_HEIGHT;
 		}
 	}
+	// , 500);
 
 	function render(force) {
 		updateBounds();
@@ -200,10 +213,10 @@ function Chart(OPTS, data, FABRIC) {
 	window.addEventListener('resize', updateBounds);
 	control.updateRange(control.range[0], control.range[1])
 	updateBounds();
-	updateNorms();
+	updateNorms(true);
 
 	const drawersArgs = {
-		config, control, ctx, norm, colors, ys, buttons, xAxis, yAxis,
+		config, control, ctx, norm, colors, xAxis, yAxis,
 		canvasBounds: bounds,
 		normYKey: 'normY'
 	};

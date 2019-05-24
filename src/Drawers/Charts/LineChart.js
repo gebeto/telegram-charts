@@ -18,12 +18,12 @@ import { debugLayer } from '../utils';
 
 
 export default function LineChartDrawer(drawersArgs) {
-	const { ctx, config, control, ys, yAxis, xAxis } = drawersArgs;
+	const { ctx, config, control, yAxis, xAxis } = drawersArgs;
 	const chartPadding = 6 * PIXEL_RATIO;
 	const chartPadding2 = chartPadding * 2;
 
 	const drawLineLayer = LineLayerDrawer(drawersArgs);
-	const drawLineDotsLayer  = LineDotsLayerDrawer(drawersArgs);
+	const drawLineDotsLayer = LineDotsLayerDrawer(drawersArgs);
 	const drawXAxisLayer = XAxisLayerDrawer(drawersArgs);
 	const drawYAxisLayer = YAxisLayerDrawer(drawersArgs, {
 		textAlign: 'left',
@@ -47,7 +47,7 @@ export default function LineChartDrawer(drawersArgs) {
 			drawLineLayer.calculate(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 			drawLineLayer.draw(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		}
-		for (let i = 0; i < ys.length; i++ ) {
+		for (let i = 0; i < yAxis.items.length; i++ ) {
 			drawLineDotsLayer(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		}
 	}

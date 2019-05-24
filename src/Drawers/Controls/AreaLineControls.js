@@ -5,7 +5,7 @@ import { createControlLayer, controlWidthMul2, controlWidth } from './utils';
 
 
 export default function AreaLineControlsDrawer(drawersArgs) {
-	const { ctx, config, canvasBounds, control, ys, yAxis, xAxis } = drawersArgs;
+	const { ctx, config, canvasBounds, control, yAxis, xAxis } = drawersArgs;
 	const drawAreaLineLayer = AreaLineLayerDrawer(drawersArgs);
 
 	const { updateControlBounds, renderControl } = createControlLayer(config, control);

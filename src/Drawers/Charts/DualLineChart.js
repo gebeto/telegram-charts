@@ -18,7 +18,7 @@ import { debugLayer } from '../utils';
 
 
 export default function DualLineChartDrawer(drawersArgs) {
-	const { ctx, config, control, ys, yAxis, xAxis } = drawersArgs;
+	const { ctx, config, control, yAxis, xAxis } = drawersArgs;
 	const chartPadding = 6 * PIXEL_RATIO;
 	const chartPadding2 = chartPadding * 2;
 
@@ -47,11 +47,8 @@ export default function DualLineChartDrawer(drawersArgs) {
 		// Draw layers
 		drawXAxisLayer(xAxis, xRanged, y + HEIGHT - X_AXIS_HEIGHT, widthRanged, X_AXIS_HEIGHT);
 
-		// drawLeftYAxisLayer(Math.round(config.minHeightAnim.value), Math.round(config.maxHeightAnim.value), x, Y, width, HEIGHT - X_AXIS_HEIGHT);
-		// drawRightYAxisLayer(Math.round(config.minHeightAnim.value), Math.round(config.maxHeightAnim.value), x + width, Y, width, HEIGHT - X_AXIS_HEIGHT);
 		let drawYLine = true;
 		if (yAxis.items[0].enabled) {
-			// drawLeftYAxisLayer(Math.round(yAxis.items[0].scaling.minHeightAnim.value), Math.round(yAxis.items[0].scaling.maxHeightAnim.value), x, Y, width, HEIGHT - X_AXIS_HEIGHT, drawYLine);
 			drawLeftYAxisLayer(yAxis.items[0], x, Y, width, HEIGHT - X_AXIS_HEIGHT, drawYLine);
 			drawYLine = false;
 		}
@@ -64,7 +61,7 @@ export default function DualLineChartDrawer(drawersArgs) {
 			drawLineLayer.calculate(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 			drawLineLayer.draw(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		}
-		for (let i = 0; i < ys.length; i++ ) {
+		for (let i = 0; i < yAxis.items.length; i++ ) {
 			drawDotsLayer(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		}
 	}

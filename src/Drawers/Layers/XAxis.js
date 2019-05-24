@@ -10,12 +10,22 @@ import {
 
 const steps = [0, 1, 2, 4, 4, 8, 8, 8, 8, 16, 16, 16, 16, 16, 16, 16, 16, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64];
 
-export default function XAxis({ config, control, ctx, norm, colors }) {
+export default function XAxis({ config, control, ctx, norm, colors, forBars }) {
 	let deepness = 0;
-	const diff = norm.X(1);
+	const chunkScale = norm.X(1);
+	let chunkSize = 0;
 
 	return function drawXAxis(items, x, y, width, height) {
 		const count = items.length;
+		if (forBars) {
+			chunkSize = chunkScale * (width - chunkScale * width);
+		} else {
+			chunkSize = chunkScale * width;
+		}
+
+		if (forBars) {
+			width = width - chunkSize;
+		}
 
 		ctx.save();
 
@@ -26,7 +36,7 @@ export default function XAxis({ config, control, ctx, norm, colors }) {
 		ctx.textBaseline = 'middle';
 		ctx.globalAlpha = 0.5;
 
-		const currRaw = width * diff;
+		const currRaw = width * chunkScale;
 		const curr = Math.floor(currRaw);
 		const step = Math.ceil(AXIS_TEXT_WIDTH / currRaw);
 		const nextStep = step + 1;
@@ -52,7 +62,8 @@ export default function XAxis({ config, control, ctx, norm, colors }) {
 				}
 			}
 
-			const X = x + norm.X(i) * width;
+			// const X = x + norm.X(i) * width;
+			const X = x + (forBars ? chunkSize / 2 : 0) + chunkSize * i;
 			const Y = y + X_AXIS_HEIGHT_DIV_2;
 			// console.log(x, X);
 			// console.log(ctx.canvas.width, X)

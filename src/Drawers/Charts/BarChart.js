@@ -18,13 +18,13 @@ import { debugLayer } from '../utils';
 
 
 export default function BarChartDrawer(drawersArgs) {
-	const { ctx, config, control, ys, yAxis, xAxis } = drawersArgs;
+	const { ctx, config, control, yAxis, xAxis } = drawersArgs;
 	const chartPadding = 6 * PIXEL_RATIO;
 	const chartPadding2 = chartPadding * 2;
 
 	const drawBarLayer  = BarLayerDrawer(drawersArgs);
 	const drawBarDotsLayer  = BarDotsLayerDrawer(drawersArgs);
-	const drawXAxisLayer = XAxisLayerDrawer(drawersArgs);
+	const drawXAxisLayer = XAxisLayerDrawer({...drawersArgs, forBars: true});
 	const drawYAxisLayer = YAxisLayerDrawer(drawersArgs, {
 		textAlign: 'left',
 	});

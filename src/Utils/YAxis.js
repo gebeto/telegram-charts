@@ -21,8 +21,8 @@ import {
 } from '../utils';
 
 
-export function prepareYAxis(ys, data, config) {
-	const items = ys.map(y => {
+export function prepareYAxis(rawYs, data, config) {
+	const items = rawYs.map(y => {
 		const [yKey, ...yData] = y;
 		const item = {
 			opacity: config.animator.createAnimation(1, 300),

@@ -2,7 +2,7 @@ import { throttle } from '../../utils';
 import { PI2, CURRENT, DOT_RADIUS, PIXEL_RATIO } from '../../Globals';
 
 
-export default function Dots({ canvasBounds, config, ctx, norm, colors, ys, normYKey }) {
+export default function LineDots({ canvasBounds, config, ctx, norm, colors, normYKey }) {
 	const lineWidth = 2 * PIXEL_RATIO;
 	const mouse = config.mouse.mouse;
 	const popup = config.popup;
@@ -15,7 +15,7 @@ export default function Dots({ canvasBounds, config, ctx, norm, colors, ys, norm
 
 	let count = 0;
 	let chunkSize = normX1 * currentWidth;
-	// let chunkSizeDiv2 = chunkSize / 2;
+	let chunkSizeDiv2 = chunkSize / 2;
 	let currentIndexOld = -1;
 	let currentIndex = -1;
 	let onCanvasOld = false;

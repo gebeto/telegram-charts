@@ -20,14 +20,14 @@ export function createPopupItem(color, title, value) {
 }
 
 
-export function createPopup(container, config, data, ys) {
+export function createPopup(container, config, data, xAxis, yAxis) {
 	const popup = createElement(container, 'div', 'chart__popup');
 
 	function changeHtml(index) {
-		const curr = ys.items.filter(y => y.enabled).map(y => createPopupItem(data.colors[y.key], data.names[y.key], y.items[index]));
+		const curr = yAxis.items.filter(y => y.enabled).map(y => createPopupItem(data.colors[y.key], data.names[y.key], y.items[index]));
 		if (!curr.length) return;
 		popup.innerHTML = `
-			${createPopupHeader(data.columns[0][index + 1].dateString)}
+			${createPopupHeader(xAxis[index].dateString)}
 			${curr.join('')}
 		`;
 	}
