@@ -82,9 +82,9 @@
 		var chartsContainer = document.querySelector('#container');
 
 		Promise.all([
-			fetch('assets/stage_2_data/3/overview.json').then(res => res.json()),
 			fetch('assets/stage_2_data/1/overview.json').then(res => res.json()),
 			fetch('assets/stage_2_data/2/overview.json').then(res => res.json()),
+			fetch('assets/stage_2_data/3/overview.json').then(res => res.json()),
 			fetch('assets/stage_2_data/4/overview.json').then(res => res.json()),
 			fetch('assets/stage_2_data/5/overview.json').then(res => res.json()),
 		]).then(ChartsData => {

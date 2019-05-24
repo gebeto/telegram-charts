@@ -31,7 +31,12 @@ export default function Bar({ config, control, ctx, norm, colors, normYKey, yAxi
 			if (X < -chunk || X > ctx.canvas.width) {
 				continue;
 			}
-			ctx.rect(X, Y, BAR_WIDTH, BAR_HEIGHT > 0 ? BAR_HEIGHT : 0);
+			ctx.rect(
+				Math.ceil(X),
+				Math.ceil(Y),
+				Math.ceil(BAR_WIDTH),
+				Math.ceil(BAR_HEIGHT > 0 ? BAR_HEIGHT : 0)
+			);
 		}
 		// ctx.globalAlpha = copacity;
 		ctx.fillStyle = colors[key]
