@@ -3,20 +3,18 @@ import { normalize, throttleL } from '../../utils';
 
 
 export default function Bar({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {
-	const chunkSize = norm.X(1);
+	const chunkScale = norm.X(1);
 
 	const draws = {
 		items: [],
-		width: [],
+		width: 0,
 		opacity: 1.0,
-		color: null,
 	}
 
 	function calculate(data, stacked, x, y, width, height) {
 		const { key, items, opacity } = data;
 		const normY = data.scaling[normYKey];
 		draws.opacity = opacity.value;
-		draws.color = colors[key];
 		
 		if (!draws.opacity) return;
 		if (draws.opacity < 1) {
@@ -24,20 +22,25 @@ export default function Bar({ config, control, ctx, norm, colors, normYKey, yAxi
 		}
 
 		draws.items = [];
-		draws.width = chunkSize * width;
+		draws.width = chunkScale * width;
 
-		// const WIDTH = (width - chunkSize * width);
-		const WIDTH = width;
+		const WIDTH = (width - draws.width);
+		draws.width = chunkScale * WIDTH;
 		const count = items.length;
+		const chunk = chunkScale * WIDTH;
+		const chunk_2 = chunk / 2;
+		const endBreakpoint = ctx.canvas.width + count;
+		const startBreakpoint = -chunk;
 		for (let i = 0; i < count; i++) {
 			stacked[i] += items[i] * draws.opacity;
-			const chunk = chunkSize * WIDTH;
-			const X = x + chunk * i;
+			const X = x + chunk * i + chunk_2;
 			const Y = y + height - normY(stacked[i]) * height;
 			const BAR_HEIGHT = normY(items[i]) * height * draws.opacity;
 			
-			if (X < -chunk || X > ctx.canvas.width) {
+			if (X < startBreakpoint) {
 				continue;
+			} else if (X > endBreakpoint) {
+				break;
 			}
 
 			draws.items.push([X, Y, Y + BAR_HEIGHT]);
@@ -54,11 +57,11 @@ export default function Bar({ config, control, ctx, norm, colors, normYKey, yAxi
 		ctx.save();
 		ctx.beginPath();
 		for (let i = 0; i < count; i++) {
-			ctx.moveTo(items[i][0] + draws.width / 2, items[i][1]);
-			ctx.lineTo(items[i][0] + draws.width / 2, items[i][2]);
+			ctx.moveTo(items[i][0], items[i][1]);
+			ctx.lineTo(items[i][0], items[i][2]);
 		}
 		ctx.lineWidth = draws.width;
-		ctx.strokeStyle = draws.color;
+		ctx.strokeStyle = colors[key];
 		ctx.stroke();
 		ctx.restore();
 	}
