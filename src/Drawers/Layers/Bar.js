@@ -1,5 +1,4 @@
 import { PIXEL_RATIO } from '../../Globals';
-import { normalize, throttleL } from '../../utils';
 
 
 export default function  Bar({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {

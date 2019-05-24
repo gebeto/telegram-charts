@@ -1,5 +1,4 @@
 import { PIXEL_RATIO } from '../../Globals';
-import { normalize } from '../../utils';
 
 
 export default function AreaLine({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {

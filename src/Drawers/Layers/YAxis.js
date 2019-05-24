@@ -1,8 +1,8 @@
 import {
-	Y_AXIS_TEXT_PADDING,
-	PIXEL_RATIO,
-	CURRENT,
 	FONT,
+	CURRENT,
+	PIXEL_RATIO,
+	Y_AXIS_TEXT_PADDING,
 } from '../../Globals';
 
 

@@ -2,14 +2,9 @@ import { memo, normalize, normalizeMemo } from '../../utils';
 import {
 	FONT,
 	CURRENT,
-	SIDES_PADDING2,
-	PIXEL_RATIO,
-	X_AXIS_HEIGHT,
-	X_AXIS_HEIGHT_DIV_2,
 	AXIS_TEXT_WIDTH,
+	X_AXIS_HEIGHT_DIV_2,
 	AXIS_TEXT_WIDTH_DIV_2,
-	AXIS_TEXT_WIDTH_MUL_2,
-	AXIS_TEXT_WIDTH_MUL_3,
 } from '../../Globals';
 
 

@@ -1,6 +1,4 @@
 import { PIXEL_RATIO } from '../../Globals';
-import { throttle } from '../../utils';
-
 
 
 export default function Line({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {

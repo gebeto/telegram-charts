@@ -1,9 +1,4 @@
-import {
-	PIXEL_RATIO,
-	PI1,
-	FONT,
-} from '../../Globals';
-import { normalize, throttle } from '../../utils';
+import { PIXEL_RATIO, PI1, FONT } from '../../Globals';
 
 
 export default function Area({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {

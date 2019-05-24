@@ -1,11 +1,5 @@
 import { throttle } from '../../utils';
-import {
-	PI2,
-	FONT,
-	CURRENT,
-	DOT_RADIUS,
-	PIXEL_RATIO,
-} from '../../Globals';
+import { CURRENT, PIXEL_RATIO } from '../../Globals';
 
 
 export default function BarDots({ canvasBounds, config, ctx, norm, colors, ys, normYKey }) {
