@@ -5,7 +5,7 @@ export default function Area({ config, control, ctx, norm, colors, normYKey, yAx
 	const lineWidth = 2 * PIXEL_RATIO;
 	const mouse = config.mouse.mouse;
 	const popup = config.popup;
-	const normX1 = norm.X(1);
+	const chunkScale = config.scaleX;
 
 	let currentWidth = 0;
 	let currentHeight = 0;

@@ -6,7 +6,8 @@ export default function BarDots({ canvasBounds, config, ctx, norm, colors, normY
 	const lineWidth = 2 * PIXEL_RATIO;
 	const mouse = config.mouse.mouse;
 	const popup = config.popup;
-	const normX1 = norm.X(1);
+	// const chunkScale = config.scaleX;
+	const chunkScale = config.scaleX;
 
 	let currentWidth = 0;
 	let currentHeight = 0;
@@ -14,7 +15,7 @@ export default function BarDots({ canvasBounds, config, ctx, norm, colors, normY
 	let currentY = 0;
 
 	let count = 0;
-	let chunkSize = normX1 * currentWidth;
+	let chunkSize = chunkScale * currentWidth;
 	let chunkSizeDiv2 = chunkSize / 2;
 	let currentIndexOld = -1;
 	let currentIndex = -1;
@@ -94,22 +95,20 @@ export default function BarDots({ canvasBounds, config, ctx, norm, colors, normY
 		const WIDTH = width - chunkSize;
 
 		count = items.length;
-		chunkSize = normX1 * WIDTH;
+		chunkSize = chunkScale * WIDTH;
 		chunkSizeDiv2 = chunkSize / 2;
 
 		if (currentIndex > -1 && currentIndex < count) {
-			const X = x + norm.X(currentIndex) * WIDTH;
+			const X = x + chunkSize * currentIndex;
 			ctx.save();
 			ctx.strokeStyle = CURRENT.THEME.gridLines;
 			ctx.lineWidth = 1;
 			ctx.globalAlpha = 0.2;
 			ctx.beginPath();
 			ctx.rect(X, y + height, chunkSize, -(normY(stacked[currentIndex]) * height));
-			// ctx.rect(X + chunkSize, y, 1000, height);
-			// ctx.rect(X, y, -1000, height);
 			ctx.fillStyle = CURRENT.THEME.gridLines;
 			ctx.fill();
-			// ctx.stroke();
+			ctx.stroke();
 			ctx.restore();
 		}
 	}

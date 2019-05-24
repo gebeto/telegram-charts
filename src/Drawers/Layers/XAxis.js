@@ -12,7 +12,7 @@ const steps = [0, 1, 2, 4, 4, 8, 8, 8, 8, 16, 16, 16, 16, 16, 16, 16, 16, 32, 32
 
 export default function XAxis({ config, control, ctx, norm, colors, forBars }) {
 	let deepness = 0;
-	const chunkScale = norm.X(1);
+	const chunkScale = config.scaleX;
 	let chunkSize = 0;
 
 	return function drawXAxis(items, x, y, width, height) {

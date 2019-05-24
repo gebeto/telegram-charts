@@ -2,7 +2,9 @@ import { PIXEL_RATIO } from '../../Globals';
 
 
 export default function AreaLine({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {
-	const chunkSize = norm.X(1);
+	const chunkScale = config.scaleX;
+
+
 	return function drawAreaLine(data, stacked, percentage, x, y, width, height) {
 		const { key, items, opacity } = data;
 		const normY = data.scaling[normYKey];
@@ -17,18 +19,18 @@ export default function AreaLine({ config, control, ctx, norm, colors, normYKey,
 
 		ctx.save();
 		ctx.beginPath();
-		const chunk = chunkSize * width;
+		const chunkSize = chunkScale * width;
 		const XS = new Array(count).fill(0);
 
 		const onePercent = percentage[0];
 		const perc = Math.round(stacked[0] / onePercent);
 		const Y = y + height - normYM * perc * height;
 		ctx.moveTo(x, Y);
-		XS[0] = x + chunk * 0;
+		XS[0] = x + chunkSize * 0;
 
 		for (let i = 1; i < count; i++) {
 			const perc = Math.round(stacked[i] / percentage[i]);
-			XS[i] = x + chunk * i;
+			XS[i] = x + chunkSize * i;
 			const Y = y + height - normYM * perc * height;
 			ctx.lineTo(XS[i], Y);
 		}

@@ -3,6 +3,7 @@ import { PIXEL_RATIO } from '../../Globals';
 
 export default function Line({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {
 	const lineWidth = (opts.lineWidth || 2) * PIXEL_RATIO;
+	const chunkScale = config.scaleX;
 
 	const draws = {
 		items: [],
@@ -39,7 +40,7 @@ export default function Line({ config, control, ctx, norm, colors, normYKey, yAx
 		draws.items = [];
 
 		const count = items.length;
-		const chunkSize = norm.X(1) * width;
+		const chunkSize = chunkScale * width;
 		const yh = y + height;
 
 		draws.items.push([x + 0, yh - normY(items[0]) * height]);

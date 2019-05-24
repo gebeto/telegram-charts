@@ -106,6 +106,8 @@ function Chart(OPTS, data, FABRIC) {
 		yAxis,
 	} = prepareDataset(data, config);
 
+	config.scaleX = normalize(0, xAxis.length - 1)(1);
+
 	// header.setSubtitle(`${xAxis[0].dateStringTitle} - ${xAxis[xAxis.length - 1].dateStringTitle}`)
 	config.popup = createPopup(canvasContainer, config, data, xAxis, yAxis);
 	if (yAxis.items.length > 1) {
@@ -113,8 +115,6 @@ function Chart(OPTS, data, FABRIC) {
 			updateNorms(true);
 		});
 	}
-
-	const norm = { X: normalize(0, xAxis.length - 1) };
 
 	const updateNorms = throttleLForceable(
 		function updateNorms() {
@@ -216,7 +216,7 @@ function Chart(OPTS, data, FABRIC) {
 	updateNorms(true);
 
 	const drawersArgs = {
-		config, control, ctx, norm, colors, xAxis, yAxis,
+		config, control, ctx, colors, xAxis, yAxis,
 		canvasBounds: bounds,
 		normYKey: 'normY'
 	};

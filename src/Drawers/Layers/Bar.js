@@ -2,7 +2,7 @@ import { PIXEL_RATIO } from '../../Globals';
 
 
 export default function  Bar({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {
-	const chunkScale = norm.X(1);
+	const chunkScale = config.scaleX;
 
 	const draws = {
 		items: [],

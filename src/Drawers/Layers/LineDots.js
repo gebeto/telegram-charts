@@ -6,7 +6,7 @@ export default function LineDots({ canvasBounds, config, ctx, norm, colors, norm
 	const lineWidth = 2 * PIXEL_RATIO;
 	const mouse = config.mouse.mouse;
 	const popup = config.popup;
-	const normX1 = norm.X(1);
+	const chunkScale = config.scaleX;
 
 	let currentWidth = 0;
 	let currentHeight = 0;
@@ -14,7 +14,7 @@ export default function LineDots({ canvasBounds, config, ctx, norm, colors, norm
 	let currentY = 0;
 
 	let count = 0;
-	let chunkSize = normX1 * currentWidth;
+	let chunkSize = chunkScale * currentWidth;
 	let chunkSizeDiv2 = chunkSize / 2;
 	let currentIndexOld = -1;
 	let currentIndex = -1;
@@ -82,7 +82,7 @@ export default function LineDots({ canvasBounds, config, ctx, norm, colors, norm
 	config.mouse.addListener('down', (mouse, e) => { TOUCHED = true; handleOver(mouse, e); });
 	config.mouse.addListener('up', (mouse, e) => { TOUCHED = false; });
 
-	return function drawDots(data, x, y, width, height) {
+	return function drawLineDots(data, x, y, width, height) {
 		currentWidth = width;
 		currentHeight = height;
 		currentX = x;
@@ -94,11 +94,11 @@ export default function LineDots({ canvasBounds, config, ctx, norm, colors, norm
 		if (!currOpacity) return;
 
 		count = items.length;
-		chunkSize = normX1 * width;
+		chunkSize = chunkScale * width;
 		// chunkSizeDiv2 = chunkSize / 2;
 
 		if (currentIndex > -1 && currentIndex < count) {
-			const X = x + norm.X(currentIndex) * width;
+			const X = x + chunkSize * currentIndex;
 			ctx.save();
 			ctx.strokeStyle = CURRENT.THEME.gridLines;
 			ctx.lineWidth = 1;
