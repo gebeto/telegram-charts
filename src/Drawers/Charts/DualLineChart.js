@@ -61,7 +61,8 @@ export default function DualLineChartDrawer(drawersArgs) {
 		}
 
 		for (let i = 0; i < yAxis.items.length; i++ ) {
-			drawLineLayer(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
+			drawLineLayer.calculate(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
+			drawLineLayer.draw(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		}
 		for (let i = 0; i < ys.length; i++ ) {
 			drawDotsLayer(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);

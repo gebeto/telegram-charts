@@ -22,7 +22,7 @@ export default function LineChartDrawer(drawersArgs) {
 	const chartPadding = 6 * PIXEL_RATIO;
 	const chartPadding2 = chartPadding * 2;
 
-	const drawLineLayer  = LineLayerDrawer(drawersArgs);
+	const drawLineLayer = LineLayerDrawer(drawersArgs);
 	const drawLineDotsLayer  = LineDotsLayerDrawer(drawersArgs);
 	const drawXAxisLayer = XAxisLayerDrawer(drawersArgs);
 	const drawYAxisLayer = YAxisLayerDrawer(drawersArgs, {
@@ -44,7 +44,8 @@ export default function LineChartDrawer(drawersArgs) {
 		drawXAxisLayer(xAxis, xRanged, y + HEIGHT - X_AXIS_HEIGHT, widthRanged, X_AXIS_HEIGHT);
 		drawYAxisLayer(yAxis.items[0], x, Y, width, HEIGHT - X_AXIS_HEIGHT, true);
 		for (let i = 0; i < yAxis.items.length; i++ ) {
-			drawLineLayer(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
+			drawLineLayer.calculate(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
+			drawLineLayer.draw(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		}
 		for (let i = 0; i < ys.length; i++ ) {
 			drawLineDotsLayer(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);

@@ -10,6 +10,8 @@ export default class Animated {
 		this.startTime = 0;
 		this.duration = duration;
 		this.delay = 0;
+
+		this.inProgress = false;
 	}
 
 	playFrom(fromValue, toValue) {
@@ -18,6 +20,7 @@ export default class Animated {
 	}
 
 	play(toValue) {
+		this.inProgress = true;
 		this.startTime = AnimationLoop.time;
 		this.toValue = toValue;
 		this.fromValue = this.value;
@@ -30,7 +33,11 @@ export default class Animated {
 	}
 
 	_update() {
-		if (this.value === this.toValue) return false;
+		if (this.value === this.toValue) {
+			this.inProgress = false;
+			return false;
+		}
+		this.inProgress = true;
 		let progress = ((AnimationLoop.time - this.startTime) - this.delay) / this.duration;
 		if (progress < 0) progress = 0;
 		if (progress > 1) progress = 1;
