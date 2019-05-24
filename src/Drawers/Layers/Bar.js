@@ -75,15 +75,29 @@ export default function  Bar({ config, control, ctx, norm, colors, normYKey, yAx
 
 		if (!opacity) return;
 		const count = items.length;
+		// const w2 = draws.width / 2;
 
 		ctx.save();
-		ctx.beginPath();
-		for (let i = 0; i < count; i++) {
-			ctx.moveTo(items[i][0], items[i][1]);
-			ctx.lineTo(items[i][0], items[i][2]);
-		}
 		ctx.lineWidth = draws.width;
 		ctx.strokeStyle = colors[key];
+		ctx.beginPath();
+		for (let i = 0; i < count; i++) {
+			// console.log(config.mouse.mouse.newX);
+			// const isHovered = config.mouse.mouse.newX > items[i][0] - w2 && config.mouse.mouse.newX < items[i][0] + w2;
+			// if (isHovered) {
+			// 	ctx.globalAlpha = 0.5;
+			// 	ctx.stroke();
+			// 	ctx.globalAlpha = 1;
+			// 	ctx.beginPath();
+			// }
+			ctx.moveTo(items[i][0], items[i][1]);
+			ctx.lineTo(items[i][0], items[i][2]);
+			// if (isHovered) {
+			// 	ctx.stroke();
+			// 	ctx.globalAlpha = 0.5;
+			// 	ctx.beginPath();
+			// }
+		}
 		ctx.stroke();
 		ctx.restore();
 	}
