@@ -183,6 +183,7 @@ function Chart(OPTS, data, FABRIC) {
 	}
 
 	config.popup.element.addEventListener('click', () => {
+		if (!drawChartZoomed) return;
 		config.zoomed = !config.zoomed;
 		config.popup.hide();
 		config.shouldChartUpdate = true;
