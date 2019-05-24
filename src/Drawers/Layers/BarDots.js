@@ -1,111 +1,41 @@
 import { throttle } from '../../utils';
-import { CURRENT, PIXEL_RATIO } from '../../Globals';
+import { CURRENT } from '../../Globals';
+
+import { createMouseDotHandling } from './utils';
 
 
 export default function BarDots({ canvasBounds, config, ctx, norm, colors, normYKey }) {
-	const lineWidth = 2 * PIXEL_RATIO;
-	const mouse = config.mouse.mouse;
-	const popup = config.popup;
-	// const chunkScale = config.scaleX;
-	const chunkScale = config.scaleX;
-
-	let currentWidth = 0;
-	let currentHeight = 0;
-	let currentX = 0;
-	let currentY = 0;
-
-	let count = 0;
-	let chunkSize = chunkScale * currentWidth;
-	let chunkSizeDiv2 = chunkSize / 2;
-	let currentIndexOld = -1;
-	let currentIndex = -1;
-	let onCanvasOld = false;
-	let onCanvas = false;
-	let isLeft = true;
-	let TOUCHED = false;
-	
-
-	const handleOver = throttle((mouse, e) => {
-		// Check if mouse on canvas container
-		onCanvasOld = onCanvas;
-		onCanvas = (ctx.canvas === e.target || ctx.canvas.nextSibling.contains(e.target));
-		if ((!onCanvas && onCanvasOld) || e.target.tagName === 'BUTTON') {
-			if (currentIndex !== -1) {
-				config.shouldChartUpdate = true;
-			}
-			currentIndex = -1;
-			popup.hide();
-		}
-
-		if (!onCanvas) return;
-		if (e.target !== ctx.canvas) return;
-
-		if (onCanvas || (onCanvasOld === true && onCanvas === false)) {
-			currentIndexOld = currentIndex;
-			if (mouse.newY > currentY && mouse.newY < currentY + currentHeight) {
-				currentIndex = count - Math.ceil((currentWidth + currentX - mouse.newX) / chunkSize);
-				if (currentIndex < count && currentIndex >= 0) {
-					popup.show(currentIndex);
-				} else {
-					currentIndex = -1;
-					popup.hide();
-				}
-			} else {
-				currentIndex = -1;
-				popup.hide();
-			}
-		}
-
-		if (currentIndexOld !== currentIndex) {
-			config.shouldChartUpdate = true;
-
-			if (currentIndex !== -1) {
-				const popupBounds = popup.element.getBoundingClientRect();
-				const currentPos = (currentIndex * chunkSize + currentX) / PIXEL_RATIO;
-				if (currentPos - popupBounds.width - chunkSize - chunkSizeDiv2 < 0) {
-					isLeft = false;
-				} else if (currentPos + popupBounds.width + chunkSize + chunkSizeDiv2 > canvasBounds.width / PIXEL_RATIO) {
-					isLeft = true;
-				}
-
-				if (isLeft) {
-					popup.element.style.left = `${currentPos - popupBounds.width - chunkSizeDiv2}px`;
-				} else {
-					popup.element.style.left = `${currentPos + chunkSize + chunkSizeDiv2}px`;
-				}
-			}
-
-			currentIndexOld = currentIndex;
-		}
-	}, 50);
-
-	// config.mouse.addListener('move', handleOver);
-	config.mouse.addListener('move', (mouse, e) => { TOUCHED && handleOver(mouse, e); });
-	config.mouse.addListener('down', (mouse, e) => { TOUCHED = true; handleOver(mouse, e); });
-	config.mouse.addListener('up', (mouse, e) => { TOUCHED = false; });
+	const h = createMouseDotHandling(
+		config,
+		canvasBounds,
+		ctx,
+		(context) => context.chunkSize + context.chunkSizeDiv2,
+		(context) => context.chunkSizeDiv2,
+		Math.ceil, 0
+	);
 
 	return function drawBarDots(data, stacked, x, y, width, height) {
-		currentWidth = width;
-		currentHeight = height;
-		currentX = x;
-		currentY = y;
+		h.current.width = width;
+		h.current.height = height;
+		h.current.x = x;
+		h.current.y = y;
 
 		const { key, items, opacity } = data;
 		const normY = data.scaling[normYKey];
-		const WIDTH = width - chunkSize;
+		const WIDTH = width - h.chunkSize;
 
-		count = items.length;
-		chunkSize = chunkScale * WIDTH;
-		chunkSizeDiv2 = chunkSize / 2;
+		h.count = items.length;
+		h.chunkSize = h.chunkScale * WIDTH;
+		h.chunkSizeDiv2 = h.chunkSize / 2;
 
-		if (currentIndex > -1 && currentIndex < count) {
-			const X = x + chunkSize * currentIndex;
+		if (h.current.index > -1 && h.current.index < h.count) {
+			const X = x + h.chunkSize * h.current.index;
 			ctx.save();
 			ctx.strokeStyle = CURRENT.THEME.gridLines;
 			ctx.lineWidth = 1;
 			ctx.globalAlpha = 0.2;
 			ctx.beginPath();
-			ctx.rect(X, y + height, chunkSize, -(normY(stacked[currentIndex]) * height));
+			ctx.rect(X, y + height, h.chunkSize, -(normY(stacked[h.current.index]) * height));
 			ctx.fillStyle = CURRENT.THEME.gridLines;
 			ctx.fill();
 			ctx.stroke();

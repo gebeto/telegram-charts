@@ -1,97 +1,30 @@
 import { throttle } from '../../utils';
-import { PI2, CURRENT, DOT_RADIUS, PIXEL_RATIO } from '../../Globals';
+import { CURRENT, DOT_RADIUS } from '../../Globals';
+
+import { createMouseDotHandling } from './utils';
 
 
 export default function AreaLineDots({ canvasBounds, config, ctx, norm, colors, normYKey }) {
-	const lineWidth = 2 * PIXEL_RATIO;
-	const mouse = config.mouse.mouse;
-	const popup = config.popup;
-	const chunkScale = config.scaleX;
-
-	let currentWidth = 0;
-	let currentHeight = 0;
-	let currentX = 0;
-	let currentY = 0;
-
-	let count = 0;
-	let chunkSize = chunkScale * currentWidth;
-	let currentIndexOld = -1;
-	let currentIndex = -1;
-	let onCanvasOld = false;
-	let onCanvas = false;
-	let isLeft = true;
-	let TOUCHED = false;
-	
-
-	const handleOver = throttle((mouse, e) => {
-		// Check if mouse on canvas container
-		onCanvasOld = onCanvas;
-		onCanvas = (ctx.canvas === e.target || ctx.canvas.nextSibling.contains(e.target));
-		if ((!onCanvas && onCanvasOld) || e.target.tagName === 'BUTTON') {
-			if (currentIndex !== -1) {
-				config.shouldChartUpdate = true;
-			}
-			currentIndex = -1;
-			popup.hide();
-		}
-
-		if (!onCanvas) return;
-		if (e.target !== ctx.canvas) return;
-
-		if (onCanvas || (onCanvasOld === true && onCanvas === false)) {
-			currentIndexOld = currentIndex;
-			if (mouse.newY > currentY && mouse.newY < currentY + currentHeight) {
-				currentIndex = count - Math.round((currentWidth + currentX - mouse.newX) / chunkSize + 1);
-				if (currentIndex < count && currentIndex >= 0) {
-					popup.show(currentIndex);
-				} else {
-					currentIndex = -1;
-					popup.hide();
-				}
-			} else {
-				currentIndex = -1;
-				popup.hide();
-			}
-		}
-
-		if (currentIndexOld !== currentIndex) {
-			config.shouldChartUpdate = true;
-
-			if (currentIndex !== -1) {
-				const popupBounds = popup.element.getBoundingClientRect();
-				const currentPos = (currentIndex * chunkSize + currentX) / PIXEL_RATIO;
-				if (currentPos - popupBounds.width - DOT_RADIUS < 0) {
-					isLeft = false;
-				} else if (currentPos + popupBounds.width + DOT_RADIUS > canvasBounds.width / PIXEL_RATIO) {
-					isLeft = true;
-				}
-
-				if (isLeft) {
-					popup.element.style.left = `${currentPos - popupBounds.width - DOT_RADIUS}px`;
-				} else {
-					popup.element.style.left = `${currentPos + DOT_RADIUS}px`;
-				}
-			}
-
-			currentIndexOld = currentIndex;
-		}
-	}, 50);
-
-	config.mouse.addListener('move', (mouse, e) => { TOUCHED && handleOver(mouse, e); });
-	config.mouse.addListener('down', (mouse, e) => { TOUCHED = true; handleOver(mouse, e); });
-	config.mouse.addListener('up', (mouse, e) => { TOUCHED = false; });
+	const h = createMouseDotHandling(
+		config,
+		canvasBounds,
+		ctx,
+		(context) => DOT_RADIUS,
+		(context) => DOT_RADIUS,
+		Math.round, 1
+	);
 
 	return function drawAreaLineDots(data, x, y, width, height) {
-		currentWidth = width;
-		currentHeight = height;
-		currentX = x;
-		currentY = y;
+		h.current.width = width;
+		h.current.height = height;
+		h.current.x = x;
+		h.current.y = y;
 
-		count = data.length;
-		chunkSize = chunkScale * width;
+		h.count = data.length;
+		h.chunkSize = h.chunkScale * width;
 
-		if (currentIndex > -1 && currentIndex < count) {
-			const X = x + chunkSize * currentIndex * width;
+		if (h.current.index > -1 && h.current.index < h.count) {
+			const X = x + h.chunkSize * h.current.index;
 			ctx.save();
 			ctx.strokeStyle = CURRENT.THEME.gridLines;
 			ctx.lineWidth = 1;
