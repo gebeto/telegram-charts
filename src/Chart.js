@@ -167,7 +167,11 @@ function Chart(OPTS, data, FABRIC) {
 			// console.log('update chart', index);
 			config.shouldChartUpdate = false;
 			ctx.clearRect(0, 0, w, CANVAS_HEIGHT - CONTROL_HEIGHT);
-			drawChart(SIDES_PADDING, 0, w - SIDES_PADDING2, CANVAS_HEIGHT - CONTROL_HEIGHT);
+			if (config.zoomed && drawChartZoomed) {
+				drawChartZoomed(SIDES_PADDING, 0, w - SIDES_PADDING2, CANVAS_HEIGHT - CONTROL_HEIGHT);
+			} else {
+				drawChart(SIDES_PADDING, 0, w - SIDES_PADDING2, CANVAS_HEIGHT - CONTROL_HEIGHT);
+			}
 		}
 
 		if (config.shouldControlUpdate) {
@@ -177,6 +181,12 @@ function Chart(OPTS, data, FABRIC) {
 			drawControl(SIDES_PADDING, CANVAS_HEIGHT - CONTROL_HEIGHT, w - SIDES_PADDING2, CONTROL_HEIGHT);
 		}
 	}
+
+	config.popup.element.addEventListener('click', () => {
+		config.zoomed = !config.zoomed;
+		config.popup.hide();
+		config.shouldChartUpdate = true;
+	});
 
 	window.addEventListener('resize', updateBounds);
 	control.updateRange(control.range[0], control.range[1])
@@ -192,6 +202,7 @@ function Chart(OPTS, data, FABRIC) {
 	// console.log(FABRIC);
 	
 	const drawChart = FABRIC.drawChartFabric(drawersArgs);
+	const drawChartZoomed = FABRIC.drawZoomedChartFabric && FABRIC.drawZoomedChartFabric(drawersArgs);
 	const drawControl = FABRIC.drawControlFabric({ ...drawersArgs, normYKey: 'normControlY' });
 
 	render()
