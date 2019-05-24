@@ -3,6 +3,7 @@ import {
 	normalizeMemo,
 	normalize,
 	throttle,
+	throttleL,
 
 	zipSum,
 	flatMaxZipSum,
@@ -127,8 +128,8 @@ function scaling_Stacked(config, sharedScaling, items) {
 		sharedScaling.normControlY.updateDelta(min, max);
 	}
 
-	sharedScaling.updateMinMax = throttle(updateMinMax, 100);
-	// sharedScaling.updateMinMax = updateMinMax;
+	sharedScaling.updateMinMax = updateMinMax;
+	// sharedScaling.updateMinMax = throttleL(updateMinMax, 100);
 }
 
 
@@ -163,6 +164,6 @@ function scaling_Default(config, sharedScaling, items) {
 		sharedScaling.normControlY.updateDelta(min, max);
 	}
 
-	sharedScaling.updateMinMax = throttle(updateMinMax, 50)
-	// sharedScaling.updateMinMax = updateMinMax;
+	sharedScaling.updateMinMax = updateMinMax;
+	// sharedScaling.updateMinMax = throttleL(updateMinMax, 50)
 }

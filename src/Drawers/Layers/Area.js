@@ -22,7 +22,7 @@ export default function Area({ config, control, ctx, norm, colors, normYKey, yAx
 
 	// config.mouse.addListener('down', function down(mouse, e) {
 	// 	if (e.target !== ctx.canvas) return;
-	// 	console.log('G+HEY', mouse.newX, mouse.newY);
+	// 	console.log('G+HEY', Math.round(mouse.newX), Math.round(mouse.newY));
 	// 	config.shouldChartUpdate = true;
 	// });
 
@@ -68,6 +68,20 @@ export default function Area({ config, control, ctx, norm, colors, normYKey, yAx
 		const textAngle = angleStart + (angleEnd - angleStart) / 2;
 		const textX = centerX + Math.cos(textAngle) * (RADIUS / 2);
 		const textY = centerY + Math.sin(textAngle) * (RADIUS / 2);
+
+		// const startX = centerX + Math.cos(angleStart) * RADIUS;
+		// const startY = centerY + Math.sin(angleStart) * RADIUS;
+		// const endX = centerX + Math.cos(angleEnd) * RADIUS;
+		// const endY = centerY + Math.sin(angleEnd) * RADIUS;
+		// const mouseDistX = Math.abs(centerX - mouse.newX);
+		// const mouseDistY = Math.abs(centerY - mouse.newY);
+		// const mouseDist = Math.sqrt(mouseDistX * mouseDistX + mouseDistY * mouseDistY);
+		// console.log(RADIUS, mouseDist);
+		// ctx.fillRect(startX, startY, 10, 10);
+		// ctx.fillRect(endX, endY, 10, 10);
+		
+		// mouse.newX
+		// mouse.newY
 		ctx.fillText(perc.toFixed(0) + '%', textX, textY);
 		ctx.restore();
 	}

@@ -31,6 +31,7 @@ import {
 	normalize,
 	throttle,
 	throttleL,
+	throttleLForceable,
 	debounce,
 } from './utils';
 
@@ -99,25 +100,25 @@ function Chart(OPTS, data, FABRIC) {
 	header.setSubtitle(`${xAxis[0].dateStringTitle} - ${xAxis[xAxis.length - 1].dateStringTitle}`)
 
 	config.popup = createPopup(canvasContainer, config, data, yAxis);
-	const buttons = createButtons(canvasContainer, config.animator, data, yAxis, () => {
-		updateNorms();
-	});
+	const buttons = ys.length > 1 ? createButtons(canvasContainer, config.animator, data, yAxis, () => {
+		updateNorms(true);
+	}) : {};
 	config.buttons = buttons;
 
 	const norm = { X: normalizeMemo(0, xAxis.length - 1) };
 
-	const updateNorms = throttleL(
+	const updateNorms = throttleLForceable(
 		function updateNorms() {
-		const rStart = control.range[0];
-		const rEnd = control.range[1];
-		
-		const startIndexRaw = rStart * xAxis.length;
-		const startIndex = startIndexRaw < 0 ? 0 : Math.floor(startIndexRaw);
-		const endIndexRaw = rEnd * xAxis.length;
-		const endIndex = endIndexRaw > xAxis.length ? xAxis.length : Math.ceil(endIndexRaw);
-		yAxis.items.forEach(y => y.scaling.updateMinMax(startIndex, endIndex));
-		header.setSubtitle(`${xAxis[startIndex].dateStringTitle} - ${xAxis[endIndex - 1].dateStringTitle}`)
-	}
+			const rStart = control.range[0];
+			const rEnd = control.range[1];
+			
+			const startIndexRaw = rStart * xAxis.length;
+			const startIndex = startIndexRaw < 0 ? 0 : Math.floor(startIndexRaw);
+			const endIndexRaw = rEnd * xAxis.length;
+			const endIndex = endIndexRaw > xAxis.length ? xAxis.length : Math.ceil(endIndexRaw);
+			yAxis.items.forEach(y => y.scaling.updateMinMax(startIndex, endIndex));
+			header.setSubtitle(`${xAxis[startIndex].dateStringTitle} - ${xAxis[endIndex - 1].dateStringTitle}`)
+		}
 	, 100);
 
 

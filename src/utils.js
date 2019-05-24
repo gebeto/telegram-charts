@@ -92,6 +92,24 @@ export const throttleL = (func, limit) => {
 	}
 }
 
+export const throttleLForceable = (func, limit) => {
+	let inThrottle;
+	return function(force) {
+		const context = this;
+		if (force) {
+			func.apply(context, null);
+			return;
+		}
+		if (!inThrottle) {
+			inThrottle = true;
+			setTimeout(() => {
+				func.apply(context, null);
+				inThrottle = false;
+			}, limit);
+		}
+	}
+}
+
 export function memo(fun) {
 	const memos = {};
 	return function memoized(arg) {
