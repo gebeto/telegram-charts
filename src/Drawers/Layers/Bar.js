@@ -78,8 +78,6 @@ export default function  Bar({ config, control, ctx, norm, colors, normYKey, yAx
 		// const w2 = draws.width / 2;
 
 		ctx.save();
-		ctx.lineWidth = draws.width;
-		ctx.strokeStyle = colors[key];
 		ctx.beginPath();
 		for (let i = 0; i < count; i++) {
 			// console.log(config.mouse.mouse.newX);
@@ -98,6 +96,8 @@ export default function  Bar({ config, control, ctx, norm, colors, normYKey, yAx
 			// 	ctx.beginPath();
 			// }
 		}
+		ctx.lineWidth = draws.width;
+		ctx.strokeStyle = colors[key];
 		ctx.stroke();
 		ctx.restore();
 	}

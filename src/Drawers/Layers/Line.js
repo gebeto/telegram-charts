@@ -40,6 +40,8 @@ export default function Line({ config, control, ctx, norm, colors, normYKey, yAx
 		const chunkSize = norm.X(1) * width;
 		const yh = y + height;
 
+		draws.items.push([x + 0, yh - normY(items[0]) * height]);
+
 		for (let i = 1; i < count; i++) {
 			const X = x + chunkSize * i;
 			const Y = yh - normY(items[i]) * height;
