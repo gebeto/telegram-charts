@@ -22,9 +22,9 @@ export default function BarChartDrawer(drawersArgs) {
 	const chartPadding = 6 * PIXEL_RATIO;
 	const chartPadding2 = chartPadding * 2;
 
-	const drawXAxisLayer = XAxisLayerDrawer(drawersArgs);
 	const drawBarLayer  = BarLayerDrawer(drawersArgs);
 	const drawBarDotsLayer  = BarDotsLayerDrawer(drawersArgs);
+	const drawXAxisLayer = XAxisLayerDrawer(drawersArgs);
 	const drawYAxisLayer = YAxisLayerDrawer(drawersArgs, {
 		textAlign: 'left',
 	});
@@ -34,11 +34,15 @@ export default function BarChartDrawer(drawersArgs) {
 		// debugLayer(ctx, x, y, width, height);
 
 		const XS = width * control.range[0];
+		// const itemsStart = Math.floor(xAxis.length * control.range[0]);
+		// const itemsDiff = Math.ceil(xAxis.length * (control.range[1] - control.range[0]));
+		// const itemsEnd = itemsStart + itemsDiff;
 		const xRanged = x - XS / control.scale;
 		const widthRanged = width / control.scale;
+		// console.log(itemsStart, itemsEnd, xRanged, widthRanged);
 
 		const HEIGHT = height - BOTTOM_PADDING - DOT_RADIUS_MUL_2;
-		const Y = y + DOT_RADIUS + TWO;
+		const Y = y + TWO;
 
 		// Draw layers
 		const stacked = new Array(xAxis.length).fill(0);

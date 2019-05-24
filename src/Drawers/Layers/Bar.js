@@ -23,10 +23,6 @@ export default function Bar({ config, control, ctx, norm, colors, normYKey, yAxi
 		for (let i = 0; i < count; i++) {
 			stacked[i] += items[i] * copacity;
 			const chunk = chunkSize * WIDTH;
-			// const X = Math.ceil(x + chunk * i);
-			// const Y = Math.ceil(y + height - normY(stacked[i]) * height);
-			// const BAR_HEIGHT = Math.ceil(normY(items[i]) * height * copacity);
-			// const BAR_WIDTH = Math.ceil(chunk - chunkSize);
 			const X = x + chunk * i;
 			const Y = y + height - normY(stacked[i]) * height;
 			const BAR_HEIGHT = normY(items[i]) * height * copacity;

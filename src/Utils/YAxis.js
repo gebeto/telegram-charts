@@ -22,12 +22,13 @@ import {
 
 export function prepareYAxis(ys, data, config) {
 	const items = ys.map(y => {
+		const [yKey, ...yData] = y;
 		const item = {
 			opacity: config.animator.createAnimation(1, 300),
-			key: y[0],
+			key: yKey,
 			scaling: {},
 			enabled: true,
-			items: y.slice(1),
+			items: yData,
 		};
 
 		if (data.y_scaled) {
@@ -108,7 +109,8 @@ function scaling_Stacked(config, sharedScaling, items) {
 	sharedScaling.normY = normalizeAnimated(config.animator, minHeight, maxHeight);
 	sharedScaling.normControlY = normalizeAnimated(config.animator, 0, max);
 
-	sharedScaling.updateMinMax = function updateMinMax(startIndex, endIndex) {
+	function updateMinMax(startIndex, endIndex) {
+		// console.log('UPD MIN')
 		const filteredRawItems = items.filter(y => y.enabled).map(y => y.items);
 		sharedScaling.minHeight = 0;
 		try {
@@ -123,7 +125,10 @@ function scaling_Stacked(config, sharedScaling, items) {
 		const min = 0;
 		const max = uninf(singleMax(zipSum(filteredRawItems)));
 		sharedScaling.normControlY.updateDelta(min, max);
-	};
+	}
+
+	sharedScaling.updateMinMax = throttle(updateMinMax, 100);
+	// sharedScaling.updateMinMax = updateMinMax;
 }
 
 
@@ -144,7 +149,8 @@ function scaling_Default(config, sharedScaling, items) {
 	sharedScaling.normY = normalizeAnimated(config.animator, minHeight, maxHeight);
 	sharedScaling.normControlY = normalizeAnimated(config.animator, min, max);
 
-	sharedScaling.updateMinMax = function updateMinMax(startIndex, endIndex) {
+	function updateMinMax(startIndex, endIndex) {
+		// console.log('UPD MIN')
 		const filteredRawItems = items.filter(y => y.enabled).map(y => y.items);
 		sharedScaling.minHeight = uninf(flatMinRange(filteredRawItems, startIndex, endIndex));
 		sharedScaling.maxHeight = uninf(flatMaxRange(filteredRawItems, startIndex, endIndex));
@@ -156,4 +162,7 @@ function scaling_Default(config, sharedScaling, items) {
 		const max = uninf(flatMax(filteredRawItems));
 		sharedScaling.normControlY.updateDelta(min, max);
 	}
+
+	sharedScaling.updateMinMax = throttle(updateMinMax, 50)
+	// sharedScaling.updateMinMax = updateMinMax;
 }

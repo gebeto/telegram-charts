@@ -30,6 +30,8 @@ import {
 	normalizeMemo,
 	normalize,
 	throttle,
+	throttleL,
+	debounce,
 } from './utils';
 
 
@@ -81,6 +83,8 @@ function Chart(OPTS, data, FABRIC) {
 		maxHeightAnim: animator.createAnimation(0, 300),
 		startIndex: 0,
 		endIndex: 0,
+
+		popup: {},
 	};
 
 	// Init data
@@ -97,21 +101,24 @@ function Chart(OPTS, data, FABRIC) {
 	config.popup = createPopup(canvasContainer, config, data, yAxis);
 	const buttons = createButtons(canvasContainer, config.animator, data, yAxis, () => {
 		updateNorms();
-	})
+	});
 	config.buttons = buttons;
 
 	const norm = { X: normalizeMemo(0, xAxis.length - 1) };
 
-	function updateNorms() {
+	const updateNorms = throttleL(
+		function updateNorms() {
 		const rStart = control.range[0];
 		const rEnd = control.range[1];
+		
 		const startIndexRaw = rStart * xAxis.length;
 		const startIndex = startIndexRaw < 0 ? 0 : Math.floor(startIndexRaw);
 		const endIndexRaw = rEnd * xAxis.length;
 		const endIndex = endIndexRaw > xAxis.length ? xAxis.length : Math.ceil(endIndexRaw);
 		yAxis.items.forEach(y => y.scaling.updateMinMax(startIndex, endIndex));
 		header.setSubtitle(`${xAxis[startIndex].dateStringTitle} - ${xAxis[endIndex - 1].dateStringTitle}`)
-	};
+	}
+	, 100);
 
 
 	const control = {

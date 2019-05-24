@@ -10,7 +10,7 @@ import {
 } from '../../Globals';
 
 import LineLayerDrawer from '../Layers/Line';
-import DotsLayerDrawer from '../Layers/LineDots';
+import LineDotsLayerDrawer from '../Layers/LineDots';
 import YAxisLayerDrawer from '../Layers/YAxis';
 import XAxisLayerDrawer from '../Layers/XAxis';
 
@@ -22,13 +22,13 @@ export default function LineChartDrawer(drawersArgs) {
 	const chartPadding = 6 * PIXEL_RATIO;
 	const chartPadding2 = chartPadding * 2;
 
+	const drawLineLayer  = LineLayerDrawer(drawersArgs);
+	const drawLineDotsLayer  = LineDotsLayerDrawer(drawersArgs);
+	const drawXAxisLayer = XAxisLayerDrawer(drawersArgs);
 	const drawYAxisLayer = YAxisLayerDrawer(drawersArgs, {
 		textAlign: 'left',
 	});
 
-	const drawXAxisLayer = XAxisLayerDrawer(drawersArgs);
-	const drawLineLayer  = LineLayerDrawer(drawersArgs);
-	const drawDotsLayer  = DotsLayerDrawer(drawersArgs);
 
 	return function drawChart(x, y, width, height) {
 		// debugLayer(ctx, x, y, width, height);
@@ -47,7 +47,7 @@ export default function LineChartDrawer(drawersArgs) {
 			drawLineLayer(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		}
 		for (let i = 0; i < ys.length; i++ ) {
-			drawDotsLayer(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
+			drawLineDotsLayer(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		}
 	}
 }

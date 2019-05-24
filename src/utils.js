@@ -65,14 +65,29 @@ export const debounce = (func, delay) => {
 }
 
 export const throttle = (func, limit) => {
-	let inThrottle
+	let inThrottle;
 	return function() {
-		const args = arguments
-		const context = this
+		const args = arguments;
+		const context = this;
 		if (!inThrottle) {
-			func.apply(context, args)
-			inThrottle = true
-			setTimeout(() => inThrottle = false, limit)
+			func.apply(context, args);
+			inThrottle = true;
+			setTimeout(() => inThrottle = false, limit);
+		}
+	}
+}
+
+export const throttleL = (func, limit) => {
+	let inThrottle;
+	return function() {
+		const args = arguments;
+		const context = this;
+		if (!inThrottle) {
+			inThrottle = true;
+			setTimeout(() => {
+				func.apply(context, args);
+				inThrottle = false;
+			}, limit);
 		}
 	}
 }
