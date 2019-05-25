@@ -70,7 +70,7 @@ export default function Line({ config, control, ctx, norm, colors, normYKey, yAx
 		data.calculated = true;
 	}
 
-	function drawLine(data, x, y, width, height, activeIndex) {
+	function drawLine(data, x, y, width, height) {
 		const { items, opacity } = draws;
 		const { key } = data;
 
@@ -88,33 +88,11 @@ export default function Line({ config, control, ctx, norm, colors, normYKey, yAx
 		ctx.globalAlpha = opacity;
 		ctx.lineJoin = 'round';
 		ctx.stroke();
-
-		if (activeIndex !== undefined) {
-			const itemsIndex = activeIndex - draws.offsetIndex;
-			if (items[itemsIndex]) {
-				const [ X, Y ] = items[itemsIndex];
-				ctx.save();
-				ctx.strokeStyle = CURRENT.THEME.gridLines;
-				ctx.lineWidth = 1;
-				ctx.globalAlpha = 0.1;
-				ctx.beginPath();
-				ctx.moveTo(X, y);
-				ctx.lineTo(X, y + height);
-				ctx.stroke();
-				ctx.restore();
-
-				ctx.beginPath();
-				ctx.arc(X, Y, DOT_RADIUS, 0, PI2);
-				ctx.fillStyle = CURRENT.THEME.background;
-				ctx.fill();
-				ctx.stroke();
-			}
-		}
-
 		ctx.restore();
 	}
 
 	return {
+		draws: draws,
 		shouldBulkRecalculate: shouldBulkRecalculate,
 		shouldRecalculate: shouldRecalculate,
 		calculate: calculate,

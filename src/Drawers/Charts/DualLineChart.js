@@ -2,6 +2,8 @@ import {
 	PIXEL_RATIO,
 	BOTTOM_PADDING,
 	X_AXIS_HEIGHT,
+	CURRENT,
+	PI2,
 	ONE,
 	TWO,
 	DOT_RADIUS,
@@ -13,14 +15,13 @@ import LineLayerDrawer from '../Layers/Line';
 import LineActivePopup from '../Layers/LineActivePopup';
 import YAxisLayerDrawer from '../Layers/YAxis';
 import XAxisLayerDrawer from '../Layers/XAxis';
+import { drawDotsForLines } from './utils';
 
 import { debugLayer } from '../utils';
 
 
 export default function DualLineChartDrawer(drawersArgs) {
-	const { ctx, config, control, yAxis, xAxis } = drawersArgs;
-	const chartPadding = 6 * PIXEL_RATIO;
-	const chartPadding2 = chartPadding * 2;
+	const { ctx, config, control, colors, yAxis, xAxis } = drawersArgs;
 
 	const drawLeftYAxisLayer = YAxisLayerDrawer(drawersArgs, {
 		textAlign: 'left',
@@ -31,7 +32,8 @@ export default function DualLineChartDrawer(drawersArgs) {
 	});
 
 	const drawXAxisLayer = XAxisLayerDrawer(drawersArgs);
-	const drawLineLayer  = LineLayerDrawer(drawersArgs);
+	// const drawLineLayer  = LineLayerDrawer(drawersArgs);
+	const drawLineLayers = yAxis.items.map(el => LineLayerDrawer(drawersArgs));
 	const calculateLineActivePopupIndex  = LineActivePopup(drawersArgs);
 
 	return function drawChart(x, y, width, height) {
@@ -57,10 +59,12 @@ export default function DualLineChartDrawer(drawersArgs) {
 			drawYLine = false;
 		}
 
-		const activeIndex = calculateLineActivePopupIndex(xAxis, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		for (let i = 0; i < yAxis.items.length; i++ ) {
-			drawLineLayer.calculate(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
-			drawLineLayer.draw(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT, activeIndex);
+			drawLineLayers[i].calculate(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
+			drawLineLayers[i].draw(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT, activeIndex);
 		}
+
+		const activeIndex = calculateLineActivePopupIndex(xAxis, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
+		drawDotsForLines(drawersArgs, y, height, activeIndex, drawLineLayers);
 	}
 }
