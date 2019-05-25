@@ -34,9 +34,33 @@ const Line = {
 };
 
 
-export default {
+const ChartTypes = {
 	bar: Bar,
 	area: Area,
 	line: Line,
 	dual_line: DualLine,
+};
+
+export function fabricByDatasource(datasource) {
+	const types = Object.keys(datasource.types).map(key => datasource.types[key]).filter(el => el !== 'x');
+	if (!types.length) {
+		throw new Error("DataSet error. No columns for chart")
+	} else if (types.length > 50) {
+		throw new Error("DataSet error. Supported up to 50 columns on one graph.")
+	}
+
+	const type = types[0];
+	if (ChartTypes[type]) {
+		if (datasource.y_scaled) {
+			if (type !== 'line' || types.length !== 2) {
+				throw new Error("DataSet error. 'y_scaled' is only used with exactly 2 'line' columns.")
+			}
+			return ChartTypes['dual_line'];
+		}
+		return ChartTypes[type]
+	}
+
+	return fabric;
 }
+
+export default ChartTypes;
