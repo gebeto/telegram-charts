@@ -10,7 +10,7 @@ import {
 } from '../../Globals';
 
 import LineLayerDrawer from '../Layers/Line';
-import LineDotsLayerDrawer from '../Layers/LineDots';
+import LineActivePopupLayer from '../Layers/LineActivePopup';
 import YAxisLayerDrawer from '../Layers/YAxis';
 import XAxisLayerDrawer from '../Layers/XAxis';
 
@@ -23,7 +23,7 @@ export default function LineChartDrawer(drawersArgs) {
 	const chartPadding2 = chartPadding * 2;
 
 	const drawLineLayer = LineLayerDrawer(drawersArgs);
-	const drawLineDotsLayer = LineDotsLayerDrawer(drawersArgs);
+	const calculateLineActivePopupIndex = LineActivePopupLayer(drawersArgs);
 	const drawXAxisLayer = XAxisLayerDrawer(drawersArgs);
 	const drawYAxisLayer = YAxisLayerDrawer(drawersArgs, {
 		textAlign: 'left',
@@ -43,10 +43,7 @@ export default function LineChartDrawer(drawersArgs) {
 		// Draw layers
 		drawXAxisLayer(xAxis, xRanged, y + HEIGHT - X_AXIS_HEIGHT, widthRanged, X_AXIS_HEIGHT);
 		drawYAxisLayer(yAxis.items[0], x, Y, width, HEIGHT - X_AXIS_HEIGHT, true);
-		// for (let i = 0; i < yAxis.items.length; i++ ) {
-		// 	drawLineDotsLayer(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
-		// }
-		const activeIndex = drawLineDotsLayer(xAxis, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
+		const activeIndex = calculateLineActivePopupIndex(xAxis, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		for (let i = 0; i < yAxis.items.length; i++ ) {
 			drawLineLayer.calculate(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 			drawLineLayer.draw(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT, activeIndex);

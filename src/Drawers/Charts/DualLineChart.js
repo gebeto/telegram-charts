@@ -10,7 +10,7 @@ import {
 } from '../../Globals';
 
 import LineLayerDrawer from '../Layers/Line';
-import DotsLayerDrawer from '../Layers/LineDots';
+import LineActivePopup from '../Layers/LineActivePopup';
 import YAxisLayerDrawer from '../Layers/YAxis';
 import XAxisLayerDrawer from '../Layers/XAxis';
 
@@ -32,7 +32,7 @@ export default function DualLineChartDrawer(drawersArgs) {
 
 	const drawXAxisLayer = XAxisLayerDrawer(drawersArgs);
 	const drawLineLayer  = LineLayerDrawer(drawersArgs);
-	const drawDotsLayer  = DotsLayerDrawer(drawersArgs);
+	const calculateLineActivePopupIndex  = LineActivePopup(drawersArgs);
 
 	return function drawChart(x, y, width, height) {
 		// debugLayer(ctx, x, y, width, height);
@@ -57,12 +57,10 @@ export default function DualLineChartDrawer(drawersArgs) {
 			drawYLine = false;
 		}
 
+		const activeIndex = calculateLineActivePopupIndex(xAxis, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		for (let i = 0; i < yAxis.items.length; i++ ) {
 			drawLineLayer.calculate(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
-			drawLineLayer.draw(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
-		}
-		for (let i = 0; i < yAxis.items.length; i++ ) {
-			drawDotsLayer(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
+			drawLineLayer.draw(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT, activeIndex);
 		}
 	}
 }
