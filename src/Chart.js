@@ -96,10 +96,11 @@ function Chart(OPTS, data, FABRIC) {
 	const title = data.title || OPTS.title || `Chart #${index + 1}`
 
 	// Init canvas
-	let bounds = {
+	let w, h, normControl;
+	const canvasBounds = {
 		left: 0,
 		top: 0,
-	}, w, h, normControl;
+	};
 
 	const canvasContainer = createElement(container, 'div', 'chart');
 	const header = createHeader(canvasContainer, title, '');
@@ -115,7 +116,7 @@ function Chart(OPTS, data, FABRIC) {
 		mouse: Mouse({
 			config: config,
 			canvas: canvas,
-			canvasBounds: bounds,
+			canvasBounds: canvasBounds,
 		}),
 
 		popup: {},
@@ -163,21 +164,21 @@ function Chart(OPTS, data, FABRIC) {
 		const newWidth = newBounds.width * PIXEL_RATIO;
 		const newHeight = newBounds.height * PIXEL_RATIO;
 
-		bounds.width = newWidth;
-		bounds.height = CANVAS_HEIGHT;
-		bounds.left = newBounds.left;
-		bounds.right = newBounds.right;
-		bounds.top = newBounds.top;
-		bounds.bottom = newBounds.bottom;
-		bounds.x = newBounds.x;
-		bounds.y = newBounds.y;
+		canvasBounds.width = newWidth;
+		canvasBounds.height = CANVAS_HEIGHT;
+		canvasBounds.left = newBounds.left;
+		canvasBounds.right = newBounds.right;
+		canvasBounds.top = newBounds.top;
+		canvasBounds.bottom = newBounds.bottom;
+		canvasBounds.x = newBounds.x;
+		canvasBounds.y = newBounds.y;
 
 		if (w !== newWidth || h !== newHeight) {
 			config.shouldChartUpdate = true;
 			config.shouldControlUpdate = true;
-			normControl = normalizeMemo(SIDES_PADDING2, bounds.width - SIDES_PADDING2);
-			// normControl = normalize(SIDES_PADDING2, bounds.width - SIDES_PADDING2);
-			w = canvas.width = bounds.width;
+			normControl = normalizeMemo(SIDES_PADDING2, canvasBounds.width - SIDES_PADDING2);
+			// normControl = normalize(SIDES_PADDING2, canvasBounds.width - SIDES_PADDING2);
+			w = canvas.width = canvasBounds.width;
 			h = canvas.height = CANVAS_HEIGHT;
 		}
 	}
@@ -191,11 +192,7 @@ function Chart(OPTS, data, FABRIC) {
 			// console.log('update chart', index);
 			config.shouldChartUpdate = false;
 			ctx.clearRect(0, 0, w, CANVAS_HEIGHT - CONTROL_HEIGHT);
-			if (config.zoomed && drawChartZoomed) {
-				drawChartZoomed(SIDES_PADDING, 0, w - SIDES_PADDING2, CANVAS_HEIGHT - CONTROL_HEIGHT);
-			} else {
-				drawChart(SIDES_PADDING, 0, w - SIDES_PADDING2, CANVAS_HEIGHT - CONTROL_HEIGHT);
-			}
+			drawChart(SIDES_PADDING, 0, w - SIDES_PADDING2, CANVAS_HEIGHT - CONTROL_HEIGHT);
 		}
 
 		if (config.shouldControlUpdate) {
@@ -206,12 +203,12 @@ function Chart(OPTS, data, FABRIC) {
 		}
 	}
 
-	config.popup.element.addEventListener('click', () => {
-		if (!drawChartZoomed) return;
-		config.zoomed = !config.zoomed;
-		config.popup.hide();
-		config.shouldChartUpdate = true;
-	});
+	// config.popup.element.addEventListener('click', () => {
+	// 	if (!drawChartZoomed) return;
+	// 	config.zoomed = !config.zoomed;
+	// 	config.popup.hide();
+	// 	config.shouldChartUpdate = true;
+	// });
 
 	window.addEventListener('resize', updateBounds);
 	control.updateRange(control.range[0], control.range[1])
@@ -219,16 +216,19 @@ function Chart(OPTS, data, FABRIC) {
 	updateNorms(true);
 
 	const drawersArgs = {
-		config, control, ctx, colors, xAxis, yAxis,
-		canvasBounds: bounds,
+		config, control, ctx,
+		colors, xAxis, yAxis,
+		canvasBounds,
 		normYKey: 'normY'
 	};
+	const drawersArgsControl = {
+		...drawersArgs,
+		normYKey: 'normControlY'
+	};
 
-	// console.log(FABRIC);
-	
 	const drawChart = FABRIC.drawChartFabric(drawersArgs);
 	const drawChartZoomed = FABRIC.drawZoomedChartFabric && FABRIC.drawZoomedChartFabric(drawersArgs);
-	const drawControl = FABRIC.drawControlFabric({ ...drawersArgs, normYKey: 'normControlY' });
+	const drawControl = FABRIC.drawControlFabric(drawersArgsControl);
 
 	render()
 
