@@ -1,13 +1,16 @@
 import { PIXEL_RATIO } from '../../Globals';
+import { createMouseDotHandling } from './utils';
 
 
-export default function  Bar({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {
+export default function  Bar({ config, control, canvasBounds, ctx, norm, colors, normYKey, xAxis, yAxis }, opts = {}) {
 	const chunkScale = config.scaleX;
 
 	const draws = {
 		items: [],
 		width: 0,
 		opacity: 1.0,
+
+		offsetIndex: 0,
 	}
 
 	let prevWidth = 0;
@@ -43,6 +46,7 @@ export default function  Bar({ config, control, ctx, norm, colors, normYKey, yAx
 		}
 
 		draws.items = [];
+		draws.offsetIndex = 0;
 		draws.width = chunkScale * width;
 
 		const WIDTH = (width - draws.width);
@@ -59,6 +63,7 @@ export default function  Bar({ config, control, ctx, norm, colors, normYKey, yAx
 			const BAR_HEIGHT = normY(items[i]) * height * draws.opacity;
 			
 			if (X < startBreakpoint) {
+				draws.offsetIndex++;
 				continue;
 			} else if (X > endBreakpoint) {
 				break;
@@ -70,35 +75,34 @@ export default function  Bar({ config, control, ctx, norm, colors, normYKey, yAx
 		data.calculated = true;
 	}
 
-	function drawBar(data, x, y, width, height) {
+	function drawBar(data, stacked, x, y, width, height, index) {
+
 		const { key } = data;
 		const { items, opacity } = draws;
 
 		if (!opacity) return;
 		const count = items.length;
-		// const w2 = draws.width / 2;
 
 		ctx.save();
 		ctx.beginPath();
-		for (let i = 0; i < count; i++) {
-			// console.log(config.mouse.mouse.newX);
-			// const isHovered = config.mouse.mouse.newX > items[i][0] - w2 && config.mouse.mouse.newX < items[i][0] + w2;
-			// if (isHovered) {
-			// 	ctx.globalAlpha = 0.5;
-			// 	ctx.stroke();
-			// 	ctx.globalAlpha = 1;
-			// 	ctx.beginPath();
-			// }
-			ctx.moveTo(items[i][0], items[i][1]);
-			ctx.lineTo(items[i][0], items[i][2]);
-			// if (isHovered) {
-			// 	ctx.stroke();
-			// 	ctx.globalAlpha = 0.5;
-			// 	ctx.beginPath();
-			// }
-		}
 		ctx.lineWidth = draws.width;
 		ctx.strokeStyle = colors[key];
+		for (let i = 0; i < count; i++) {
+			const isHovered = index === i + draws.offsetIndex;
+			if (isHovered) {
+				ctx.globalAlpha = 0.5;
+				ctx.stroke();
+				ctx.globalAlpha = 1;
+				ctx.beginPath();
+			}
+			ctx.moveTo(items[i][0], items[i][1]);
+			ctx.lineTo(items[i][0], items[i][2]);
+			if (isHovered) {
+				ctx.stroke();
+				ctx.globalAlpha = 0.5;
+				ctx.beginPath();
+			}
+		}
 		ctx.stroke();
 		ctx.restore();
 	}

@@ -14,32 +14,18 @@ export default function BarDots({ canvasBounds, config, ctx, norm, colors, normY
 		Math.ceil, 0
 	);
 
-	return function drawBarDots(data, stacked, x, y, width, height) {
+	return function drawBarDots(items, stacked, x, y, width, height) {
 		h.current.width = width;
 		h.current.height = height;
 		h.current.x = x;
 		h.current.y = y;
 
-		const { key, items, opacity } = data;
-		const normY = data.scaling[normYKey];
 		const WIDTH = width - h.chunkSize;
 
 		h.count = items.length;
 		h.chunkSize = h.chunkScale * WIDTH;
 		h.chunkSizeDiv2 = h.chunkSize / 2;
 
-		if (h.current.index > -1 && h.current.index < h.count) {
-			const X = x + h.chunkSize * h.current.index;
-			ctx.save();
-			ctx.strokeStyle = CURRENT.THEME.gridLines;
-			ctx.lineWidth = 1;
-			ctx.globalAlpha = 0.2;
-			ctx.beginPath();
-			ctx.rect(X, y + height, h.chunkSize, -(normY(stacked[h.current.index]) * height));
-			ctx.fillStyle = CURRENT.THEME.gridLines;
-			ctx.fill();
-			ctx.stroke();
-			ctx.restore();
-		}
+		return h.current.index;
 	}
 }

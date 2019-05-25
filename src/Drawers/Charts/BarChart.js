@@ -10,7 +10,7 @@ import {
 } from '../../Globals';
 
 import BarLayerDrawer from '../Layers/Bar';
-import BarDotsLayerDrawer from '../Layers/BarDots';
+import BarActivePopup from '../Layers/BarActivePopup';
 import YAxisLayerDrawer from '../Layers/YAxis';
 import XAxisLayerDrawer from '../Layers/XAxis';
 
@@ -23,7 +23,7 @@ export default function BarChartDrawer(drawersArgs) {
 	const chartPadding2 = chartPadding * 2;
 
 	const drawBarLayer  = BarLayerDrawer(drawersArgs);
-	const drawBarDotsLayer  = BarDotsLayerDrawer(drawersArgs);
+	const calculateActiveBarIndex  = BarActivePopup(drawersArgs);
 	const drawXAxisLayer = XAxisLayerDrawer({...drawersArgs, forBars: true});
 	const drawYAxisLayer = YAxisLayerDrawer(drawersArgs, {
 		textAlign: 'left',
@@ -41,12 +41,13 @@ export default function BarChartDrawer(drawersArgs) {
 		const Y = y + TWO;
 
 		// Draw layers
+		const currentIndex = calculateActiveBarIndex(xAxis, stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
+		console.log(currentIndex)
 		const stacked = new Array(xAxis.length).fill(0);
 		for (let i = 0; i < yAxis.items.length; i++) {
 			drawBarLayer.calculate(yAxis.items[i], stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
-			drawBarLayer.draw(yAxis.items[i], stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
+			drawBarLayer.draw(yAxis.items[i], stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT, currentIndex);
 		}
-		drawBarDotsLayer(yAxis.items[0], stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		
 		drawXAxisLayer(xAxis, xRanged, y + HEIGHT - X_AXIS_HEIGHT, widthRanged, X_AXIS_HEIGHT);
 		drawYAxisLayer(yAxis.items[0], x, Y, width, HEIGHT - X_AXIS_HEIGHT, true);

@@ -1,6 +1,9 @@
 import { throttle } from '../../utils';
 import { PI2, ONE, TWO, CURRENT, DOT_RADIUS, PIXEL_RATIO } from '../../Globals';
 
+const SIDE_LEFT = 1;
+const SIDE_CENTER = 2;
+const SIDE_RIGHT = 3;
 
 export function createMouseDotHandling(config, canvasBounds, ctx, paddingLeftSelector, paddingRightSelector, rounding, plus) {
 	const mouse = config.mouse.mouse;
@@ -26,7 +29,7 @@ export function createMouseDotHandling(config, canvasBounds, ctx, paddingLeftSel
 
 		onCanvasOld: false,
 		onCanvas: false,
-		isLeft: true,
+		popupSide: 1,
 
 		current: current,
 	};
@@ -73,15 +76,18 @@ export function createMouseDotHandling(config, canvasBounds, ctx, paddingLeftSel
 				const currentPos = (current.index * context.chunkSize + current.x) / PIXEL_RATIO;
 				const paddingLeft = paddingRightSelector(context) / PIXEL_RATIO;
 				const paddingRight = paddingLeftSelector(context) / PIXEL_RATIO;
-				if (currentPos - popupBounds.width - paddingRight < 0) {
-					context.isLeft = false;
-				} else if (currentPos + popupBounds.width + paddingRight > canvasBounds.width / PIXEL_RATIO) {
-					context.isLeft = true;
+
+				const leftOverflow = (currentPos + popupBounds.width + paddingRight);
+				const rightOverflow = (currentPos - popupBounds.width - paddingRight);
+				if (leftOverflow > canvasBounds.width / PIXEL_RATIO) {
+					context.popupSide = SIDE_LEFT;
+				} else if (rightOverflow < 0) {
+					context.popupSide = SIDE_RIGHT;
 				}
 
-				if (context.isLeft) {
+				if (context.popupSide === SIDE_LEFT) {
 					popup.element.style.left = `${currentPos - popupBounds.width - paddingLeft}px`;
-				} else {
+				} else if (context.popupSide === SIDE_RIGHT) {
 					popup.element.style.left = `${currentPos + paddingRight}px`;
 				}
 			}
