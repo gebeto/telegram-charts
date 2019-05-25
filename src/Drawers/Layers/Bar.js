@@ -52,13 +52,13 @@ export default function  Bar({ config, control, canvasBounds, ctx, norm, colors,
 		const WIDTH = (width - draws.width);
 		draws.width = chunkScale * WIDTH;
 		const count = items.length;
-		const chunk = chunkScale * WIDTH;
-		const chunk_2 = chunk / 2;
+		const chunkSize = chunkScale * WIDTH;
+		const chunk_2 = chunkSize / 2;
+		const startBreakpoint = -chunkSize;
 		const endBreakpoint = ctx.canvas.width + count;
-		const startBreakpoint = -chunk;
 		for (let i = 0; i < count; i++) {
 			stacked[i] += items[i] * draws.opacity;
-			const X = x + chunk * i + chunk_2;
+			const X = x + chunkSize * i + chunk_2;
 			const Y = y + height - normY(stacked[i]) * height;
 			const BAR_HEIGHT = normY(items[i]) * height * draws.opacity;
 			
