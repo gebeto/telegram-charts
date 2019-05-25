@@ -59,9 +59,31 @@ function prepareDataset(data, config) {
 
 	return {
 		title, columns, types, colors, names,
-		xAxis,
-		yAxis,
+		xAxis, yAxis,
 	};
+}
+
+
+function createControl(xAxis, onRangeUpdate) {
+	const control = {
+		range: [0.7, 1.0],
+		count: 0,
+		scale: 0,
+		updateRange: function updateRange(start, end) {
+			const scale = end - start;
+			const count = xAxis.length * scale;
+			if (count > 5) {
+				// control.count = Math.ceil(count);
+				control.count = (count >> 0) + 1;
+				control.scale = scale;
+				control.range[0] = start;
+				control.range[1] = end;
+				onRangeUpdate && onRangeUpdate();
+			}
+		},
+	};
+
+	return control;
 }
 
 
@@ -97,6 +119,10 @@ function Chart(OPTS, data, FABRIC) {
 		}),
 
 		popup: {},
+
+		normalizeForControl: function normalizeForControl(xPos) {
+			return normControl(xPos);
+		}
 	};
 
 	// Init data
@@ -108,7 +134,6 @@ function Chart(OPTS, data, FABRIC) {
 
 	config.scaleX = normalize(0, xAxis.length - 1)(1);
 
-	// header.setSubtitle(`${xAxis[0].dateStringTitle} - ${xAxis[xAxis.length - 1].dateStringTitle}`)
 	config.popup = createPopup(canvasContainer, config, data, xAxis, yAxis);
 	if (yAxis.items.length > 1) {
 		const buttons = createButtons(canvasContainer, config.animator, data, yAxis, () => {
@@ -130,29 +155,8 @@ function Chart(OPTS, data, FABRIC) {
 		}
 	, 100);
 
+	const control = createControl(xAxis, () => updateNorms());
 
-	const control = {
-		// range: [0.1, 0.9],
-		range: [0.7, 1.0],
-		count: 0,
-		scale: 0,
-		updateRange: function updateRange(start, end) {
-			const scale = end - start;
-			const count = xAxis.length * scale;
-			if (count > 5) {
-				control.count = Math.ceil(count);
-				control.scale = scale;
-				control.range[0] = start;
-				control.range[1] = end;
-				updateNorms();
-			}
-		},
-		normalizeForControl: function normalizeForControl(xPos) {
-			return normControl(xPos);
-		},
-	};
-
-	// const updateBounds = throttleLForceable(
 	function updateBounds() {
 		// console.log('BOUNDS')
 		const newBounds = canvas.getBoundingClientRect();
@@ -171,13 +175,12 @@ function Chart(OPTS, data, FABRIC) {
 		if (w !== newWidth || h !== newHeight) {
 			config.shouldChartUpdate = true;
 			config.shouldControlUpdate = true;
-			// normControl = normalizeMemo(SIDES_PADDING2, bounds.width - SIDES_PADDING2);
-			normControl = normalize(SIDES_PADDING2, bounds.width - SIDES_PADDING2);
+			normControl = normalizeMemo(SIDES_PADDING2, bounds.width - SIDES_PADDING2);
+			// normControl = normalize(SIDES_PADDING2, bounds.width - SIDES_PADDING2);
 			w = canvas.width = bounds.width;
 			h = canvas.height = CANVAS_HEIGHT;
 		}
 	}
-	// , 500);
 
 	function render(force) {
 		updateBounds();

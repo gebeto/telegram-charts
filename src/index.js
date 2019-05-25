@@ -1,21 +1,11 @@
 import './styles/index.scss';
 
+import ChartTypes from './ChartTypes';
 import AnimationLoop from './Utils/AnimationLoop';
 import Chart from './Chart';
 
+
 import { createThemeChanger } from './UI/Theme';
-
-
-import BarChartDrawer from './Drawers/Charts/BarChart';
-import BarControlsDrawer from './Drawers/Controls/BarControls';
-
-import DualLineChartDrawer from './Drawers/Charts/DualLineChart';
-import LineChartDrawer from './Drawers/Charts/LineChart';
-import LineControlsDrawer from './Drawers/Controls/LineControls';
-
-import AreaChartDrawer from './Drawers/Charts/AreaChart';
-import AreaLineChartDrawer from './Drawers/Charts/AreaLineChart';
-import AreaLineControlsDrawer from './Drawers/Controls/AreaLineControls';
 
 
 let graphsInstances = [];
@@ -26,11 +16,6 @@ createThemeChanger((isLight) => {
 
 
 function fabricByDatasource(datasource) {
-	const fabric = {
-		drawChartFabric: null,
-		drawControlFabric: null,
-	};
-
 	const types = Object.keys(datasource.types).map(key => datasource.types[key]).filter(el => el !== 'x');
 	if (!types.length) {
 		throw new Error("DataSet error. No columns for chart")
@@ -39,25 +24,14 @@ function fabricByDatasource(datasource) {
 	}
 
 	const type = types[0];
-	// console.log(type);
-	if (datasource.y_scaled) {
-		if (type !== 'line' || types.length !== 2) {
-			throw new Error("DataSet error. 'y_scaled' is only used with exactly 2 'line' columns.")
+	if (ChartTypes[type]) {
+		if (datasource.y_scaled) {
+			if (type !== 'line' || types.length !== 2) {
+				throw new Error("DataSet error. 'y_scaled' is only used with exactly 2 'line' columns.")
+			}
+			return ChartTypes['dual_line'];
 		}
-		fabric.drawChartFabric = (args) => DualLineChartDrawer(args);
-		fabric.drawControlFabric = (args) => LineControlsDrawer(args);
-	} else if (type == 'bar') {
-		fabric.drawChartFabric = (args) => BarChartDrawer(args);
-		fabric.drawControlFabric = (args) => BarControlsDrawer(args);
-	} else if (type == 'area') {
-		fabric.drawChartFabric = (args) => AreaLineChartDrawer(args);
-		fabric.drawControlFabric = (args) => AreaLineControlsDrawer(args);
-		if (datasource.percentage) {
-			fabric.drawZoomedChartFabric = (args) => AreaChartDrawer(args);
-		}
-	} else {
-		fabric.drawChartFabric = (args) => LineChartDrawer(args);
-		fabric.drawControlFabric = (args) => LineControlsDrawer(args);
+		return ChartTypes[type]
 	}
 
 	return fabric;

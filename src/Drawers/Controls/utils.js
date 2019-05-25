@@ -5,7 +5,6 @@ export const DRAG_START = 1;
 export const DRAG_END = 2;
 export const DRAG_ALL = 3;
 
-
 export const pipaH = 10 * PIXEL_RATIO;
 export const pipaH2 = pipaH / 2;
 export const controlWidth = 10 * PIXEL_RATIO;
@@ -51,8 +50,8 @@ export function createControlLayer(config, control) {
 		config.shouldChartUpdate = true;
 		config.shouldControlUpdate = true;
 
-		const norm = control.normalizeForControl(mouse.newX);
-		const normOld = control.normalizeForControl(mouse.x);
+		const norm = config.normalizeForControl(mouse.newX);
+		const normOld = config.normalizeForControl(mouse.x);
 		const diff = (norm - normOld);
 
 		const newRangeStart = oldRange[0] + diff;
@@ -206,27 +205,4 @@ export function createControlLayer(config, control) {
 
 
 	return OPTS;
-}
-
-
-export class BaseControl {
-	constructor() {
-
-	}
-
-	shouldRecalculate() {
-
-	}
-
-	shouldBulkRecalculate() {
-		
-	}
-
-	calculate() {
-
-	}
-
-	draw(data, x, y, width, height) {
-		ctx.fillRect(x, y, width, height);
-	}
 }
