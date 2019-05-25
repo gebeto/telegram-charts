@@ -75,7 +75,7 @@ export default function  Bar({ config, control, canvasBounds, ctx, norm, colors,
 		data.calculated = true;
 	}
 
-	function drawBar(data, stacked, x, y, width, height, index) {
+	function drawBar(data, stacked, x, y, width, height, activeIndex) {
 
 		const { key } = data;
 		const { items, opacity } = draws;
@@ -88,7 +88,7 @@ export default function  Bar({ config, control, canvasBounds, ctx, norm, colors,
 		ctx.lineWidth = draws.width;
 		ctx.strokeStyle = colors[key];
 		for (let i = 0; i < count; i++) {
-			const isHovered = index === i + draws.offsetIndex;
+			const isHovered = activeIndex === i + draws.offsetIndex;
 			if (isHovered) {
 				ctx.globalAlpha = 0.5;
 				ctx.stroke();

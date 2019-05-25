@@ -41,12 +41,11 @@ export default function BarChartDrawer(drawersArgs) {
 		const Y = y + TWO;
 
 		// Draw layers
-		const currentIndex = calculateActiveBarIndex(xAxis, stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
-		console.log(currentIndex)
+		const currentActiveIndex = calculateActiveBarIndex(xAxis, stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		const stacked = new Array(xAxis.length).fill(0);
 		for (let i = 0; i < yAxis.items.length; i++) {
 			drawBarLayer.calculate(yAxis.items[i], stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
-			drawBarLayer.draw(yAxis.items[i], stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT, currentIndex);
+			drawBarLayer.draw(yAxis.items[i], stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT, currentActiveIndex);
 		}
 		
 		drawXAxisLayer(xAxis, xRanged, y + HEIGHT - X_AXIS_HEIGHT, widthRanged, X_AXIS_HEIGHT);
