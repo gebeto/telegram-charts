@@ -1,10 +1,11 @@
 import { createElement } from './utils';
+import { formatNumber } from '../utils';
 
-export function createPopupHeader(title) {
+export function createPopupHeader(title, widthArrow) {
 	return `
 		<strong class="chart__popup-header">
 			<span class="chart__popup-header-title">${title}</span>
-			<span class="chart__popup-header-icon"></span>
+			${widthArrow ? '<span class="chart__popup-header-icon"></span>' : '<span></span>'}
 		</strong>
 	`;
 }
@@ -14,7 +15,7 @@ export function createPopupItem(color, title, value) {
 	return `
 		<span class="chart__popup-item">
 			<span class="chart__popup-item-title">${title}</span>
-			<span class="chart__popup-item-value" style="color: ${color}">${value}</span>
+			<span class="chart__popup-item-value" style="color: ${color}">${formatNumber(value)}</span>
 		</span>
 	`;
 }
@@ -38,7 +39,7 @@ export function createPopup(container, config) {
 		const curr = filtered.map(y => createPopupItem(config.data.colors[y.key], config.data.names[y.key], y.items[index]));
 		if (!curr.length) return;
 		popup.innerHTML = `
-			${createPopupHeader(config.data.xAxis[index].dateString)}
+			${createPopupHeader(config.data.xAxis[index].dateString, config.data.x_on_zoom)}
 			${curr.join('')}
 		`;
 	}

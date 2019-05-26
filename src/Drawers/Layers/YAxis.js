@@ -4,26 +4,7 @@ import {
 	PIXEL_RATIO,
 	Y_AXIS_TEXT_PADDING,
 } from '../../Globals';
-
-
-function formatNumber(n, short) {
-	var abs = Math.abs(n);
-	if (abs > 1000000000 && short) return (n / 1000000000).toFixed(2) + 'B';
-	if (abs > 1000000 && short) return (n / 1000000).toFixed(2) + 'M';
-	if (abs > 1000 && short) return (n / 1000).toFixed(1) + 'K';
-
-	if (abs > 1) {
-		var s = abs.toFixed(0);
-		var formatted = n < 0 ? '-' : '';
-		for (var i = 0; i < s.length; i++) {
-			formatted += s.charAt(i);
-			if ((s.length - 1 - i) % 3 === 0) formatted += ' ';
-		}
-		return formatted;
-	}
-
-	return n.toString()
-}
+import { formatNumber } from '../../utils';
 
 
 export default function YAxis({ config }, opts = {}) {

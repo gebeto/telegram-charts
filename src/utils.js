@@ -2,6 +2,16 @@ import { ANIMATION_SPEED } from './Globals';
 import Animated from './Utils/Animated';
 
 
+export function formatNumber(n, short) {
+	var abs = Math.abs(n);
+	if (abs > 1000000000 && short) return (n / 1000000000).toFixed(2) + 'B';
+	if (abs > 1000000 && short) return (n / 1000000).toFixed(2) + 'M';
+	if (abs > 1000 && short) return (n / 1000).toFixed(1) + 'K';
+	if (abs > 1) return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+	return n.toString()
+}
+
+
 export function normalizeMemo(min, max) {
 	const delta = max - min;
 	const memo = {};
