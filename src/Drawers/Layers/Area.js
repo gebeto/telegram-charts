@@ -18,7 +18,7 @@ export default function Area({ config, control, ctx, norm, colors, normYKey, yAx
 	// config.mouse.addListener('down', function down(mouse, e) {
 	// 	if (e.target !== ctx.canvas) return;
 	// 	console.log('G+HEY', Math.round(mouse.newX), Math.round(mouse.newY));
-	// 	config.shouldChartUpdate = true;
+	// 	config.chart.shouldUpdate = true;
 	// });
 
 	return function drawArea(data, perc, start, end, x, y, width, height) {
@@ -32,7 +32,7 @@ export default function Area({ config, control, ctx, norm, colors, normYKey, yAx
 
 		if (!copacity) return;
 		if (copacity < 1) {
-			config.shouldControlUpdate = true;
+			config.control.shouldUpdate = true;
 		}
 
 		RADIUS = Math.min(width / 2, height / 2);

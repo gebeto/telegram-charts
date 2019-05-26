@@ -36,7 +36,7 @@ export default function Line({ config, control, ctx, norm, colors, normYKey, yAx
 
 		if (!currOpacity) return;
 		if (currOpacity < 1) {
-			config.shouldControlUpdate = true;
+			config.control.shouldUpdate = true;
 		}
 
 		draws.items = [];
@@ -55,7 +55,7 @@ export default function Line({ config, control, ctx, norm, colors, normYKey, yAx
 			const X = x + chunkSize * i;
 			const Y = yh - normY(items[i]) * height;
 			if (Y > yh) {
-				config.shouldControlUpdate = true;
+				config.control.shouldUpdate = true;
 			}
 			if (X < startBreakpoint) {
 				draws.offsetIndex++;

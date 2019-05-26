@@ -16,7 +16,7 @@ import { debugLayer } from '../utils';
 
 
 export default function AreaChartDrawer(drawersArgs) {
-	const { ctx, config, control, yAxis, xAxis } = drawersArgs;
+	const { ctx, config, yAxis, xAxis } = drawersArgs;
 	const chartPadding = 6 * PIXEL_RATIO;
 	const chartPadding2 = chartPadding * 2;
 
@@ -25,12 +25,12 @@ export default function AreaChartDrawer(drawersArgs) {
 	return function drawChart(x, y, width, height) {
 		// debugLayer(ctx, x, y, width, height);
 
-		const XS = width * control.range[0];
+		const XS = width * config.control.range[0];
 		const HEIGHT = height - BOTTOM_PADDING - DOT_RADIUS_MUL_2;
 		const Y = y + DOT_RADIUS + TWO;
 
-		const itemsStart = Math.floor(xAxis.length * control.range[0]);
-		const itemsDiff = Math.ceil(xAxis.length * (control.range[1] - control.range[0]));
+		const itemsStart = Math.floor(xAxis.length * config.control.range[0]);
+		const itemsDiff = Math.ceil(xAxis.length * (config.control.range[1] - config.control.range[0]));
 		const itemsEnd = itemsStart + itemsDiff;
 		const percentage = yAxis.items.reduce((curr, item) => {
 			return curr + item.items.slice(itemsStart, itemsEnd).reduce(average, 0) * item.opacity.value;

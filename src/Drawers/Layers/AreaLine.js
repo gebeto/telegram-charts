@@ -13,7 +13,7 @@ export default function AreaLine({ config, control, ctx, norm, colors, normYKey,
 
 		if (!copacity) return;
 		if (copacity < 1) {
-			config.shouldControlUpdate = true;
+			config.control.shouldUpdate = true;
 		}
 		const count = items.length;
 

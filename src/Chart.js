@@ -24,14 +24,17 @@ import {
 } from './utils';
 
 
-function createControl(xAxis, onRangeUpdate) {
+function createControl(drawControlFabric, drawersArgs, xAxis, onRangeUpdate) {
+	const xAxisLength = xAxis.length;
+	const drawControl = drawControlFabric(drawersArgs);
 	const control = {
 		range: [0.7, 1.0],
 		count: 0,
 		scale: 0,
+		shouldUpdate: true,
 		updateRange: function updateRange(start, end) {
 			const scale = end - start;
-			const count = xAxis.length * scale;
+			const count = xAxisLength * scale;
 			if (count > 5) {
 				// control.count = Math.ceil(count);
 				control.count = (count >> 0) + 1;
@@ -41,9 +44,31 @@ function createControl(xAxis, onRangeUpdate) {
 				onRangeUpdate && onRangeUpdate();
 			}
 		},
+
+		render: function render() {
+			// console.log('update control', index);
+			control.shouldUpdate = false;
+			drawersArgs.ctx.clearRect(0, CANVAS_HEIGHT - CONTROL_HEIGHT, drawersArgs.canvasBounds.width, CONTROL_HEIGHT);
+			drawControl(SIDES_PADDING, CANVAS_HEIGHT - CONTROL_HEIGHT, drawersArgs.canvasBounds.width - SIDES_PADDING2, CONTROL_HEIGHT);
+		}
 	};
 
 	return control;
+}
+
+function createChart(drawChartFabric, drawersArgs) {
+	const drawChart = drawChartFabric(drawersArgs);
+	const chart = {
+		shouldUpdate: false,
+
+		render: function render() {
+			chart.shouldUpdate = false;
+			drawersArgs.ctx.clearRect(0, 0, drawersArgs.canvasBounds.width, CANVAS_HEIGHT - CONTROL_HEIGHT);
+			drawChart(SIDES_PADDING, 0, drawersArgs.canvasBounds.width - SIDES_PADDING2, CANVAS_HEIGHT - CONTROL_HEIGHT);
+		}
+	};
+
+	return chart;
 }
 
 
@@ -99,8 +124,8 @@ function Chart(OPTS, data, FABRIC) {
 
 	const updateNorms = throttleLForceable(
 		function updateNorms() {
-			const rStart = control.range[0];
-			const rEnd = control.range[1];
+			const rStart = config.control.range[0];
+			const rEnd = config.control.range[1];
 			
 			const startIndexRaw = rStart * xAxis.length;
 			const startIndex = startIndexRaw < 0 ? 0 : Math.floor(startIndexRaw);
@@ -110,8 +135,6 @@ function Chart(OPTS, data, FABRIC) {
 			header.setSubtitle(`${xAxis[startIndex].dateStringTitle} - ${xAxis[endIndex - 1].dateStringTitle}`)
 		}
 	, 100);
-
-	const control = createControl(xAxis, () => updateNorms());
 
 	function updateBounds() {
 		// console.log('BOUNDS')
@@ -129,8 +152,8 @@ function Chart(OPTS, data, FABRIC) {
 		canvasBounds.y = newBounds.y;
 
 		if (w !== newWidth || h !== newHeight) {
-			config.shouldChartUpdate = true;
-			config.shouldControlUpdate = true;
+			config.chart.shouldUpdate = true;
+			config.control.shouldUpdate = true;
 			normControl = normalizeMemo(SIDES_PADDING2, canvasBounds.width - SIDES_PADDING2);
 			// normControl = normalize(SIDES_PADDING2, canvasBounds.width - SIDES_PADDING2);
 			w = canvas.width = canvasBounds.width;
@@ -138,42 +161,24 @@ function Chart(OPTS, data, FABRIC) {
 		}
 	}
 
-	function render(force) {
+	function render() {
 		updateBounds();
 		const isActiveAnimations = config.animator.updateAnimations();
-		if (isActiveAnimations) config.shouldChartUpdate = true
+		if (isActiveAnimations) config.chart.shouldUpdate = true
 
-		if (config.shouldChartUpdate) {
-			// console.log('update chart', index);
-			config.shouldChartUpdate = false;
-			ctx.clearRect(0, 0, w, CANVAS_HEIGHT - CONTROL_HEIGHT);
-			drawChart(SIDES_PADDING, 0, w - SIDES_PADDING2, CANVAS_HEIGHT - CONTROL_HEIGHT);
-		}
-
-		if (config.shouldControlUpdate) {
-			// console.log('update control', index);
-			config.shouldControlUpdate = false;
-			ctx.clearRect(0, CANVAS_HEIGHT - CONTROL_HEIGHT, w, CONTROL_HEIGHT);
-			drawControl(SIDES_PADDING, CANVAS_HEIGHT - CONTROL_HEIGHT, w - SIDES_PADDING2, CONTROL_HEIGHT);
-		}
+		config.chart.shouldUpdate && config.chart.render();
+		config.control.shouldUpdate && config.control.render();
 	}
 
 	// config.popup.element.addEventListener('click', () => {
 	// 	if (!drawChartZoomed) return;
 	// 	config.zoomed = !config.zoomed;
 	// 	config.popup.hide();
-	// 	config.shouldChartUpdate = true;
+	// 	config.chart.shouldUpdate = true;
 	// });
 
-	window.addEventListener('resize', updateBounds);
-	control.updateRange(control.range[0], control.range[1])
-	updateBounds();
-	updateNorms(true);
-
 	const drawersArgs = {
-		config, control, ctx,
-		colors, xAxis, yAxis,
-		canvasBounds,
+		config, ctx, colors, xAxis, yAxis, canvasBounds,
 		normYKey: 'normY'
 	};
 	const drawersArgsControl = {
@@ -181,18 +186,22 @@ function Chart(OPTS, data, FABRIC) {
 		normYKey: 'normControlY'
 	};
 
-	const drawChart = FABRIC.drawChartFabric(drawersArgs);
-	const drawChartZoomed = FABRIC.drawZoomedChartFabric && FABRIC.drawZoomedChartFabric(drawersArgs);
-	const drawControl = FABRIC.drawControlFabric(drawersArgsControl);
+	config.chart = createChart(FABRIC.drawChartFabric, drawersArgs);
+	config.control = createControl(FABRIC.drawControlFabric, drawersArgsControl, xAxis, () => updateNorms())
 
+	window.addEventListener('resize', updateBounds);
+	config.control.updateRange(config.control.range[0], config.control.range[1])
+	updateBounds();
+	updateNorms(true);
 	render()
 
 	return {
 		render: render,
-		control: control,
+		control: config.control,
+		chart: config.chart,
 		update() {
-			config.shouldChartUpdate = true;
-			config.shouldControlUpdate = true;
+			config.chart.shouldUpdate = true;
+			config.control.shouldUpdate = true;
 		}
 	};
 }

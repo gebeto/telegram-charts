@@ -5,7 +5,7 @@ const SIDE_LEFT = 1;
 const SIDE_CENTER = 2;
 const SIDE_RIGHT = 3;
 
-export function createMouseDotHandling(config, canvasBounds, ctx, paddingLeftSelector, paddingRightSelector, rounding, plus) {
+export function createMouseDotHandling(config, canvasBounds, ctx, { paddingLeftSelector, paddingRightSelector, rounding, plus }) {
 	const mouse = config.mouse.mouse;
 	const popup = config.popup;
 	const chunkScale = config.scaleX;
@@ -43,7 +43,7 @@ export function createMouseDotHandling(config, canvasBounds, ctx, paddingLeftSel
 		context.onCanvas = (ctx.canvas === e.target || ctx.canvas.nextSibling.contains(e.target));
 		if ((!context.onCanvas && context.onCanvasOld) || e.target.tagName === 'BUTTON') {
 			if (current.index !== -1) {
-				config.shouldChartUpdate = true;
+				config.chart.shouldUpdate = true;
 			}
 			current.index = -1;
 			popup.hide();
@@ -69,7 +69,7 @@ export function createMouseDotHandling(config, canvasBounds, ctx, paddingLeftSel
 		}
 
 		if (current.indexOld !== current.index) {
-			config.shouldChartUpdate = true;
+			config.chart.shouldUpdate = true;
 
 			if (current.index !== -1) {
 				const popupBounds = popup.element.getBoundingClientRect();

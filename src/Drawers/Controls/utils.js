@@ -15,7 +15,7 @@ export const controlPipaWidth = 2 * PIXEL_RATIO;
 export const controlPipaPos = (controlWidth - controlPipaWidth) / 2;
 
 
-export function createControlLayer(config, control) {
+export function createControlLayer(config) {
 	const OPTS = {
 		controlsBounds: {
 			start: {
@@ -35,7 +35,8 @@ export function createControlLayer(config, control) {
 	const controlsBounds = OPTS.controlsBounds;
 
 	let mouseMode = NONE;
-	let oldRange = [control.range[0], control.range[1]];
+	// let oldRange = [config.control.range[0], config.control.range[1]];
+	let oldRange = [0, 0];
 	const clickRangeBase = 14 * PIXEL_RATIO;
 
 	let xs = 0;
@@ -47,8 +48,8 @@ export function createControlLayer(config, control) {
 
 	function mouseMove(mouse) {
 		if (mouseMode === NONE) return;
-		config.shouldChartUpdate = true;
-		config.shouldControlUpdate = true;
+		config.chart.shouldUpdate = true;
+		config.control.shouldUpdate = true;
 
 		const norm = config.normalizeForControl(mouse.newX);
 		const normOld = config.normalizeForControl(mouse.x);
@@ -58,26 +59,26 @@ export function createControlLayer(config, control) {
 		const newRangeEnd = oldRange[1] + diff;
 		if (mouseMode === DRAG_START) {
 			if (newRangeStart > 0) {
-				control.updateRange(newRangeStart, oldRange[1]);
+				config.control.updateRange(newRangeStart, oldRange[1]);
 			} else {
-				control.updateRange(0, oldRange[1]);
+				config.control.updateRange(0, oldRange[1]);
 			}
 		} else if (mouseMode === DRAG_END) {
 			if (newRangeEnd < 1) {
-				control.updateRange(oldRange[0], newRangeEnd);
+				config.control.updateRange(oldRange[0], newRangeEnd);
 			} else {
-				control.updateRange(oldRange[0], 1);
+				config.control.updateRange(oldRange[0], 1);
 			}
 		} else {
 			if (newRangeStart >= 0 && newRangeEnd <= 1) {
-				control.updateRange(newRangeStart, newRangeEnd);
+				config.control.updateRange(newRangeStart, newRangeEnd);
 			} else {
 				if (newRangeEnd > 1) {
 					let diff = 1 - oldRange[1];
-					control.updateRange(oldRange[0] + diff, oldRange[1] + diff);
+					config.control.updateRange(oldRange[0] + diff, oldRange[1] + diff);
 				} else if (newRangeStart < 0) {
 					let diff = 0 - oldRange[0];
-					control.updateRange(oldRange[0] + diff, oldRange[1] + diff);
+					config.control.updateRange(oldRange[0] + diff, oldRange[1] + diff);
 				}
 			}
 		}
@@ -92,10 +93,10 @@ export function createControlLayer(config, control) {
 		const boundsEnd = controlsBounds.end;
 		const inControl = mouse.y > boundsStart.y && mouse.y < boundsStart.y + boundsStart.height;
 		if (!inControl) return;
-		config.shouldChartUpdate = true;
-		config.shouldControlUpdate = true;
+		config.chart.shouldUpdate = true;
+		config.control.shouldUpdate = true;
 		
-		oldRange = [control.range[0], control.range[1]];
+		oldRange = [config.control.range[0], config.control.range[1]];
 		if (mouse.newX > boundsStart.x - clickRangeStart && mouse.newX < boundsStart.x + boundsStart.width && mouse.newY > boundsStart.y - clickRangeStart && mouse.newY < boundsStart.y + boundsStart.height + clickRangeStart) {
 			mouseMode = DRAG_START;
 		} else if (mouse.newX > boundsEnd.x && mouse.newX < boundsEnd.x + boundsEnd.width + clickRangeEnd && mouse.newY > boundsEnd.y - clickRangeEnd && mouse.newY < boundsEnd.y + boundsEnd.height + clickRangeEnd) {
@@ -119,8 +120,8 @@ export function createControlLayer(config, control) {
 	}
 
 	function renderControl(ctx, x, y, width, height) {
-		xs = x + width * control.range[0];
-		xe = x + width * control.range[1];
+		xs = x + width * config.control.range[0];
+		xe = x + width * config.control.range[1];
 		ww = xe - xs;
 
 		controlsBounds.start.x = xs - controlWidth;

@@ -9,9 +9,12 @@ export default function AreaLineDots({ canvasBounds, config, ctx, norm, colors, 
 		config,
 		canvasBounds,
 		ctx,
-		(context) => DOT_RADIUS,
-		(context) => DOT_RADIUS,
-		Math.round, 1
+		{
+			paddingLeftSelector: (context) => DOT_RADIUS,
+			paddingRightSelector: (context) => DOT_RADIUS,
+			rounding: Math.round,
+			plus: 1,
+		}
 	);
 
 	return function drawAreaLineDots(data, x, y, width, height) {

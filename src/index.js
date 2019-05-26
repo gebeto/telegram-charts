@@ -14,6 +14,7 @@ createThemeChanger((isLight) => {
 	graphsInstances.forEach(chart => chart.update());
 });
 
+
 function initGraphModule() {
 	let index = 0;
 

@@ -42,7 +42,7 @@ export default function  Bar({ config, control, canvasBounds, ctx, norm, colors,
 		
 		if (!draws.opacity) return;
 		if (draws.opacity < 1) {
-			config.shouldControlUpdate = true;
+			config.control.shouldUpdate = true;
 		}
 
 		draws.items = [];
