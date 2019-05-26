@@ -204,6 +204,7 @@ function Chart(OPTS, data, FABRIC) {
 			config.control.shouldUpdate = true;
 			config.zoomed = false;
 			header.setTitle(title);
+			init();
 			return;
 		}
 	}

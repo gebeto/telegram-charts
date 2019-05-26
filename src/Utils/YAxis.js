@@ -75,7 +75,6 @@ export function prepareDataset(data, config) {
 
 	const [[xAxisKey, ...rawXAxis], ...rawYAxisList] = columns;
 	const xDiff = rawXAxis[1] - rawXAxis[0];
-	console.log(xDiff, DATE_TYPES[xDiff]);
 	const xAxis = rawXAxis.map(el => dateString(el, DATE_TYPES[xDiff]));
 	const yAxis = prepareYAxis(rawYAxisList, data, config);
 
