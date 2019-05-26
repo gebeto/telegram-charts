@@ -41,7 +41,8 @@ const ChartTypes = {
 export function fabricByDatasource(datasource) {
 	const types = Object.keys(datasource.types).map(key => datasource.types[key]).filter(el => el !== 'x');
 	if (!types.length) {
-		throw new Error("DataSet error. No columns for chart")
+		// throw new Error("DataSet error. No columns for chart")
+		console.warn("DataSet error. No columns for chart")
 	} else if (types.length > 50) {
 		// throw new Error("DataSet error. Supported up to 50 columns on one graph.")
 		console.warn("DataSet warning. Supported up to 50 columns on one graph.")
