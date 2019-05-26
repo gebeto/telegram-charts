@@ -184,7 +184,8 @@ function Chart(OPTS, data, FABRIC) {
 	}
 
 	const bak = {};
-	config.popup.onClick(function zoom(timestamp) {
+
+	function zoomOut() {
 		if (config.zoomed) {
 			config.popup.hide();
 			config.chart.destroy();
@@ -205,9 +206,10 @@ function Chart(OPTS, data, FABRIC) {
 			header.setTitle(title);
 			return;
 		}
+	}
 
+	function zoomIn(timestamp) {
 		if (!config.data.x_on_zoom) return;
-
 		const dataRequested = config.data.x_on_zoom(timestamp);
 		if (!dataRequested) {
 			console.warn("'x_on_zoom' should return promise with data");
@@ -236,11 +238,13 @@ function Chart(OPTS, data, FABRIC) {
 				config.control.shouldUpdate = true;
 				config.zoomed = true;
 				header.setTitleButton('Zoom Out', () => {
-					zoom();
+					zoomOut();
 				});
 			});
 		}
-	});
+	}
+
+	config.popup.onClick(zoomIn);
 
 	const drawersArgs = { config, normYKey: 'normY' };
 	const drawersArgsControl = { config, normYKey: 'normControlY' };
