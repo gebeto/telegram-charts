@@ -21,15 +21,44 @@ import {
 } from '../utils';
 
 
-export function dateString(timestamp, index, arr) {
+
+export const DATE_TYPE_HOUR = 3600000
+export const DATE_TYPE_DAY = 86400000
+export const DATE_TYPE_WEEK = 3
+export const DATE_TYPES = {
+	[DATE_TYPE_HOUR]: {
+		dayString: (date) => date.toISOString().split("T")[1].split(":").slice(0, 2).join(':'),
+		dateString: (date) => date.toISOString().split("T")[1].split(":").slice(0, 2).join(':'),
+		// dateStringTitle: (date) => `${DAY_NAMES[date.getDay()]}, ${date.getDate()} ${date.toISOString().split("T")[1].split(":").slice(0, 2).join(':')}`,
+		dateStringTitle: (date) => `${date.toISOString().split("T")[1].split(":").slice(0, 2).join(':')}`,
+	},
+	[DATE_TYPE_DAY]: {
+		dayString: (date) => `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`,
+		dateString: (date) => `${DAY_NAMES[date.getDay()]}, ${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`,
+		dateStringTitle: (date) => `${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`,
+	},
+	[DATE_TYPE_WEEK]: {
+		dayString: (date) => `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`,
+		dateString: (date) => `${DAY_NAMES[date.getDay()]}, ${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`,
+		dateStringTitle: (date) => `${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`,
+	},
+};
+
+export function dateString(timestamp, dateType) {
 	const date = new Date(timestamp);
-	return {
+	const result = {
 		dayString: `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`,
 		dateString: `${DAY_NAMES[date.getDay()]}, ${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`,
 		dateStringTitle: `${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`,
 		date: date,
 		timestamp: timestamp,
 	};
+	if (dateType) {
+		result.dayString = dateType.dayString(date);
+		result.dateString = dateType.dateString(date);
+		result.dateStringTitle = dateType.dateStringTitle(date);
+	}
+	return result;
 }
 
 export function createPercentDefaultHandler(data) {
@@ -45,7 +74,9 @@ export function prepareDataset(data, config) {
 	const { percentage, stacked, y_scaled, x_on_zoom } = data; // options
 
 	const [[xAxisKey, ...rawXAxis], ...rawYAxisList] = columns;
-	const xAxis = rawXAxis.map(el => dateString(el));
+	const xDiff = rawXAxis[1] - rawXAxis[0];
+	console.log(xDiff, DATE_TYPES[xDiff]);
+	const xAxis = rawXAxis.map(el => dateString(el, DATE_TYPES[xDiff]));
 	const yAxis = prepareYAxis(rawYAxisList, data, config);
 
 	return {
