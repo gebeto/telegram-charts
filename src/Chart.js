@@ -1,7 +1,7 @@
 // import Mouse from './Utils/Mouse';
 import { createMouseForChart } from './Utils/Mouse';
 import { createAnimator } from './Utils/Animated';
-import { prepareDataset } from './Utils/YAxis';
+import { prepareDataset, dateString } from './Utils/YAxis';
 
 import { createElement } from './UI/utils';
 import { createPopup } from './UI/Popup';
@@ -203,6 +203,7 @@ function Chart(OPTS, data, FABRIC) {
 			config.chart.shouldUpdate = true;
 			config.control.shouldUpdate = true;
 			config.zoomed = false;
+			header.unfreezeSubtitle();
 			header.setTitle(title);
 			init();
 			return;
@@ -233,6 +234,8 @@ function Chart(OPTS, data, FABRIC) {
 				config.scaleX = normalize(0, config.data.xAxis.length - 1)(1);
 				config.chart = createChart(config, fabric.drawChartFabric, { ...drawersArgs, config });
 				config.control = createControl(config, fabric.drawControlFabric, { ...drawersArgsControl, config }, () => updateNorms())
+				header.setSubtitle(dateString(timestamp).dateString);
+				header.freezeSubtitle();
 				init();
 
 				config.chart.shouldUpdate = true;

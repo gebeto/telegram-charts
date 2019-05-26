@@ -10,6 +10,8 @@ export function createHeader(container, titleText, subtitleText) {
 	const subtitle = createElement(header, 'h3', 'chart__header-sub-title');
 	subtitle.textContent = subtitleText;
 
+	let isSubtitleFreezed = false;
+
 	return {
 		setTitle(titleText) {
 			title.textContent = titleText;
@@ -26,7 +28,14 @@ export function createHeader(container, titleText, subtitleText) {
 			title.appendChild(button);
 		},
 		setSubtitle(subtitleText) {
+			if (isSubtitleFreezed) return;
 			subtitle.textContent = subtitleText;
+		},
+		freezeSubtitle(subtitleText) {
+			isSubtitleFreezed = true;
+		},
+		unfreezeSubtitle() {
+			isSubtitleFreezed = false;
 		}
 	}
 }

@@ -28,9 +28,8 @@ export const DATE_TYPE_WEEK = 3
 export const DATE_TYPES = {
 	[DATE_TYPE_HOUR]: {
 		dayString: (date) => date.toISOString().split("T")[1].split(":").slice(0, 2).join(':'),
-		dateString: (date) => date.toISOString().split("T")[1].split(":").slice(0, 2).join(':'),
-		// dateStringTitle: (date) => `${DAY_NAMES[date.getDay()]}, ${date.getDate()} ${date.toISOString().split("T")[1].split(":").slice(0, 2).join(':')}`,
-		dateStringTitle: (date) => `${date.toISOString().split("T")[1].split(":").slice(0, 2).join(':')}`,
+		dateString: (date) => `${DAY_NAMES[date.getDay()]}, ${date.toISOString().split("T")[1].split(":").slice(0, 2).join(':')}`,
+		dateStringTitle: (date) => `${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`,
 	},
 	[DATE_TYPE_DAY]: {
 		dayString: (date) => `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`,
@@ -44,7 +43,7 @@ export const DATE_TYPES = {
 	},
 };
 
-export function dateString(timestamp, dateType) {
+export function dateString(timestamp, dateType, timezoneOffset) {
 	const date = new Date(timestamp);
 	const result = {
 		dayString: `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`,
