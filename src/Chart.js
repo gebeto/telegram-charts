@@ -1,10 +1,7 @@
-import { memo } from './utils';
-import Mouse from './Utils/Mouse';
+// import Mouse from './Utils/Mouse';
+import { createMouseForChart } from './Utils/Mouse';
 import { createAnimator } from './Utils/Animated';
-import { prepareYAxis } from './Utils/YAxis';
-
-import ControlsDrawer from './Drawers/Controls/LineControls';
-import LineChartDrawer from './Drawers/Charts/LineChart';
+import { prepareDataset } from './Utils/YAxis';
 
 import { createElement } from './UI/utils';
 import { createPopup } from './UI/Popup';
@@ -17,51 +14,14 @@ import {
 	CANVAS_HEIGHT,
 	SIDES_PADDING,
 	SIDES_PADDING2,
-	CHART_HEIGHT,
 	PIXEL_RATIO,
-	MONTH_NAMES,
-	DAY_NAMES,
-	FONT,
-	AXIS_TEXT_WIDTH,
 } from './Globals';
 
 import {
-	normalizeAnimated,
 	normalizeMemo,
 	normalize,
-	throttle,
-	throttleL,
 	throttleLForceable,
-	debounce,
 } from './utils';
-
-
-function dateString(timestamp, index, arr) {
-	const date = new Date(timestamp);
-	return {
-		dayString: `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`,
-		dateString: `${DAY_NAMES[date.getDay()]}, ${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`,
-		dateStringTitle: `${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`,
-		date: date,
-		timestamp: timestamp,
-	};
-}
-
-
-function prepareDataset(data, config) {
-	const { title, columns, types, colors, names } = data; // main data
-	const { percentage, stacked, y_scaled } = data; // options
-
-
-	const [[xAxisKey, ...rawXAxis], ...rawYAxisList] = columns;
-	const xAxis = rawXAxis.map(el => dateString(el));
-	const yAxis = prepareYAxis(rawYAxisList, data, config)
-
-	return {
-		title, columns, types, colors, names,
-		xAxis, yAxis,
-	};
-}
 
 
 function createControl(xAxis, onRangeUpdate) {
@@ -93,31 +53,26 @@ function Chart(OPTS, data, FABRIC) {
 		index,
 	} = OPTS;
 
-	const title = data.title || OPTS.title || `Chart #${index + 1}`
-
 	// Init canvas
 	let w, h, normControl;
+	const title = data.title || OPTS.title || `Chart #${index + 1}`
+	const canvasContainer = createElement(container, 'div', 'chart');
+	const header = createHeader(canvasContainer, title, '');
+	const canvas = createElement(canvasContainer, 'canvas', 'chart__canvas');
+
+	const ctx = canvas.getContext('2d');
+	const animator = createAnimator();
+
 	const canvasBounds = {
 		left: 0,
 		top: 0,
 	};
-
-	const canvasContainer = createElement(container, 'div', 'chart');
-	const header = createHeader(canvasContainer, title, '');
-	const canvas = createElement(canvasContainer, 'canvas', 'chart__canvas');
-	const ctx = canvas.getContext('2d');
-	const animator = createAnimator();
-
 	const config = {
 		index: index,
 		shouldChartUpdate: true,
 		shouldControlUpdate: true,
 		animator: animator,
-		mouse: Mouse({
-			config: config,
-			canvas: canvas,
-			canvasBounds: canvasBounds,
-		}),
+		mouse: createMouseForChart({ config, canvas, canvasBounds }),
 
 		popup: {},
 

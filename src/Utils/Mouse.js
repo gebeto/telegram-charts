@@ -41,7 +41,7 @@ function createDispatcher(types) {
 	}
 }
 
-export default function mouseForChart({ canvas, canvasBounds }) {
+export function createMouseForChart({ canvas, canvasBounds }) {
 	const dispatcher = createDispatcher(['move', 'enter', 'leave', 'down', 'up']);
 	const mouse = dispatcher.mouse;
 

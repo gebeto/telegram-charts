@@ -1,13 +1,12 @@
 import {
-	normalizeAnimated,
-	normalizeMemo,
-	normalize,
-	throttle,
-	throttleL,
+	MONTH_NAMES,
+	DAY_NAMES,
+} from '../Globals';
 
+import {
+	normalizeAnimated,
+	normalize,
 	zipSum,
-	flatMaxZipSum,
-	flatMaxZipSumRange,
 
 	uninf,
 	singleMin,
@@ -19,6 +18,34 @@ import {
 	flatMinRange,
 	flatMaxRange,
 } from '../utils';
+
+
+export function dateString(timestamp, index, arr) {
+	const date = new Date(timestamp);
+	return {
+		dayString: `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`,
+		dateString: `${DAY_NAMES[date.getDay()]}, ${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`,
+		dateStringTitle: `${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`,
+		date: date,
+		timestamp: timestamp,
+	};
+}
+
+
+export function prepareDataset(data, config) {
+	const { title, columns, types, colors, names } = data; // main data
+	const { percentage, stacked, y_scaled } = data; // options
+
+
+	const [[xAxisKey, ...rawXAxis], ...rawYAxisList] = columns;
+	const xAxis = rawXAxis.map(el => dateString(el));
+	const yAxis = prepareYAxis(rawYAxisList, data, config)
+
+	return {
+		title, columns, types, colors, names,
+		xAxis, yAxis,
+	};
+}
 
 
 export function prepareYAxis(rawYs, data, config) {
@@ -129,7 +156,6 @@ function scaling_Stacked(config, sharedScaling, items) {
 	}
 
 	sharedScaling.updateMinMax = updateMinMax;
-	// sharedScaling.updateMinMax = throttleL(updateMinMax, 100);
 }
 
 
@@ -165,5 +191,4 @@ function scaling_Default(config, sharedScaling, items) {
 	}
 
 	sharedScaling.updateMinMax = updateMinMax;
-	// sharedScaling.updateMinMax = throttleL(updateMinMax, 50)
 }
