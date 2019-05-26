@@ -33,8 +33,11 @@ export default function LineChartDrawer(drawersArgs) {
 		textAlign: 'left',
 	});
 
+	function destroy() {
+		calculateLineActivePopupIndex.destroy();
+	}
 
-	return function drawChart(x, y, width, height) {
+	function drawChart(x, y, width, height) {
 		// debugLayer(ctx, x, y, width, height);
 
 		const XS = width * config.control.range[0];
@@ -55,4 +58,8 @@ export default function LineChartDrawer(drawersArgs) {
 		const activeIndex = calculateLineActivePopupIndex(xAxis, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		drawDotsForLines(drawersArgs, y, height, activeIndex, drawLineLayers);
 	}
+
+	drawChart.destroy = destroy;
+
+	return drawChart;
 }

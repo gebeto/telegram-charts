@@ -8,6 +8,8 @@ import { createPopup } from './UI/Popup';
 import { createHeader } from './UI/Header';
 import { createButtons } from './UI/Buttons';
 
+import { fabricByDatasource } from './ChartTypes';
+
 
 import {
 	CONTROL_HEIGHT,
@@ -32,6 +34,12 @@ function createControl(drawControlFabric, drawersArgs, xAxis, onRangeUpdate) {
 		count: 0,
 		scale: 0,
 		shouldUpdate: true,
+		destroy: function destroy() {
+			drawControl.destroy();
+		},
+		init: function init() {
+			drawControl.init();
+		},
 		updateRange: function updateRange(start, end) {
 			const scale = end - start;
 			const count = xAxisLength * scale;
@@ -60,6 +68,14 @@ function createChart(drawChartFabric, drawersArgs) {
 	const drawChart = drawChartFabric(drawersArgs);
 	const chart = {
 		shouldUpdate: false,
+
+		destroy: function destroy() {
+			drawChart.destroy();
+		},
+
+		init: function init() {
+			drawChart.init();
+		},
 
 		render: function render() {
 			chart.shouldUpdate = false;
@@ -93,6 +109,7 @@ function Chart(OPTS, data, FABRIC) {
 		top: 0,
 	};
 	const config = {
+		zoomed: false,
 		index: index,
 		animator: animator,
 		mouse: createMouseForChart({ config, canvas, canvasBounds }),
@@ -101,12 +118,16 @@ function Chart(OPTS, data, FABRIC) {
 
 		normalizeForControl: function normalizeForControl(xPos) {
 			return normControl(xPos);
-		}
+		},
+
+		chart: null,
+		control: null,
 	};
 
 	// Init data
 	const {
 		columns, types, colors, names,
+		x_on_zoom,
 		xAxis,
 		yAxis,
 	} = prepareDataset(data, config);
@@ -168,11 +189,47 @@ function Chart(OPTS, data, FABRIC) {
 		config.control.shouldUpdate && config.control.render();
 	}
 
-	// config.popup.element.addEventListener('click', () => {
-	// 	if (!drawChartZoomed) return;
-	// 	config.zoomed = !config.zoomed;
-	// 	config.popup.hide();
-	// 	config.chart.shouldUpdate = true;
+	// const bak = {};
+	// config.popup.onClick(function zoom(timestamp) {
+	// 	if (config.zoomed) {
+	// 		delete config.chart;
+	// 		delete config.control;
+	// 		config.chart = bak.chart;
+	// 		config.control = bak.control;
+	// 		config.chart.init();
+	// 		config.control.init();
+	// 		config.chart.shouldUpdate = true;
+	// 		config.control.shouldUpdate = true;
+	// 		config.zoomed = false;
+	// 		header.setTitle(title);
+	// 		return;
+	// 	}
+	// 	if (!x_on_zoom) return;
+
+	// 	const dataRequested = x_on_zoom(timestamp);
+	// 	if (!dataRequested) {
+	// 		console.warn("'x_on_zoom' should return promise with data");
+	// 	} else if (!dataRequested.then) {
+	// 		console.warn("'x_on_zoom' should return promise with data");
+	// 	} else if (dataRequested.then) {
+	// 		dataRequested.then(data => {
+	// 			console.log(data);
+	// 			// const fabric = fabricByDatasource(data, true);
+	// 			// config.popup.hide();
+	// 			// config.chart.destroy();
+	// 			// config.control.destroy();
+	// 			// bak.chart = config.chart;
+	// 			// bak.control = config.control;
+	// 			// config.chart = createChart(fabric.drawChartFabric, drawersArgs);
+	// 			// config.control = createControl(fabric.drawControlFabric, drawersArgsControl, xAxis, () => updateNorms())
+	// 			// config.chart.shouldUpdate = true;
+	// 			// config.control.shouldUpdate = true;
+	// 			// config.zoomed = true;
+	// 			// header.setTitleButton('Zoom', () => {
+	// 			// 	zoom();
+	// 			// });
+	// 		});
+	// 	}
 	// });
 
 	const drawersArgs = {

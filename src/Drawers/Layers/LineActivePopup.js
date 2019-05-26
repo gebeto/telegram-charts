@@ -17,8 +17,15 @@ export default function LineDots({ canvasBounds, config, ctx, norm, colors, norm
 		}
 	);
 
+	function destroy() {
+		h.destroy();
+	}
 
-	return function drawLineDots(items, x, y, width, height) {
+	function init() {
+		h.init();
+	}
+
+	function drawLineDots(items, x, y, width, height) {
 		h.current.width = width;
 		h.current.height = height;
 		h.current.x = x;
@@ -30,4 +37,9 @@ export default function LineDots({ canvasBounds, config, ctx, norm, colors, norm
 
 		return h.current.index;
 	}
+
+	drawLineDots.destroy = destroy;
+	drawLineDots.init = init;
+
+	return drawLineDots;
 }

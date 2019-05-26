@@ -96,10 +96,23 @@ export function createMouseDotHandling(config, canvasBounds, ctx, { paddingLeftS
 		}
 	}, 50);
 
-	// config.mouse.addListener('move', handleOver);
-	config.mouse.addListener('move', (mouse, e) => { TOUCHED && handleOver(mouse, e); });
-	config.mouse.addListener('down', (mouse, e) => { TOUCHED = true; handleOver(mouse, e); });
-	config.mouse.addListener('up', (mouse, e) => { TOUCHED = false; });
+	const moveHandler = (mouse, e) => { TOUCHED && handleOver(mouse, e); };
+	const downHandler = (mouse, e) => { TOUCHED = true; handleOver(mouse, e); };
+	const   upHandler = (mouse, e) => { TOUCHED = false; };
+
+	context.destroy = function destroy() {
+		config.mouse.removeListener('move', moveHandler);
+		config.mouse.removeListener('down', downHandler);
+		config.mouse.removeListener('up', upHandler);
+	}
+
+	context.init = function init() {
+		config.mouse.addListener('move', moveHandler);
+		config.mouse.addListener('down', downHandler);
+		config.mouse.addListener('up', upHandler);
+	}
+
+	context.init();
 
 	return context;
 }

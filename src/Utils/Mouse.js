@@ -31,6 +31,10 @@ function createDispatcher(types) {
 		addListener(type, handler) {
 			handlers[type].push(handler);
 		},
+		removeListener(type, handler) {
+			const index = handlers[type].indexOf(handler);
+			handlers[type].splice(index, 1);
+		},
 		dispatch(type, event) {
 			if (dispatchers[type]) {
 				dispatchers[type](mouse, event);
@@ -97,5 +101,6 @@ export function createMouseForChart({ canvas, canvasBounds }) {
 	return {
 		mouse: mouse,
 		addListener: dispatcher.addListener,
+		removeListener: dispatcher.removeListener,
 	};
 }

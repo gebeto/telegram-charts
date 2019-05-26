@@ -4,7 +4,7 @@ import { CURRENT, DOT_RADIUS } from '../../Globals';
 import { createMouseDotHandling } from './utils';
 
 
-export default function AreaLineDots({ canvasBounds, config, ctx, norm, colors, normYKey }) {
+export default function AreaLineActivePopup({ canvasBounds, config, ctx, norm, colors, normYKey }) {
 	const h = createMouseDotHandling(
 		config,
 		canvasBounds,
@@ -17,7 +17,15 @@ export default function AreaLineDots({ canvasBounds, config, ctx, norm, colors, 
 		}
 	);
 
-	return function drawAreaLineDots(data, x, y, width, height) {
+	function destroy() {
+		h.destroy();
+	}
+
+	function init() {
+		h.init();
+	}
+
+	function drawAreaLineActivePopup(data, x, y, width, height) {
 		h.current.width = width;
 		h.current.height = height;
 		h.current.x = x;
@@ -39,4 +47,9 @@ export default function AreaLineDots({ canvasBounds, config, ctx, norm, colors, 
 			ctx.restore();
 		}
 	}
+
+	drawAreaLineActivePopup.destroy = destroy;
+	drawAreaLineActivePopup.init = init;
+
+	return drawAreaLineActivePopup;
 }

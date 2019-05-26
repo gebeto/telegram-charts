@@ -22,7 +22,15 @@ export default function AreaChartDrawer(drawersArgs) {
 
 	const drawAreaLayers = yAxis.items.map(el => AreaLayerDrawer(drawersArgs));
 
-	return function drawChart(x, y, width, height) {
+	function destroy() {
+		
+	}
+
+	function init() {
+		
+	}
+
+	function drawChart(x, y, width, height) {
 		// debugLayer(ctx, x, y, width, height);
 
 		const XS = width * config.control.range[0];
@@ -43,4 +51,9 @@ export default function AreaChartDrawer(drawersArgs) {
 			drawAreaLayers[i].draw(yAxis.items[i], perc, stacked, stacked += perc, x, Y, width, HEIGHT - X_AXIS_HEIGHT);
 		}
 	}
+
+	drawChart.destroy = destroy;
+	drawChart.init = init;
+
+	return drawChart;
 }

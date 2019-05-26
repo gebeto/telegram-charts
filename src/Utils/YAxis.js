@@ -32,18 +32,28 @@ export function dateString(timestamp, index, arr) {
 	};
 }
 
+export function createPercentDefaultHandler(data) {
+	return function percentageDefaultHandler(timestamp) {
+		return new Promise((resolve, reject) => {
+			resolve(data);
+		});
+	}
+}
 
 export function prepareDataset(data, config) {
 	const { title, columns, types, colors, names } = data; // main data
-	const { percentage, stacked, y_scaled } = data; // options
-
+	const { percentage, stacked, y_scaled, x_on_zoom } = data; // options
 
 	const [[xAxisKey, ...rawXAxis], ...rawYAxisList] = columns;
 	const xAxis = rawXAxis.map(el => dateString(el));
-	const yAxis = prepareYAxis(rawYAxisList, data, config)
+	const yAxis = prepareYAxis(rawYAxisList, data, config);
 
 	return {
 		title, columns, types, colors, names,
+
+		x_on_zoom: (percentage && !x_on_zoom) ? createPercentDefaultHandler(data) : x_on_zoom,
+		percentage, stacked, y_scaled,
+
 		xAxis, yAxis,
 	};
 }

@@ -36,7 +36,11 @@ export default function DualLineChartDrawer(drawersArgs) {
 	const drawLineLayers = yAxis.items.map(el => LineLayerDrawer(drawersArgs));
 	const calculateLineActivePopupIndex  = LineActivePopup(drawersArgs);
 
-	return function drawChart(x, y, width, height) {
+	function destroy() {
+		calculateLineActivePopupIndex.destroy();
+	}
+
+	function drawChart(x, y, width, height) {
 		// debugLayer(ctx, x, y, width, height);
 
 		const XS = width * config.control.range[0];
@@ -67,4 +71,8 @@ export default function DualLineChartDrawer(drawersArgs) {
 		const activeIndex = calculateLineActivePopupIndex(xAxis, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		drawDotsForLines(drawersArgs, y, height, activeIndex, drawLineLayers);
 	}
+
+	drawChart.destroy = destroy;
+
+	return drawChart;
 }

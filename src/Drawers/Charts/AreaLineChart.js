@@ -29,8 +29,15 @@ export default function AreaChartDrawer(drawersArgs) {
 		textAlign: 'left',
 	});
 
+	function destroy() {
+		drawAreaLineActiveLayer.destroy();
+	}
 
-	return function drawChart(x, y, width, height) {
+	function init() {
+		drawAreaLineActiveLayer.init();
+	}
+
+	function drawChart(x, y, width, height) {
 		// debugLayer(ctx, x, y, width, height);
 
 		const XS = width * config.control.range[0];
@@ -63,4 +70,9 @@ export default function AreaChartDrawer(drawersArgs) {
 		drawXAxisLayer(xAxis, xRanged, y + HEIGHT - X_AXIS_HEIGHT, widthRanged, X_AXIS_HEIGHT);
 		drawYAxisLayer(yAxis.items[0], x, Y, width, HEIGHT - X_AXIS_HEIGHT, true);
 	}
+
+	drawChart.destroy = destroy;
+	drawChart.init = init;
+
+	return drawChart;
 }

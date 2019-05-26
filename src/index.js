@@ -1,6 +1,5 @@
 import './styles/index.scss';
 
-import ChartTypes from './ChartTypes';
 import AnimationLoop from './Utils/AnimationLoop';
 import Chart from './Chart';
 

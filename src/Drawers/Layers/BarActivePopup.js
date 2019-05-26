@@ -17,7 +17,15 @@ export default function BarDots({ canvasBounds, config, ctx, norm, colors, normY
 		}
 	);
 
-	return function drawBarDots(items, stacked, x, y, width, height) {
+	function destroy() {
+		h.destroy();
+	}
+
+	function init() {
+		h.init();
+	}
+
+	function drawBarDots(items, stacked, x, y, width, height) {
 		h.current.width = width;
 		h.current.height = height;
 		h.current.x = x;
@@ -31,4 +39,9 @@ export default function BarDots({ canvasBounds, config, ctx, norm, colors, normY
 
 		return h.current.index;
 	}
+
+	drawBarDots.destroy = destroy;
+	drawBarDots.init = init;
+
+	return drawBarDots;
 }

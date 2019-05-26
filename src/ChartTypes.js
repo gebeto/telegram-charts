@@ -25,6 +25,11 @@ const Area = {
 	drawControlFabric: (args) => AreaLineControlsDrawer(args),
 };
 
+const AreaCircle = {	
+	drawChartFabric: (args) => AreaChartDrawer(args),
+	drawControlFabric: (args) => AreaLineControlsDrawer(args),
+};
+
 const Line = {
 	drawChartFabric: (args) => LineChartDrawer(args),
 	drawControlFabric: (args) => LineControlsDrawer(args),
@@ -38,7 +43,7 @@ const ChartTypes = {
 	dual_line: DualLine,
 };
 
-export function fabricByDatasource(datasource) {
+export function fabricByDatasource(datasource, isZoom) {
 	const types = Object.keys(datasource.types).map(key => datasource.types[key]).filter(el => el !== 'x');
 	if (!types.length) {
 		// throw new Error("DataSet error. No columns for chart")
@@ -56,6 +61,11 @@ export function fabricByDatasource(datasource) {
 			} else {
 				// throw new Error("DataSet error. 'y_scaled' is only used with exactly 2 'line' columns.")
 				console.warn("DataSet warning. 'y_scaled' is only used with exactly 2 'line' columns.");
+			}
+		}
+		if (isZoom) {
+			if (type === 'area') {
+				return AreaCircle;
 			}
 		}
 		return ChartTypes[type]

@@ -7,11 +7,17 @@ import { createControlLayer, controlWidthMul2, controlWidth } from './utils';
 export default function AreaLineControlsDrawer(drawersArgs) {
 	const { ctx, config, canvasBounds, control, yAxis, xAxis } = drawersArgs;
 	const drawAreaLineLayers = yAxis.items.map(el => AreaLineLayerDrawer(drawersArgs));
-
-	const { updateControlBounds, renderControl } = createControlLayer(config, control);
+	const { updateControlBounds, renderControl, destroy: destroyControl, init: initControl } = createControlLayer(config, control);
 	
+	function destroy() {
+		destroyControl();
+	}
 
-	return function drawControl(x, y, width, height) {
+	function init() {
+		initControl();
+	}
+
+	function drawControl(x, y, width, height) {
 		// debugLayer(ctx, x, y, width, height);
 		
 		updateControlBounds(x, width);
@@ -36,4 +42,9 @@ export default function AreaLineControlsDrawer(drawersArgs) {
 
 		renderControl(ctx, x, y, width, height);
 	}
+
+	drawControl.destroy = destroy;
+	drawControl.init = init;
+
+	return drawControl;
 }

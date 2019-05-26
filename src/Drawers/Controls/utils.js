@@ -110,9 +110,18 @@ export function createControlLayer(config) {
 		mouseMode = NONE;
 	}
 
-	config.mouse.addListener('move', mouseMove);
-	config.mouse.addListener('down', mouseDown);
-	config.mouse.addListener('up', mouseUp);
+
+	function init() {
+		config.mouse.addListener('move', mouseMove);
+		config.mouse.addListener('down', mouseDown);
+		config.mouse.addListener('up', mouseUp);
+	}
+
+	function destroy() {
+		config.mouse.removeListener('move', mouseMove);
+		config.mouse.removeListener('down', mouseDown);
+		config.mouse.removeListener('up', mouseUp);
+	}
 
 	function updateControlBounds(x, width) {
 		oldWidth = width;
@@ -203,7 +212,10 @@ export function createControlLayer(config) {
 
 	OPTS.updateControlBounds = updateControlBounds;
 	OPTS.renderControl = renderControl;
+	OPTS.destroy = destroy;
+	OPTS.init = init;
 
+	init();
 
 	return OPTS;
 }
