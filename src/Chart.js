@@ -1,6 +1,6 @@
 // import Mouse from './Utils/Mouse';
 import { createMouseForChart } from './Utils/Mouse';
-import { createAnimator } from './Utils/Animated';
+import { createAnimator, animateObject } from './Utils/Animated';
 import { prepareDataset, dateString } from './Utils/YAxis';
 
 import { createElement } from './UI/utils';
@@ -26,13 +26,18 @@ import {
 } from './utils';
 
 
-function createControl(config, drawControlFabric, drawersArgs, onRangeUpdate) {
+function createControl(config, drawControlFabric, drawersArgs, onRangeUpdate, opts = {}) {
 	const drawControl = drawControlFabric(drawersArgs);
 	const control = {
-		range: [0.7, 1.0],
+		range: opts.range || [0.7, 1.0],
 		count: 0,
 		scale: 0,
 		shouldUpdate: true,
+
+		animateRange(oldRange, newRange) {
+			animateObject(config.animator, control.range, 0, oldRange[0], newRange[0], (val) => control.updateRange(control.range[0], control.range[1]));
+			animateObject(config.animator, control.range, 1, oldRange[1], newRange[1], (val) => control.updateRange(control.range[0], control.range[1]));
+		},
 
 		destroy: function destroy() {
 			drawControl.destroy();
@@ -62,6 +67,11 @@ function createControl(config, drawControlFabric, drawersArgs, onRangeUpdate) {
 			drawControl(SIDES_PADDING, CANVAS_HEIGHT - CONTROL_HEIGHT, config.canvasBounds.width - SIDES_PADDING2, CONTROL_HEIGHT);
 		}
 	};
+
+	// if (opts.fromRange && opts.range) {
+	// 	animateObject(config.animator, control.range, 0, opts.fromRange[0], opts.range[0]);
+	// 	animateObject(config.animator, control.range, 1, opts.fromRange[1], opts.range[1]);
+	// }
 
 	return control;
 }
@@ -131,11 +141,11 @@ function Chart(OPTS, data, FABRIC) {
 	config.scaleX = normalize(0, config.data.xAxis.length - 1)(1);
 	config.popup = createPopup(canvasContainer, config);
 
-	if (config.data.yAxis.items.length > 1) {
+	// if (config.data.yAxis.items.length > 1) {
 		config.buttons = createButtons(canvasContainer, config, () => {
 			updateNorms(true);
 		});
-	}
+	// }
 
 	const updateNorms = throttleLForceable(
 		function updateNorms() {
@@ -194,6 +204,7 @@ function Chart(OPTS, data, FABRIC) {
 			config.chart.destroy();
 			config.control.destroy();
 			delete config.chart;
+			const range = [config.control.range[0], config.control.range[1]];
 			delete config.control;
 
 			config.data = bak.data;
@@ -201,6 +212,8 @@ function Chart(OPTS, data, FABRIC) {
 			config.buttons = bak.buttons;
 			config.chart = bak.chart;
 			config.control = bak.control;
+			config.control.animateRange(range, config.control.range);
+
 
 			config.buttons.init();
 			config.chart.init();
@@ -242,7 +255,10 @@ function Chart(OPTS, data, FABRIC) {
 				config.buttons = createButtons(canvasContainer, config, () => updateNorms(true));
 				config.buttons.mergeState(bak.buttons);
 				config.chart = createChart(config, fabric.drawChartFabric, { ...drawersArgs, config });
-				config.control = createControl(config, fabric.drawControlFabric, { ...drawersArgsControl, config }, () => updateNorms())
+				config.control = createControl(config, fabric.drawControlFabric, { ...drawersArgsControl, config }, () => updateNorms(), {
+					range: [config.control.range[0], config.control.range[1]],
+				});
+				config.control.animateRange(bak.control.range, [0.4, 0.6]);
 				header.setSubtitle(dateString(timestamp).dateString);
 				header.freezeSubtitle();
 				init();

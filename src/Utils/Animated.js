@@ -28,7 +28,7 @@ export default class Animated {
 
 	update() {
 		const result = this._update();
-		result && this.onAnimation && this.onAnimation();
+		result && this.onAnimation && this.onAnimation(this.value);
 		return result;
 	}
 
@@ -45,6 +45,16 @@ export default class Animated {
 		this.value = this.fromValue + (this.toValue - this.fromValue) * ease;
 		return true;
 	}
+}
+
+
+export function animateObject(animator, object, key, valueFrom, valueTo, onFrame) {
+	const MULTIPLIER = 100;
+	const animation = animator.createAnimation(Math.round(valueFrom * MULTIPLIER), 200, (value) => {
+		object[key] = value / MULTIPLIER;
+		onFrame && onFrame(object[key]);
+	});
+	animation.play(Math.round(valueTo * MULTIPLIER));
 }
 
 

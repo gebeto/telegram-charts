@@ -93,7 +93,7 @@ export function createButtons(container, config, handler) {
 	const buttonsWrapper = createElement(container, 'div', 'chart__buttons');
 	const allButtons = {};
 
-	const buttons = config.data.yAxis.items.map(y => {
+	const buttons = config.data.yAxis.items.length > 1 ? config.data.yAxis.items.map(y => {
 		const button = createButtonForAxis(buttonsWrapper, config, y, globalState, (enabled) => {
 			globalState.activeButtonsCount += enabled ? 1 : -1;
 			if (globalState.activeButtonsCount < 1) {
@@ -103,7 +103,7 @@ export function createButtons(container, config, handler) {
 			handler && handler();
 		});
 		return allButtons[y.key] = button;
-	});
+	}) : [];
 
 	function hideAll() {
 		buttons.forEach(button => {
@@ -126,7 +126,6 @@ export function createButtons(container, config, handler) {
 	}
 
 	allButtons.mergeState = function mergeState(oldButtons) {
-		console.log(oldButtons, allButtons);
 		buttons.map(button => {
 			if (oldButtons[button.key]) {
 				if (oldButtons[button.key].enabled !== button.enabled) {
