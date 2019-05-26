@@ -94,8 +94,6 @@ function Chart(OPTS, data, FABRIC) {
 	};
 	const config = {
 		index: index,
-		shouldChartUpdate: true,
-		shouldControlUpdate: true,
 		animator: animator,
 		mouse: createMouseForChart({ config, canvas, canvasBounds }),
 
@@ -151,13 +149,13 @@ function Chart(OPTS, data, FABRIC) {
 		canvasBounds.x = newBounds.x;
 		canvasBounds.y = newBounds.y;
 
-		if (w !== newWidth || h !== newHeight) {
+		if (canvasBounds.width !== newWidth || canvasBounds.height !== newHeight) {
 			config.chart.shouldUpdate = true;
 			config.control.shouldUpdate = true;
 			normControl = normalizeMemo(SIDES_PADDING2, canvasBounds.width - SIDES_PADDING2);
 			// normControl = normalize(SIDES_PADDING2, canvasBounds.width - SIDES_PADDING2);
-			w = canvas.width = canvasBounds.width;
-			h = canvas.height = CANVAS_HEIGHT;
+			canvas.width = canvasBounds.width;
+			canvas.height = CANVAS_HEIGHT;
 		}
 	}
 

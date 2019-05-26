@@ -1,4 +1,5 @@
 import {
+	ANIMATION_SPEED,
 	MONTH_NAMES,
 	DAY_NAMES,
 } from '../Globals';
@@ -52,7 +53,7 @@ export function prepareYAxis(rawYs, data, config) {
 	const items = rawYs.map(y => {
 		const [yKey, ...yData] = y;
 		const item = {
-			opacity: config.animator.createAnimation(1, 300),
+			opacity: config.animator.createAnimation(1, ANIMATION_SPEED),
 			key: yKey,
 			scaling: {},
 			enabled: true,
@@ -63,8 +64,8 @@ export function prepareYAxis(rawYs, data, config) {
 			item.scaling.color = data.colors[item.key];
 			item.scaling.minHeight = uninf(singleMin(item.items));
 			item.scaling.maxHeight = uninf(singleMax(item.items));
-			item.scaling.minHeightAnim = config.animator.createAnimation(0, 300);
-			item.scaling.maxHeightAnim = config.animator.createAnimation(0, 300);
+			item.scaling.minHeightAnim = config.animator.createAnimation(0, ANIMATION_SPEED);
+			item.scaling.maxHeightAnim = config.animator.createAnimation(0, ANIMATION_SPEED);
 			item.scaling.normY = normalizeAnimated(config.animator, item.scaling.minHeight, item.scaling.maxHeight);
 			item.scaling.normControlY = normalizeAnimated(config.animator, item.scaling.minHeight, item.scaling.maxHeight);
 
@@ -106,8 +107,8 @@ function scaling_Percentage(config, sharedScaling, items) {
 	// PERCENTAGE
 	const minHeight = 0;
 	const maxHeight = 100;
-	const minHeightAnim = config.animator.createAnimation(minHeight, 300);
-	const maxHeightAnim = config.animator.createAnimation(maxHeight, 300);
+	const minHeightAnim = config.animator.createAnimation(minHeight, ANIMATION_SPEED);
+	const maxHeightAnim = config.animator.createAnimation(maxHeight, ANIMATION_SPEED);
 
 	sharedScaling.minHeight = minHeight;
 	sharedScaling.maxHeight = maxHeight;
@@ -127,8 +128,8 @@ function scaling_Stacked(config, sharedScaling, items) {
 	const max = uninf(singleMax(zipSum(rawItems)));
 	const minHeight = 0;
 	const maxHeight = singleMaxRange(zipSum(rawItems), min, max);
-	const minHeightAnim = config.animator.createAnimation(0, 300);
-	const maxHeightAnim = config.animator.createAnimation(0, 300);
+	const minHeightAnim = config.animator.createAnimation(0, ANIMATION_SPEED);
+	const maxHeightAnim = config.animator.createAnimation(0, ANIMATION_SPEED);
 
 	sharedScaling.minHeight = minHeight;
 	sharedScaling.maxHeight = maxHeight;
@@ -166,8 +167,8 @@ function scaling_Default(config, sharedScaling, items) {
 	const max = uninf(flatMax(rawItems));
 	const minHeight = flatMin(rawItems, min, max);
 	const maxHeight = flatMax(rawItems, min, max);
-	const minHeightAnim = config.animator.createAnimation(0, 300);
-	const maxHeightAnim = config.animator.createAnimation(0, 300);
+	const minHeightAnim = config.animator.createAnimation(0, ANIMATION_SPEED);
+	const maxHeightAnim = config.animator.createAnimation(0, ANIMATION_SPEED);
 
 	sharedScaling.minHeight = minHeight;
 	sharedScaling.maxHeight = maxHeight;

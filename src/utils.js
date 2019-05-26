@@ -1,3 +1,4 @@
+import { ANIMATION_SPEED } from './Globals';
 import Animated from './Utils/Animated';
 
 
@@ -41,8 +42,8 @@ export function normalize(min, max) {
 
 export function normalizeAnimated(animator, min, max) {
 	let newMax = min;
-	const newMin = animator.createAnimation(min, 300);
-	const delta = animator.createAnimation(max - min, 300);
+	const newMin = animator.createAnimation(min, ANIMATION_SPEED);
+	const delta = animator.createAnimation(max - min, ANIMATION_SPEED);
 	function norm(val) {
 		return (val - newMin.value) / delta.value;
 	};
