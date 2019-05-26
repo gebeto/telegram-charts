@@ -189,6 +189,7 @@ function Chart(OPTS, data, FABRIC) {
 	function zoomOut() {
 		if (config.zoomed) {
 			config.popup.hide();
+			bak.buttons.mergeState(config.buttons);
 			config.buttons.destroy();
 			config.chart.destroy();
 			config.control.destroy();
@@ -239,6 +240,7 @@ function Chart(OPTS, data, FABRIC) {
 				config.data = prepareDataset(data, config);
 				config.scaleX = normalize(0, config.data.xAxis.length - 1)(1);
 				config.buttons = createButtons(canvasContainer, config, () => updateNorms(true));
+				config.buttons.mergeState(bak.buttons);
 				config.chart = createChart(config, fabric.drawChartFabric, { ...drawersArgs, config });
 				config.control = createControl(config, fabric.drawControlFabric, { ...drawersArgsControl, config }, () => updateNorms())
 				header.setSubtitle(dateString(timestamp).dateString);

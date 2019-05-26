@@ -4,6 +4,7 @@ import { createElement, createLongPress } from './utils';
 export function createButtonForAxis(container, config, y, globState, handler) {
 	const key = y.key;
 	const state = {
+		key: key,
 		enabled: true,
 	};
 	const button = createElement(container, 'button', 'chart__buttons-button');
@@ -38,7 +39,7 @@ export function createButtonForAxis(container, config, y, globState, handler) {
 		globState.hideAllExcept(button);
 	}
 	
-	function update() {
+	function update(force) {
 		if (state.enabled === true) {
 			button.className = 'chart__buttons-button';
 			button.style.color = '#FFF';
@@ -48,6 +49,9 @@ export function createButtonForAxis(container, config, y, globState, handler) {
 		}
 
 		y.enabled = state.enabled;
+		if (force) {
+			y.opacity.value = state.enabled ? 0.99 : 0.01;
+		}
 		y.opacity.play(state.enabled ? 1 : 0);
 
 		handler && handler(state.enabled);
@@ -67,6 +71,7 @@ export function createButtonForAxis(container, config, y, globState, handler) {
 		}
 	}
 
+	state.update = update;
 	state.hide = hide;
 	state.show = show;
 
@@ -89,7 +94,7 @@ export function createButtons(container, config, handler) {
 	const allButtons = {};
 
 	const buttons = config.data.yAxis.items.map(y => {
-		return allButtons[y[0]] = createButtonForAxis(buttonsWrapper, config, y, globalState, (enabled) => {
+		const button = createButtonForAxis(buttonsWrapper, config, y, globalState, (enabled) => {
 			globalState.activeButtonsCount += enabled ? 1 : -1;
 			if (globalState.activeButtonsCount < 1) {
 				return;
@@ -97,6 +102,7 @@ export function createButtons(container, config, handler) {
 
 			handler && handler();
 		});
+		return allButtons[y.key] = button;
 	});
 
 	function hideAll() {
@@ -117,6 +123,20 @@ export function createButtons(container, config, handler) {
 
 	function init() {
 		buttons.map(button => button.init());
+	}
+
+	allButtons.mergeState = function mergeState(oldButtons) {
+		console.log(oldButtons, allButtons);
+		buttons.map(button => {
+			if (oldButtons[button.key]) {
+				if (oldButtons[button.key].enabled !== button.enabled) {
+					config.control.shouldUpdate = true;
+					config.chart.shouldUpdate = true;
+				}
+				button.enabled = oldButtons[button.key].enabled;
+				button.update(true);
+			}
+		})
 	}
 
 	allButtons.destroy = destroy;
