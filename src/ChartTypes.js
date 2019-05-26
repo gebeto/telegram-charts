@@ -23,9 +23,6 @@ const Bar = {
 const Area = {	
 	drawChartFabric: (args) => AreaLineChartDrawer(args),
 	drawControlFabric: (args) => AreaLineControlsDrawer(args),
-	// if (datasource.percentage) {
-	// 	drawZoomedChartFabric: (args) => AreaChartDrawer(args),
-	// }
 };
 
 const Line = {
@@ -46,16 +43,19 @@ export function fabricByDatasource(datasource) {
 	if (!types.length) {
 		throw new Error("DataSet error. No columns for chart")
 	} else if (types.length > 50) {
-		throw new Error("DataSet error. Supported up to 50 columns on one graph.")
+		// throw new Error("DataSet error. Supported up to 50 columns on one graph.")
+		console.warn("DataSet warning. Supported up to 50 columns on one graph.")
 	}
 
 	const type = types[0];
 	if (ChartTypes[type]) {
 		if (datasource.y_scaled) {
-			if (type !== 'line' || types.length !== 2) {
-				throw new Error("DataSet error. 'y_scaled' is only used with exactly 2 'line' columns.")
+			if (type === 'line' || types.length === 2) {
+				return ChartTypes['dual_line'];
+			} else {
+				// throw new Error("DataSet error. 'y_scaled' is only used with exactly 2 'line' columns.")
+				console.warn("DataSet warning. 'y_scaled' is only used with exactly 2 'line' columns.");
 			}
-			return ChartTypes['dual_line'];
 		}
 		return ChartTypes[type]
 	}

@@ -21,7 +21,11 @@ export default function Area({ config, control, ctx, norm, colors, normYKey, yAx
 	// 	config.chart.shouldUpdate = true;
 	// });
 
-	return function drawArea(data, perc, start, end, x, y, width, height) {
+	function calculate(data, perc, start, end, x, y, width, height) {
+		
+	}
+
+	function drawArea(data, perc, start, end, x, y, width, height) {
 		const { key, items, opacity } = data;
 		const copacity = opacity.value;
 
@@ -79,5 +83,10 @@ export default function Area({ config, control, ctx, norm, colors, normYKey, yAx
 		// mouse.newY
 		ctx.fillText(perc.toFixed(0) + '%', textX, textY);
 		ctx.restore();
+	}
+
+	return {
+		calculate: calculate,
+		draw: drawArea,
 	}
 }

@@ -6,7 +6,7 @@ import { createControlLayer, controlWidthMul2, controlWidth } from './utils';
 
 export default function AreaLineControlsDrawer(drawersArgs) {
 	const { ctx, config, canvasBounds, control, yAxis, xAxis } = drawersArgs;
-	const drawAreaLineLayer = AreaLineLayerDrawer(drawersArgs);
+	const drawAreaLineLayers = yAxis.items.map(el => AreaLineLayerDrawer(drawersArgs));
 
 	const { updateControlBounds, renderControl } = createControlLayer(config, control);
 	
@@ -30,7 +30,8 @@ export default function AreaLineControlsDrawer(drawersArgs) {
 
 		const stacked = new Array(xAxis.length).fill(0);
 		for (let i = 0; i < yAxis.items.length; i++) {
-			drawAreaLineLayer(yAxis.items[i], stacked, percentage, x, y + 3, width, height - 6);
+			// drawAreaLineLayers.calculate(yAxis.items[i], stacked, percentage, x, y + 3, width, height - 6);
+			drawAreaLineLayers[i].draw(yAxis.items[i], stacked, percentage, x, y + 3, width, height - 6);
 		}
 
 		renderControl(ctx, x, y, width, height);

@@ -20,7 +20,7 @@ export default function AreaChartDrawer(drawersArgs) {
 	const chartPadding = 6 * PIXEL_RATIO;
 	const chartPadding2 = chartPadding * 2;
 
-	const drawAreaLayer = AreaLayerDrawer(drawersArgs);
+	const drawAreaLayers = yAxis.items.map(el => AreaLayerDrawer(drawersArgs));
 
 	return function drawChart(x, y, width, height) {
 		// debugLayer(ctx, x, y, width, height);
@@ -39,7 +39,8 @@ export default function AreaChartDrawer(drawersArgs) {
 
 		for (let i = 0; i < yAxis.items.length; i++) {
 			const perc = yAxis.items[i].items.slice(itemsStart, itemsEnd).reduce(average, 0) / percentage * yAxis.items[i].opacity.value;
-			drawAreaLayer(yAxis.items[i], perc, stacked, stacked += perc, x, Y, width, HEIGHT - X_AXIS_HEIGHT);
+			// drawAreaLayers[i].calculate(yAxis.items[i], perc, stacked, stacked += perc, x, Y, width, HEIGHT - X_AXIS_HEIGHT);
+			drawAreaLayers[i].draw(yAxis.items[i], perc, stacked, stacked += perc, x, Y, width, HEIGHT - X_AXIS_HEIGHT);
 		}
 	}
 }

@@ -4,8 +4,11 @@ import { PIXEL_RATIO } from '../../Globals';
 export default function AreaLine({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {
 	const chunkScale = config.scaleX;
 
+	function calculate(data, stacked, percentage, x, y, width, height) {
+		
+	}
 
-	return function drawAreaLine(data, stacked, percentage, x, y, width, height) {
+	function drawAreaLine(data, stacked, percentage, x, y, width, height) {
 		const { key, items, opacity } = data;
 		const normY = data.scaling[normYKey];
 		const normYM = normY(1);
@@ -46,5 +49,10 @@ export default function AreaLine({ config, control, ctx, norm, colors, normYKey,
 		ctx.fillStyle = colors[key];
 		ctx.fill();
 		ctx.restore();
+	}
+
+	return {
+		calculate: calculate,
+		draw: drawAreaLine,
 	}
 }
