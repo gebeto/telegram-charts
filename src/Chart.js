@@ -120,6 +120,7 @@ function Chart(OPTS, data, FABRIC) {
 		},
 
 		popup: {},
+		buttons: null,
 		chart: null,
 		control: null,
 		scaleX: 0,
@@ -131,7 +132,7 @@ function Chart(OPTS, data, FABRIC) {
 	config.popup = createPopup(canvasContainer, config);
 
 	if (config.data.yAxis.items.length > 1) {
-		const buttons = createButtons(canvasContainer, config, () => {
+		config.buttons = createButtons(canvasContainer, config, () => {
 			updateNorms(true);
 		});
 	}
@@ -188,6 +189,7 @@ function Chart(OPTS, data, FABRIC) {
 	function zoomOut() {
 		if (config.zoomed) {
 			config.popup.hide();
+			config.buttons.destroy();
 			config.chart.destroy();
 			config.control.destroy();
 			delete config.chart;
@@ -195,9 +197,11 @@ function Chart(OPTS, data, FABRIC) {
 
 			config.data = bak.data;
 			config.scaleX = normalize(0, config.data.xAxis.length - 1)(1);
+			config.buttons = bak.buttons;
 			config.chart = bak.chart;
 			config.control = bak.control;
 
+			config.buttons.init();
 			config.chart.init();
 			config.control.init();
 			config.chart.shouldUpdate = true;
@@ -222,9 +226,11 @@ function Chart(OPTS, data, FABRIC) {
 				const fabric = fabricByDatasource(data, true);
 
 				config.popup.hide();
+				config.buttons.destroy();
 				config.chart.destroy();
 				config.control.destroy();
 
+				bak.buttons = config.buttons;
 				bak.chart = config.chart;
 				bak.control = config.control;
 				bak.popup = config.popup;
@@ -232,6 +238,7 @@ function Chart(OPTS, data, FABRIC) {
 
 				config.data = prepareDataset(data, config);
 				config.scaleX = normalize(0, config.data.xAxis.length - 1)(1);
+				config.buttons = createButtons(canvasContainer, config, () => updateNorms(true));
 				config.chart = createChart(config, fabric.drawChartFabric, { ...drawersArgs, config });
 				config.control = createControl(config, fabric.drawControlFabric, { ...drawersArgsControl, config }, () => updateNorms())
 				header.setSubtitle(dateString(timestamp).dateString);

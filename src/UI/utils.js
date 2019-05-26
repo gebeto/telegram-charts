@@ -32,12 +32,25 @@ export function createLongPress(button, handlePress, handleLongPress) {
 		clearTimeout(timeout);
 	}
 
+	function init() {
+		button.addEventListener('click', mouseUp);
+		button.addEventListener('mousedown', mouseDown);
+		button.addEventListener('mousemove', mouseMove);
+		button.addEventListener('touchstart', mouseDown);
+		button.addEventListener('touchmove', mouseMove);
+	}
 
-	button.addEventListener('click', mouseUp);
-	button.addEventListener('mousedown', mouseDown);
-	button.addEventListener('mousemove', mouseMove);
-	button.addEventListener('touchstart', mouseDown);
-	button.addEventListener('touchmove', mouseMove);
+	function destroy() {
+		button.removeEventListener('click', mouseUp);
+		button.removeEventListener('mousedown', mouseDown);
+		button.removeEventListener('mousemove', mouseMove);
+		button.removeEventListener('touchstart', mouseDown);
+		button.removeEventListener('touchmove', mouseMove);
+	}
 
-	return {};
+	init();
+
+	return {
+		init, destroy,
+	};
 }

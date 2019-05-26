@@ -10,7 +10,17 @@ export function createButtonForAxis(container, config, y, globState, handler) {
 	button.textContent = config.data.names[key];
 	button.style.backgroundColor = config.data.colors[key];
 	button.style.borderColor = config.data.colors[key];
-	createLongPress(button, onPress, onLongPress);
+	const longPress = createLongPress(button, onPress, onLongPress);
+
+	function destroy() {
+		container.removeChild(button);
+		longPress.destroy();
+	}
+
+	function init() {
+		container.appendChild(button);
+		longPress.init();
+	}
 
 	function onPress() {
 		if (globState.activeButtonsCount === 1 && state.enabled) {
@@ -34,7 +44,7 @@ export function createButtonForAxis(container, config, y, globState, handler) {
 			button.style.color = '#FFF';
 		} else {
 			button.className = 'chart__buttons-button unchecked';
-			button.style.color = data.colors[key];
+			button.style.color = config.data.colors[key];
 		}
 
 		y.enabled = state.enabled;
@@ -59,6 +69,9 @@ export function createButtonForAxis(container, config, y, globState, handler) {
 
 	state.hide = hide;
 	state.show = show;
+
+	state.destroy = destroy;
+	state.init = init;
 
 	return state;
 }
@@ -97,6 +110,17 @@ export function createButtons(container, config, handler) {
 			button.hide(caller);
 		});
 	}
+
+	function destroy() {
+		buttons.map(button => button.destroy());
+	}
+
+	function init() {
+		buttons.map(button => button.init());
+	}
+
+	allButtons.destroy = destroy;
+	allButtons.init = init;
 
 	return allButtons;
 }

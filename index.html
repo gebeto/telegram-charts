@@ -83,7 +83,7 @@
 
 		fetch('assets/stage_2_data/1/overview.json').then(res => res.json()).then(chartData => {
 			chartData.x_on_zoom = (timestamp) => {
-				const response = fetch('assets/stage_2_data/1/2018-04/07.json').then(res => res.json())
+				const response = fetch('assets/stage_2_data_extended/1/2018-04/07.json').then(res => res.json())
 				return response;
 			};
 			Graph.render(chartsContainer, chartData);
@@ -91,7 +91,7 @@
 
 		fetch('assets/stage_2_data/2/overview.json').then(res => res.json()).then(chartData => {
 			chartData.x_on_zoom = (timestamp) => {
-				const response = fetch('assets/stage_2_data/2/2018-04/07.json').then(res => res.json())
+				const response = fetch('assets/stage_2_data_extended/2/2018-04/07.json').then(res => res.json())
 				return response;
 			};
 			Graph.render(chartsContainer, chartData);
@@ -107,7 +107,7 @@
 
 		fetch('assets/stage_2_data/4/overview.json').then(res => res.json()).then(chartData => {
 			chartData.x_on_zoom = (timestamp) => {
-				const response = fetch('assets/stage_2_data/4/2018-04/07.json').then(res => res.json())
+				const response = fetch('assets/stage_2_data_extended/4/2018-04/07.json').then(res => res.json())
 				return response;
 			};
 			Graph.render(chartsContainer, chartData);
