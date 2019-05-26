@@ -18,7 +18,9 @@ import { debugLayer } from '../utils';
 
 
 export default function AreaChartDrawer(drawersArgs) {
-	const { ctx, config, yAxis, xAxis } = drawersArgs;
+	const { config } = drawersArgs;
+	const { ctx, data } = config;
+	const { colors, yAxis, xAxis } = data;
 	const chartPadding = 6 * PIXEL_RATIO;
 	const chartPadding2 = chartPadding * 2;
 

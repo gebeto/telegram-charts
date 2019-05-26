@@ -19,7 +19,7 @@ export function createHeader(container, titleText, subtitleText) {
 				onClick && onClick(e);
 				button.removeEventListener('click', buttonClickHandler);
 			}
-			const button = createElement(null, 'button', 'chart__header-title-button')
+			const button = createElement(null, 'span', 'chart__header-title-button')
 			button.textContent = titleText;
 			button.addEventListener('click', buttonClickHandler);
 			title.innerHTML = '';

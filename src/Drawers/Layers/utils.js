@@ -5,7 +5,8 @@ const SIDE_LEFT = 1;
 const SIDE_CENTER = 2;
 const SIDE_RIGHT = 3;
 
-export function createMouseDotHandling(config, canvasBounds, ctx, { paddingLeftSelector, paddingRightSelector, rounding, plus }) {
+export function createMouseDotHandling(config, { paddingLeftSelector, paddingRightSelector, rounding, plus }) {
+	const { ctx } = config;
 	const mouse = config.mouse.mouse;
 	const popup = config.popup;
 	const chunkScale = config.scaleX;
@@ -79,7 +80,7 @@ export function createMouseDotHandling(config, canvasBounds, ctx, { paddingLeftS
 
 				const leftOverflow = (currentPos + popupBounds.width + paddingRight);
 				const rightOverflow = (currentPos - popupBounds.width - paddingRight);
-				if (leftOverflow > canvasBounds.width / PIXEL_RATIO) {
+				if (leftOverflow > config.canvasBounds.width / PIXEL_RATIO) {
 					context.popupSide = SIDE_LEFT;
 				} else if (rightOverflow < 0) {
 					context.popupSide = SIDE_RIGHT;
@@ -104,6 +105,9 @@ export function createMouseDotHandling(config, canvasBounds, ctx, { paddingLeftS
 		config.mouse.removeListener('move', moveHandler);
 		config.mouse.removeListener('down', downHandler);
 		config.mouse.removeListener('up', upHandler);
+
+		current.indexOld = -1;
+		current.index = -1;
 	}
 
 	context.init = function init() {

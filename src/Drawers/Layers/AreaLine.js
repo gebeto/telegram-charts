@@ -1,7 +1,9 @@
 import { PIXEL_RATIO } from '../../Globals';
 
 
-export default function AreaLine({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {
+export default function AreaLine({ config, normYKey }, opts = {}) {
+	const { ctx, control, data } = config;
+	const { colors, yAxis, xAxis } = data;
 	const chunkScale = config.scaleX;
 
 	function calculate(data, stacked, percentage, x, y, width, height) {

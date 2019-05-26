@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
@@ -81,20 +81,19 @@
 
 		var chartsContainer = document.querySelector('#container');
 
-		fetch('assets/stage_2_data/1/overview.json').then(res => res.json()).then(chartData => Graph.render(chartsContainer, chartData))
-		fetch('assets/stage_2_data/2/overview.json').then(res => res.json()).then(chartData => Graph.render(chartsContainer, chartData))
-		fetch('assets/stage_2_data/3/overview.json').then(res => res.json()).then(chartData => Graph.render(chartsContainer, chartData))
+		// fetch('assets/stage_2_data/1/overview.json').then(res => res.json()).then(chartData => Graph.render(chartsContainer, chartData))
+		// fetch('assets/stage_2_data/2/overview.json').then(res => res.json()).then(chartData => Graph.render(chartsContainer, chartData))
+		// fetch('assets/stage_2_data/3/overview.json').then(res => res.json()).then(chartData => Graph.render(chartsContainer, chartData))
 		// fetch('assets/stage_2_data/1/2018-04/07.json').then(res => res.json()).then(chartData => Graph.render(chartsContainer, chartData))
 		fetch('assets/stage_2_data/4/overview.json').then(res => res.json()).then(chartData => {
 			chartData.x_on_zoom = (timestamp) => {
 				console.log('TIME', timestamp);
 				const response = fetch('assets/stage_2_data/1/2018-04/07.json').then(res => res.json())
 				return response;
-				// return Promise.resolve(chartData);
 			};
 			Graph.render(chartsContainer, chartData);
 		})
-		fetch('assets/stage_2_data/5/overview.json').then(res => res.json()).then(chartData => Graph.render(chartsContainer, chartData))
+		// fetch('assets/stage_2_data/5/overview.json').then(res => res.json()).then(chartData => Graph.render(chartsContainer, chartData))
 
 	</script>
 </body>

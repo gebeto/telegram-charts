@@ -26,23 +26,25 @@ import {
 } from './utils';
 
 
-function createControl(drawControlFabric, drawersArgs, xAxis, onRangeUpdate) {
-	const xAxisLength = xAxis.length;
+function createControl(config, drawControlFabric, drawersArgs, onRangeUpdate) {
 	const drawControl = drawControlFabric(drawersArgs);
 	const control = {
 		range: [0.7, 1.0],
 		count: 0,
 		scale: 0,
 		shouldUpdate: true,
+
 		destroy: function destroy() {
 			drawControl.destroy();
 		},
+
 		init: function init() {
 			drawControl.init();
 		},
+
 		updateRange: function updateRange(start, end) {
 			const scale = end - start;
-			const count = xAxisLength * scale;
+			const count = config.data.xAxis.length * scale;
 			if (count > 5) {
 				// control.count = Math.ceil(count);
 				control.count = (count >> 0) + 1;
@@ -56,15 +58,15 @@ function createControl(drawControlFabric, drawersArgs, xAxis, onRangeUpdate) {
 		render: function render() {
 			// console.log('update control', index);
 			control.shouldUpdate = false;
-			drawersArgs.ctx.clearRect(0, CANVAS_HEIGHT - CONTROL_HEIGHT, drawersArgs.canvasBounds.width, CONTROL_HEIGHT);
-			drawControl(SIDES_PADDING, CANVAS_HEIGHT - CONTROL_HEIGHT, drawersArgs.canvasBounds.width - SIDES_PADDING2, CONTROL_HEIGHT);
+			config.ctx.clearRect(0, CANVAS_HEIGHT - CONTROL_HEIGHT, config.canvasBounds.width, CONTROL_HEIGHT);
+			drawControl(SIDES_PADDING, CANVAS_HEIGHT - CONTROL_HEIGHT, config.canvasBounds.width - SIDES_PADDING2, CONTROL_HEIGHT);
 		}
 	};
 
 	return control;
 }
 
-function createChart(drawChartFabric, drawersArgs) {
+function createChart(config, drawChartFabric, drawersArgs) {
 	const drawChart = drawChartFabric(drawersArgs);
 	const chart = {
 		shouldUpdate: false,
@@ -78,9 +80,10 @@ function createChart(drawChartFabric, drawersArgs) {
 		},
 
 		render: function render() {
+			// console.log('update chart', index);
 			chart.shouldUpdate = false;
-			drawersArgs.ctx.clearRect(0, 0, drawersArgs.canvasBounds.width, CANVAS_HEIGHT - CONTROL_HEIGHT);
-			drawChart(SIDES_PADDING, 0, drawersArgs.canvasBounds.width - SIDES_PADDING2, CANVAS_HEIGHT - CONTROL_HEIGHT);
+			config.ctx.clearRect(0, 0, config.canvasBounds.width, CANVAS_HEIGHT - CONTROL_HEIGHT);
+			drawChart(SIDES_PADDING, 0, config.canvasBounds.width - SIDES_PADDING2, CANVAS_HEIGHT - CONTROL_HEIGHT);
 		}
 	};
 
@@ -104,39 +107,31 @@ function Chart(OPTS, data, FABRIC) {
 	const ctx = canvas.getContext('2d');
 	const animator = createAnimator();
 
-	const canvasBounds = {
-		left: 0,
-		top: 0,
-	};
 	const config = {
+		canvas: canvas,
+		ctx: ctx,
 		zoomed: false,
 		index: index,
 		animator: animator,
-		mouse: createMouseForChart({ config, canvas, canvasBounds }),
-
-		popup: {},
-
+		canvasBounds: { left: 0, top: 0 },
+		mouse: null,
 		normalizeForControl: function normalizeForControl(xPos) {
 			return normControl(xPos);
 		},
 
+		popup: {},
 		chart: null,
 		control: null,
+		scaleX: 0,
 	};
 
-	// Init data
-	const {
-		columns, types, colors, names,
-		x_on_zoom,
-		xAxis,
-		yAxis,
-	} = prepareDataset(data, config);
+	config.mouse = createMouseForChart(config);
+	config.data = prepareDataset(data, config);
+	config.scaleX = normalize(0, config.data.xAxis.length - 1)(1);
+	config.popup = createPopup(canvasContainer, config);
 
-	config.scaleX = normalize(0, xAxis.length - 1)(1);
-
-	config.popup = createPopup(canvasContainer, config, data, xAxis, yAxis);
-	if (yAxis.items.length > 1) {
-		const buttons = createButtons(canvasContainer, config.animator, data, yAxis, () => {
+	if (config.data.yAxis.items.length > 1) {
+		const buttons = createButtons(canvasContainer, config, () => {
 			updateNorms(true);
 		});
 	}
@@ -146,12 +141,12 @@ function Chart(OPTS, data, FABRIC) {
 			const rStart = config.control.range[0];
 			const rEnd = config.control.range[1];
 			
-			const startIndexRaw = rStart * xAxis.length;
+			const startIndexRaw = rStart * config.data.xAxis.length;
 			const startIndex = startIndexRaw < 0 ? 0 : Math.floor(startIndexRaw);
-			const endIndexRaw = rEnd * xAxis.length;
-			const endIndex = endIndexRaw > xAxis.length ? xAxis.length : Math.ceil(endIndexRaw);
-			yAxis.items.forEach(y => y.scaling.updateMinMax(startIndex, endIndex));
-			header.setSubtitle(`${xAxis[startIndex].dateStringTitle} - ${xAxis[endIndex - 1].dateStringTitle}`)
+			const endIndexRaw = rEnd * config.data.xAxis.length;
+			const endIndex = endIndexRaw > config.data.xAxis.length ? config.data.xAxis.length : Math.ceil(endIndexRaw);
+			config.data.yAxis.items.forEach(y => y.scaling.updateMinMax(startIndex, endIndex));
+			header.setSubtitle(`${config.data.xAxis[startIndex].dateStringTitle} - ${config.data.xAxis[endIndex - 1].dateStringTitle}`)
 		}
 	, 100);
 
@@ -161,21 +156,20 @@ function Chart(OPTS, data, FABRIC) {
 		const newWidth = newBounds.width * PIXEL_RATIO;
 		const newHeight = newBounds.height * PIXEL_RATIO;
 
-		canvasBounds.width = newWidth;
-		canvasBounds.height = CANVAS_HEIGHT;
-		canvasBounds.left = newBounds.left;
-		canvasBounds.right = newBounds.right;
-		canvasBounds.top = newBounds.top;
-		canvasBounds.bottom = newBounds.bottom;
-		canvasBounds.x = newBounds.x;
-		canvasBounds.y = newBounds.y;
+		config.canvasBounds.width = newWidth;
+		config.canvasBounds.height = CANVAS_HEIGHT;
+		config.canvasBounds.left = newBounds.left;
+		config.canvasBounds.right = newBounds.right;
+		config.canvasBounds.top = newBounds.top;
+		config.canvasBounds.bottom = newBounds.bottom;
+		config.canvasBounds.x = newBounds.x;
+		config.canvasBounds.y = newBounds.y;
 
-		if (canvasBounds.width !== newWidth || canvasBounds.height !== newHeight) {
+		if (config.canvasBounds.width !== newWidth || config.canvasBounds.height !== newHeight) {
 			config.chart.shouldUpdate = true;
 			config.control.shouldUpdate = true;
-			normControl = normalizeMemo(SIDES_PADDING2, canvasBounds.width - SIDES_PADDING2);
-			// normControl = normalize(SIDES_PADDING2, canvasBounds.width - SIDES_PADDING2);
-			canvas.width = canvasBounds.width;
+			normControl = normalizeMemo(SIDES_PADDING2, config.canvasBounds.width - SIDES_PADDING2);
+			canvas.width = config.canvasBounds.width;
 			canvas.height = CANVAS_HEIGHT;
 		}
 	}
@@ -189,66 +183,81 @@ function Chart(OPTS, data, FABRIC) {
 		config.control.shouldUpdate && config.control.render();
 	}
 
-	// const bak = {};
-	// config.popup.onClick(function zoom(timestamp) {
-	// 	if (config.zoomed) {
-	// 		delete config.chart;
-	// 		delete config.control;
-	// 		config.chart = bak.chart;
-	// 		config.control = bak.control;
-	// 		config.chart.init();
-	// 		config.control.init();
-	// 		config.chart.shouldUpdate = true;
-	// 		config.control.shouldUpdate = true;
-	// 		config.zoomed = false;
-	// 		header.setTitle(title);
-	// 		return;
-	// 	}
-	// 	if (!x_on_zoom) return;
+	const bak = {};
+	config.popup.onClick(function zoom(timestamp) {
+		if (config.zoomed) {
+			config.popup.hide();
+			config.chart.destroy();
+			config.control.destroy();
+			delete config.chart;
+			delete config.control;
 
-	// 	const dataRequested = x_on_zoom(timestamp);
-	// 	if (!dataRequested) {
-	// 		console.warn("'x_on_zoom' should return promise with data");
-	// 	} else if (!dataRequested.then) {
-	// 		console.warn("'x_on_zoom' should return promise with data");
-	// 	} else if (dataRequested.then) {
-	// 		dataRequested.then(data => {
-	// 			console.log(data);
-	// 			// const fabric = fabricByDatasource(data, true);
-	// 			// config.popup.hide();
-	// 			// config.chart.destroy();
-	// 			// config.control.destroy();
-	// 			// bak.chart = config.chart;
-	// 			// bak.control = config.control;
-	// 			// config.chart = createChart(fabric.drawChartFabric, drawersArgs);
-	// 			// config.control = createControl(fabric.drawControlFabric, drawersArgsControl, xAxis, () => updateNorms())
-	// 			// config.chart.shouldUpdate = true;
-	// 			// config.control.shouldUpdate = true;
-	// 			// config.zoomed = true;
-	// 			// header.setTitleButton('Zoom', () => {
-	// 			// 	zoom();
-	// 			// });
-	// 		});
-	// 	}
-	// });
+			config.data = bak.data;
+			config.scaleX = normalize(0, config.data.xAxis.length - 1)(1);
+			config.chart = bak.chart;
+			config.control = bak.control;
 
-	const drawersArgs = {
-		config, ctx, colors, xAxis, yAxis, canvasBounds,
-		normYKey: 'normY'
-	};
-	const drawersArgsControl = {
-		...drawersArgs,
-		normYKey: 'normControlY'
-	};
+			config.chart.init();
+			config.control.init();
+			config.chart.shouldUpdate = true;
+			config.control.shouldUpdate = true;
+			config.zoomed = false;
+			header.setTitle(title);
+			return;
+		}
 
-	config.chart = createChart(FABRIC.drawChartFabric, drawersArgs);
-	config.control = createControl(FABRIC.drawControlFabric, drawersArgsControl, xAxis, () => updateNorms())
+		if (!config.data.x_on_zoom) return;
+
+		const dataRequested = config.data.x_on_zoom(timestamp);
+		if (!dataRequested) {
+			console.warn("'x_on_zoom' should return promise with data");
+		} else if (!dataRequested.then) {
+			console.warn("'x_on_zoom' should return promise with data");
+		} else if (dataRequested.then) {
+			dataRequested.then(data => {
+				const fabric = fabricByDatasource(data, true);
+
+				config.popup.hide();
+				config.chart.destroy();
+				config.control.destroy();
+
+				bak.chart = config.chart;
+				bak.control = config.control;
+				bak.popup = config.popup;
+				bak.data = config.data;
+
+				config.data = prepareDataset(data, config);
+				config.scaleX = normalize(0, config.data.xAxis.length - 1)(1);
+				config.chart = createChart(config, fabric.drawChartFabric, { ...drawersArgs, config });
+				config.control = createControl(config, fabric.drawControlFabric, { ...drawersArgsControl, config }, () => updateNorms())
+				init();
+
+				config.chart.shouldUpdate = true;
+				config.control.shouldUpdate = true;
+				config.zoomed = true;
+				header.setTitleButton('Zoom Out', () => {
+					zoom();
+				});
+			});
+		}
+	});
+
+	const drawersArgs = { config, normYKey: 'normY' };
+	const drawersArgsControl = { config, normYKey: 'normControlY' };
+
+	config.chart = createChart(config, FABRIC.drawChartFabric, drawersArgs);
+	config.control = createControl(config, FABRIC.drawControlFabric, drawersArgsControl, () => updateNorms())
 
 	window.addEventListener('resize', updateBounds);
-	config.control.updateRange(config.control.range[0], config.control.range[1])
-	updateBounds();
-	updateNorms(true);
-	render()
+
+	function init() {
+		config.control.updateRange(config.control.range[0], config.control.range[1]);
+		updateBounds();
+		updateNorms(true);
+	}
+
+	init();
+	render();
 
 	return {
 		render: render,

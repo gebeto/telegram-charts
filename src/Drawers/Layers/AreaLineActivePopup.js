@@ -4,11 +4,11 @@ import { CURRENT, DOT_RADIUS } from '../../Globals';
 import { createMouseDotHandling } from './utils';
 
 
-export default function AreaLineActivePopup({ canvasBounds, config, ctx, norm, colors, normYKey }) {
+export default function AreaLineActivePopup({ config, normYKey }) {
+	const { ctx, control, data } = config;
+	const { colors, yAxis, xAxis } = data;
 	const h = createMouseDotHandling(
 		config,
-		canvasBounds,
-		ctx,
 		{
 			paddingLeftSelector: (context) => DOT_RADIUS,
 			paddingRightSelector: (context) => DOT_RADIUS,

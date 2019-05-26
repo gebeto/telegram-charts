@@ -26,7 +26,9 @@ function formatNumber(n, short) {
 }
 
 
-export default function YAxis({ control, ctx, normX, normY, colors }, opts = {}) {
+export default function YAxis({ config }, opts = {}) {
+	const { ctx, control, data } = config;
+	const { colors, yAxis, xAxis } = data;
 	const partsCount = 6;
 	const textAlign = opts.textAlign || 'left';
 	

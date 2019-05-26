@@ -6,6 +6,11 @@ html {
 		.chart__popup {
 			background: #181F2A;
 		}
+
+		.chart__header-title-button {
+			color: #48AAF0;
+			background-image: url(images/zoom-dark.svg);
+		}
 	}
 }
 
@@ -26,7 +31,8 @@ html {
 		font-size: 0.6em;
 	}
 
-	@import "chart.scss";
+	@import "header.scss";
+	@import "canvas.scss";
 	@import "popup.scss";
 	@import "buttons.scss";
 }

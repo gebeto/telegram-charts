@@ -1,15 +1,15 @@
 import { createElement, createLongPress } from './utils';
 
 
-export function createButtonForAxis(container, animator, data, y, globState, handler) {
+export function createButtonForAxis(container, config, y, globState, handler) {
 	const key = y.key;
 	const state = {
 		enabled: true,
 	};
 	const button = createElement(container, 'button', 'chart__buttons-button');
-	button.textContent = data.names[key];
-	button.style.backgroundColor = data.colors[key];
-	button.style.borderColor = data.colors[key];
+	button.textContent = config.data.names[key];
+	button.style.backgroundColor = config.data.colors[key];
+	button.style.borderColor = config.data.colors[key];
 	createLongPress(button, onPress, onLongPress);
 
 	function onPress() {
@@ -63,9 +63,9 @@ export function createButtonForAxis(container, animator, data, y, globState, han
 	return state;
 }
 
-export function createButtons(container, animator, data, ysAxis, handler) {
+export function createButtons(container, config, handler) {
 	const globalState = {
-		activeButtonsCount: ysAxis.items.length,
+		activeButtonsCount: config.data.yAxis.items.length,
 
 		hideAllExcept: hideAllExcept,
 		hideAll: hideAll,
@@ -75,8 +75,8 @@ export function createButtons(container, animator, data, ysAxis, handler) {
 	const buttonsWrapper = createElement(container, 'div', 'chart__buttons');
 	const allButtons = {};
 
-	const buttons = ysAxis.items.map(y => {
-		return allButtons[y[0]] = createButtonForAxis(buttonsWrapper, animator, data, y, globalState, (enabled) => {
+	const buttons = config.data.yAxis.items.map(y => {
+		return allButtons[y[0]] = createButtonForAxis(buttonsWrapper, config, y, globalState, (enabled) => {
 			globalState.activeButtonsCount += enabled ? 1 : -1;
 			if (globalState.activeButtonsCount < 1) {
 				return;

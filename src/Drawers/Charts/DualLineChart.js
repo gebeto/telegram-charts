@@ -21,7 +21,9 @@ import { debugLayer } from '../utils';
 
 
 export default function DualLineChartDrawer(drawersArgs) {
-	const { ctx, config, colors, yAxis, xAxis } = drawersArgs;
+	const { config } = drawersArgs;
+	const { ctx, data } = config;
+	const { colors, yAxis, xAxis } = data;
 
 	const drawLeftYAxisLayer = YAxisLayerDrawer(drawersArgs, {
 		textAlign: 'left',

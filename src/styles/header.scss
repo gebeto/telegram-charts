@@ -1,0 +1,30 @@
+&__header {
+	padding: 0px 1em;
+	height: 64px;
+	line-height: 64px;
+	clear: both;
+
+	&-title {
+		float: left;
+		font-size: 16px;
+		margin: 0;
+
+		&-button {
+			color: #108BE3;
+			padding-left: 1.4em;
+			padding-bottom: 5px;
+			padding-top: 5px;
+			background-image: url(images/zoom-light.svg);
+			background-position: left center;
+			background-repeat: no-repeat;
+			background-size: 1em;
+			cursor: pointer;
+		}
+	}
+
+	&-sub-title {
+		float: right;
+		font-size: 14px;
+		margin: 0;
+	}
+}

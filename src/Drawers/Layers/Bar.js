@@ -1,8 +1,9 @@
 import { PIXEL_RATIO } from '../../Globals';
-import { createMouseDotHandling } from './utils';
 
 
-export default function  Bar({ config, control, canvasBounds, ctx, norm, colors, normYKey, xAxis, yAxis }, opts = {}) {
+export default function  Bar({ config, normYKey }, opts = {}) {
+	const { ctx, control, data } = config;
+	const { colors, yAxis, xAxis } = data;
 	const chunkScale = config.scaleX;
 
 	const draws = {

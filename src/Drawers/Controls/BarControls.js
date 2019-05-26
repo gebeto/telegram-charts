@@ -5,9 +5,11 @@ import { createControlLayer, controlWidthMul2, controlWidth } from './utils';
 
 
 export default function ControlsDrawer(drawersArgs) {
-	const { ctx, config, canvasBounds, control, yAxis, xAxis } = drawersArgs;
+	const { config } = drawersArgs;
+	const { ctx, data } = config;
+	const { colors, yAxis, xAxis } = data;
 	const  barLayers = yAxis.items.map(el => BarLayerDrawer(drawersArgs));
-	const { updateControlBounds, renderControl, destroy: destroyControl, init: initControl } = createControlLayer(config, control);
+	const { updateControlBounds, renderControl, destroy: destroyControl, init: initControl } = createControlLayer(config);
 	
 	function destroy() {
 		destroyControl();

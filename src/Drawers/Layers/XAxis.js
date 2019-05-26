@@ -10,7 +10,9 @@ import {
 
 const steps = [0, 1, 2, 4, 4, 8, 8, 8, 8, 16, 16, 16, 16, 16, 16, 16, 16, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64];
 
-export default function XAxis({ config, control, ctx, norm, colors, forBars }) {
+export default function XAxis({ config, forBars }) {
+	const { ctx, control, data } = config;
+	const { colors, yAxis, xAxis } = data;
 	let deepness = 0;
 	const chunkScale = config.scaleX;
 	let chunkSize = 0;

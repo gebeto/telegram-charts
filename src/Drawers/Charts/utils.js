@@ -11,7 +11,9 @@ import {
 	DOT_RADIUS_MUL_2,
 } from '../../Globals';
 
-export function drawDotsForLines({ ctx, colors, yAxis }, y, height, activeIndex, drawLineLayers) {
+export function drawDotsForLines({ config }, y, height, activeIndex, drawLineLayers) {
+	const { ctx, data } = config;
+	const { colors, yAxis, xAxis } = data;
 	for (let i = 0; i < yAxis.items.length; i++ ) {
 		const { key } = yAxis.items[i];
 		const { draws } = drawLineLayers[i];

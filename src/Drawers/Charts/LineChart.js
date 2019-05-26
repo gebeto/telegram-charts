@@ -21,7 +21,9 @@ import { debugLayer } from '../utils';
 
 
 export default function LineChartDrawer(drawersArgs) {
-	const { ctx, config, colors, yAxis, xAxis } = drawersArgs;
+	const { config } = drawersArgs;
+	const { ctx, data } = config;
+	const { colors, yAxis, xAxis } = data;
 	const chartPadding = 6 * PIXEL_RATIO;
 	const chartPadding2 = chartPadding * 2;
 

@@ -1,7 +1,9 @@
 import { PIXEL_RATIO, PI1, FONT } from '../../Globals';
 
 
-export default function Area({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {
+export default function Area({ config, normYKey }, opts = {}) {
+	const { ctx, control, data } = config;
+	const { colors, yAxis, xAxis } = data;
 	const lineWidth = 2 * PIXEL_RATIO;
 	const mouse = config.mouse.mouse;
 	const popup = config.popup;

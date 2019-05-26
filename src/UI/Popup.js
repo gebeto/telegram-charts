@@ -20,25 +20,25 @@ export function createPopupItem(color, title, value) {
 }
 
 
-export function createPopup(container, config, data, xAxis, yAxis) {
+export function createPopup(container, config) {
 	const popup = createElement(container, 'div', 'chart__popup');
 	const clickHandlers = [];
 	let currentIndex = -1;
 
 	popup.addEventListener('click', () => {
-		if (xAxis[currentIndex]) {
+		if (config.data.xAxis[currentIndex]) {
 			for (let i = 0; i < clickHandlers.length; i++) {
-				clickHandlers[i](xAxis[currentIndex].timestamp);
+				clickHandlers[i](config.data.xAxis[currentIndex].timestamp);
 			}
 		}
 	});
 
 	function changeHtml(index) {
-		const filtered = yAxis.items.filter(y => y.enabled)
-		const curr = filtered.map(y => createPopupItem(data.colors[y.key], data.names[y.key], y.items[index]));
+		const filtered = config.data.yAxis.items.filter(y => y.enabled)
+		const curr = filtered.map(y => createPopupItem(config.data.colors[y.key], config.data.names[y.key], y.items[index]));
 		if (!curr.length) return;
 		popup.innerHTML = `
-			${createPopupHeader(xAxis[index].dateString)}
+			${createPopupHeader(config.data.xAxis[index].dateString)}
 			${curr.join('')}
 		`;
 	}

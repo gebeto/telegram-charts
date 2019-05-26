@@ -45,13 +45,13 @@ function createDispatcher(types) {
 	}
 }
 
-export function createMouseForChart({ canvas, canvasBounds }) {
+export function createMouseForChart(config) {
 	const dispatcher = createDispatcher(['move', 'enter', 'leave', 'down', 'up']);
 	const mouse = dispatcher.mouse;
 
 	function onMouseDown(e) {
-		mouse.xRaw = e.clientX - canvasBounds.left;
-		mouse.yRaw = e.clientY - canvasBounds.top;
+		mouse.xRaw = e.clientX - config.canvasBounds.left;
+		mouse.yRaw = e.clientY - config.canvasBounds.top;
 		mouse.x = mouse.xRaw * PIXEL_RATIO;
 		mouse.y = mouse.yRaw * PIXEL_RATIO;
 
@@ -64,8 +64,8 @@ export function createMouseForChart({ canvas, canvasBounds }) {
 	}
 
 	function onMouseMove(e) {
-		mouse.newXRaw = e.clientX - canvasBounds.left;
-		mouse.newYRaw = e.clientY - canvasBounds.top;
+		mouse.newXRaw = e.clientX - config.canvasBounds.left;
+		mouse.newYRaw = e.clientY - config.canvasBounds.top;
 		mouse.newX = mouse.newXRaw * PIXEL_RATIO;
 		mouse.newY = mouse.newYRaw * PIXEL_RATIO;
 

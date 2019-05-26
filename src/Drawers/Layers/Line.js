@@ -1,7 +1,9 @@
 import { PIXEL_RATIO, CURRENT, DOT_RADIUS, PI2 } from '../../Globals';
 
 
-export default function Line({ config, control, ctx, norm, colors, normYKey, yAxis }, opts = {}) {
+export default function Line({ config, normYKey }, opts = {}) {
+	const { ctx, control, data } = config;
+	const { colors, yAxis, xAxis } = data;
 	const lineWidth = (opts.lineWidth || 2) * PIXEL_RATIO;
 	const chunkScale = config.scaleX;
 
