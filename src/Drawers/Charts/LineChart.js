@@ -39,6 +39,10 @@ export default function LineChartDrawer(drawersArgs) {
 		calculateLineActivePopupIndex.destroy();
 	}
 
+	function init() {
+		calculateLineActivePopupIndex.init();
+	}
+
 	function drawChart(x, y, width, height) {
 		// debugLayer(ctx, x, y, width, height);
 
@@ -62,6 +66,7 @@ export default function LineChartDrawer(drawersArgs) {
 	}
 
 	drawChart.destroy = destroy;
+	drawChart.init = init;
 
 	return drawChart;
 }
