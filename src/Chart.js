@@ -140,9 +140,10 @@ function Chart(OPTS, data, FABRIC) {
 	config.data = prepareDataset(data, config);
 	config.scaleX = normalize(0, config.data.xAxis.length - 1)(1);
 	config.popup = createPopup(canvasContainer, config);
+	const footer = createElement(canvasContainer, 'div', 'chart__footer');
 
 	// if (config.data.yAxis.items.length > 1) {
-		config.buttons = createButtons(canvasContainer, config, () => {
+		config.buttons = createButtons(footer, config, () => {
 			updateNorms(true);
 		});
 	// }
@@ -252,7 +253,7 @@ function Chart(OPTS, data, FABRIC) {
 
 				config.data = prepareDataset(data, config);
 				config.scaleX = normalize(0, config.data.xAxis.length - 1)(1);
-				config.buttons = createButtons(canvasContainer, config, () => updateNorms(true));
+				config.buttons = createButtons(footer, config, () => updateNorms(true));
 				config.buttons.mergeState(bak.buttons);
 				config.chart = createChart(config, fabric.drawChartFabric, { ...drawersArgs, config });
 				config.control = createControl(config, fabric.drawControlFabric, { ...drawersArgsControl, config }, () => updateNorms(), {

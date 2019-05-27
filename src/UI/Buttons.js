@@ -119,10 +119,12 @@ export function createButtons(container, config, handler) {
 
 	function destroy() {
 		buttons.map(button => button.destroy());
+		container.removeChild(buttonsWrapper);
 	}
 
 	function init() {
 		buttons.map(button => button.init());
+		container.appendChild(buttonsWrapper);
 	}
 
 	allButtons.mergeState = function mergeState(oldButtons) {
