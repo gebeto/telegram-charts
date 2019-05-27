@@ -130,24 +130,16 @@ export function createButtons(container, config, handler) {
 
 	allButtons.mergeState = function mergeState(oldButtons) {
 		buttons.map(button => {
+			// config.control.shouldUpdate = true;
+			// config.chart.shouldUpdate = true;
+			// button.update(true);
+
 			config.control.shouldUpdate = true;
 			config.chart.shouldUpdate = true;
+			if (oldButtons[button.key]) {
+				button.enabled = buttons.length > 1 ? oldButtons[button.key].enabled : true;
+			}
 			button.update(true);
-			// if (oldButtons[button.key]) {
-			// 	if (buttons.length > 1) {
-			// 		if (oldButtons[button.key].enabled !== button.enabled) {
-			// 			config.control.shouldUpdate = true;
-			// 			config.chart.shouldUpdate = true;
-			// 		}
-			// 		button.enabled = oldButtons[button.key].enabled;
-			// 		button.update(true);
-			// 	} else {
-			// 		config.control.shouldUpdate = true;
-			// 		config.chart.shouldUpdate = true;
-			// 		button.enabled = true;
-			// 		button.update(true);
-			// 	}
-			// }
 		})
 	}
 
