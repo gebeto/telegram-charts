@@ -48,13 +48,14 @@ export function createButtonForAxis(container, config, y, globState, handler) {
 			button.style.color = config.data.colors[key];
 		}
 
+		const shouldCallUpdateHandler = y.enabled !== state.enabled;
 		y.enabled = state.enabled;
 		if (force) {
 			y.opacity.value = state.enabled ? 0.99 : 0.01;
 		}
 		y.opacity.play(state.enabled ? 1 : 0);
 
-		handler && handler(state.enabled);
+		shouldCallUpdateHandler && handler && handler(state.enabled);
 	}
 
 	function hide(caller) {
