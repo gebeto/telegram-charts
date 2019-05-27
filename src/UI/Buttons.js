@@ -14,12 +14,12 @@ export function createButtonForAxis(container, config, y, globState, handler) {
 	const longPress = createLongPress(button, onPress, onLongPress);
 
 	function destroy() {
-		container.removeChild(button);
+		container && container.removeChild(button);
 		longPress.destroy();
 	}
 
 	function init() {
-		container.appendChild(button);
+		container && container.appendChild(button);
 		longPress.init();
 	}
 
@@ -93,8 +93,8 @@ export function createButtons(container, config, handler) {
 	const buttonsWrapper = createElement(container, 'div', 'chart__buttons');
 	const allButtons = {};
 
-	const buttons = config.data.yAxis.items.length > 1 ? config.data.yAxis.items.map(y => {
-		const button = createButtonForAxis(buttonsWrapper, config, y, globalState, (enabled) => {
+	const buttons = config.data.yAxis.items.map(y => {
+		const button = createButtonForAxis(config.data.yAxis.items.length > 1 ? buttonsWrapper : null, config, y, globalState, (enabled) => {
 			globalState.activeButtonsCount += enabled ? 1 : -1;
 			if (globalState.activeButtonsCount < 1) {
 				return;
@@ -103,7 +103,7 @@ export function createButtons(container, config, handler) {
 			handler && handler();
 		});
 		return allButtons[y.key] = button;
-	}) : [];
+	});
 
 	function hideAll() {
 		buttons.forEach(button => {
@@ -129,14 +129,24 @@ export function createButtons(container, config, handler) {
 
 	allButtons.mergeState = function mergeState(oldButtons) {
 		buttons.map(button => {
-			if (oldButtons[button.key]) {
-				if (oldButtons[button.key].enabled !== button.enabled) {
-					config.control.shouldUpdate = true;
-					config.chart.shouldUpdate = true;
-				}
-				button.enabled = oldButtons[button.key].enabled;
-				button.update(true);
-			}
+			config.control.shouldUpdate = true;
+			config.chart.shouldUpdate = true;
+			button.update(true);
+			// if (oldButtons[button.key]) {
+			// 	if (buttons.length > 1) {
+			// 		if (oldButtons[button.key].enabled !== button.enabled) {
+			// 			config.control.shouldUpdate = true;
+			// 			config.chart.shouldUpdate = true;
+			// 		}
+			// 		button.enabled = oldButtons[button.key].enabled;
+			// 		button.update(true);
+			// 	} else {
+			// 		config.control.shouldUpdate = true;
+			// 		config.chart.shouldUpdate = true;
+			// 		button.enabled = true;
+			// 		button.update(true);
+			// 	}
+			// }
 		})
 	}
 
