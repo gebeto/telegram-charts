@@ -2,7 +2,7 @@
   "name": "telegram-charts",
   "version": "1.0.0",
   "description": "Charts for telegram",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "npm run dev -- --watch",
@@ -23,8 +23,8 @@
   "dependencies": {
     "css-loader": "^3.2.1",
     "mini-css-extract-plugin": "^0.8.0",
-    "node-sass": "^4.13.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "sass": "^1.89.2",
     "sass-loader": "^8.0.0",
     "svg-url-loader": "^3.0.3",
     "terser-webpack-plugin": "^2.2.2",
