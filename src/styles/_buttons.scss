@@ -1,3 +1,4 @@
+@mixin button {
 &__buttons {
 	padding: 0px 1em;
 	margin-top: 15px;
@@ -57,4 +58,5 @@
 	20% { transform: rotate(5deg);}
 	60% { transform: rotate(-5deg);}
 	100% { transform: rotate(0deg);}
+}
 }

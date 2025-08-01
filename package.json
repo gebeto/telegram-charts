@@ -1,43 +1,37 @@
 {
   "name": "telegram-charts",
-  "version": "1.0.0",
   "description": "Charts for telegram",
-  "main": "src/index.js",
+  "version": "1.0.1",
+  "type": "module",
+  "main": "./dist/TelegramCharts.umd.cjs",
+  "module": "./dist/TelegramCharts.js",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    "import": "./dist/TelegramCharts.js",
+    "require": "./dist/TelegramCharts.umd.cjs"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
-    "watch": "npm run dev -- --watch",
-    "dev": "webpack --mode development",
-    "serve": "webpack-dev-server --mode development",
-    "build": "webpack --mode production"
+    "dev": "vite",
+    "build": "vite build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gebeto/telegram-charts.git"
   },
-  "author": "",
+  "author": {
+    "name": "Yaroslav Nychkalo",
+    "email": "slavik.nychkalo@gmail.com",
+    "url": "https://gebeto.github.io/"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/gebeto/telegram-charts/issues"
   },
   "homepage": "https://github.com/gebeto/telegram-charts#readme",
   "dependencies": {
-    "css-loader": "^3.2.1",
-    "mini-css-extract-plugin": "^0.8.0",
-    "optimize-css-assets-webpack-plugin": "^5.0.3",
-    "sass": "^1.89.2",
-    "sass-loader": "^8.0.0",
-    "svg-url-loader": "^3.0.3",
-    "terser-webpack-plugin": "^2.2.2",
-    "url-loader": "^3.0.0"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.7.5",
-    "@babel/plugin-proposal-class-properties": "^7.7.4",
-    "@babel/preset-env": "^7.7.5",
-    "babel-loader": "^8.0.6",
-    "file-loader": "^5.0.2",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0"
+    "vite": "^7.0.6"
   }
 }

@@ -1,3 +1,8 @@
+@use "header";
+@use "canvas";
+@use "popup";
+@use "buttons";
+
 html {
 	&.dark {
 		background: #1e2734;
@@ -31,8 +36,8 @@ html {
 		font-size: 0.6em;
 	}
 
-	@import "header.scss";
-	@import "canvas.scss";
-	@import "popup.scss";
-	@import "buttons.scss";
+	@include header.header;
+	@include canvas.canvas;
+	@include popup.popup;
+	@include buttons.button;
 }

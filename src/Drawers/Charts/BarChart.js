@@ -50,8 +50,8 @@ export default function BarChartDrawer(drawersArgs) {
 		const Y = y + TWO;
 
 		// Draw layers
-		const currentActiveIndex = calculateActiveBarIndex(xAxis, stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		const stacked = new Array(xAxis.length).fill(0);
+		const currentActiveIndex = calculateActiveBarIndex(xAxis, stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		for (let i = 0; i < yAxis.items.length; i++) {
 			drawBarLayer.calculate(yAxis.items[i], stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 			drawBarLayer.draw(yAxis.items[i], stacked, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT, currentActiveIndex);
