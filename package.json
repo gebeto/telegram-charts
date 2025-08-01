@@ -1,7 +1,7 @@
 {
   "name": "telegram-charts",
   "description": "Charts for telegram",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "main": "./dist/TelegramCharts.umd.cjs",
   "module": "./dist/TelegramCharts.js",
