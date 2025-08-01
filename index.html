@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
 	<meta name="mobile-web-app-capable" content="yes">
 	<title>Telegram Charts</title>
-	<link rel="stylesheet" href="./dist/chart.css">
+	<link rel="stylesheet" href="./src/styles/index.scss">
 	<style>
 		body {
 			padding: 0;
@@ -47,9 +47,7 @@
 	<div class="container" id="container">
 		<button class="change-theme" id="dark-mode">Dark theme</button>
 		<button class="change-theme" id="light-mode">Light theme</button>
-
 	</div>
-	<!-- <script type="module" src="./src/index.js"></script> -->
 
 	<script	type="module">
 		import Graph from './src/index.js';
@@ -76,40 +74,39 @@
 
 		var chartsContainer = document.querySelector('#container');
 
-		fetch('assets/stage_2_data/1/overview.json').then(res => res.json()).then(chartData => {
+		fetch('example/assets/stage_2_data/1/overview.json').then(res => res.json()).then(chartData => {
 			chartData.x_on_zoom = (timestamp) => {
-				const response = fetch('assets/stage_2_data_extended/1/2018-04/07.json').then(res => res.json())
+				const response = fetch('example/assets/stage_2_data_extended/1/2018-04/07.json').then(res => res.json())
 				return response;
 			};
 			Graph.render(chartsContainer, chartData);
 		})
 
-		fetch('assets/stage_2_data/2/overview.json').then(res => res.json()).then(chartData => {
+		fetch('example/assets/stage_2_data/2/overview.json').then(res => res.json()).then(chartData => {
 			chartData.x_on_zoom = (timestamp) => {
-				const response = fetch('assets/stage_2_data_extended/2/2018-04/07.json').then(res => res.json())
+				const response = fetch('example/assets/stage_2_data_extended/2/2018-04/07.json').then(res => res.json())
 				return response;
 			};
 			Graph.render(chartsContainer, chartData);
 		})
 
-		fetch('assets/stage_2_data/3/overview.json').then(res => res.json()).then(chartData => {
+		fetch('example/assets/stage_2_data/3/overview.json').then(res => res.json()).then(chartData => {
 			chartData.x_on_zoom = (timestamp) => {
-				const response = fetch('assets/stage_2_data_extended/3/2018-04/07.json').then(res => res.json())
+				const response = fetch('example/assets/stage_2_data_extended/3/2018-04/07.json').then(res => res.json())
 				return response;
 			};
 			Graph.render(chartsContainer, chartData);
 		});
 
-		fetch('assets/stage_2_data/4/overview.json').then(res => res.json()).then(chartData => {
+		fetch('example/assets/stage_2_data/4/overview.json').then(res => res.json()).then(chartData => {
 			chartData.x_on_zoom = (timestamp) => {
-				const response = fetch('assets/stage_2_data_extended/4/2018-04/07.json').then(res => res.json())
+				const response = fetch('example/assets/stage_2_data_extended/4/2018-04/07.json').then(res => res.json())
 				return response;
 			};
 			Graph.render(chartsContainer, chartData);
 		});
 
-		fetch('assets/stage_2_data/5/overview.json').then(res => res.json()).then(chartData => Graph.render(chartsContainer, chartData))
-
+		fetch('example/assets/stage_2_data/5/overview.json').then(res => res.json()).then(chartData => Graph.render(chartsContainer, chartData))
 	</script>
 </body>
 </html>
