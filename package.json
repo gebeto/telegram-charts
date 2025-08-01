@@ -1,6 +1,7 @@
 {
   "name": "telegram-charts",
   "description": "Charts for telegram",
+  "homepage": "https://gebeto.github.io/telegram-charts/",
   "keywords": [
     "telegram",
     "charts",
@@ -32,11 +33,10 @@
     "email": "slavik.nychkalo@gmail.com",
     "url": "https://gebeto.github.io/"
   },
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/gebeto/telegram-charts/issues"
   },
-  "homepage": "https://github.com/gebeto/telegram-charts#readme",
   "dependencies": {
     "vite": "^7.0.6"
   }
