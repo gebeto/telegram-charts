@@ -17,9 +17,8 @@ jobs:
       - name: Check version and create release
         uses: Makepad-fr/auto-release-on-version-bump-action@v1.0.0
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
           name: "v$newVersion"
-          body: "**Full Changelog**: https://github.com/gebeto/telegram-charts/compare/v$oldVersion...v$newVersion"
           draft: "false"
           pre-release: auto
           generate-release-note: "true"
