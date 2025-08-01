@@ -1,6 +1,12 @@
 {
   "name": "telegram-charts",
   "description": "Charts for telegram",
+  "keywords": [
+    "telegram",
+    "charts",
+    "charting",
+    "library"
+  ],
   "version": "1.0.2",
   "type": "module",
   "main": "./dist/TelegramCharts.umd.cjs",
