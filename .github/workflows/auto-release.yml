@@ -1,0 +1,26 @@
+name: Create Release on Version Bump
+
+on:
+  push:
+    branches:
+      - main # or your default branch, e.g., master
+    paths:
+      - "package.json"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check version and create release
+        uses: Makepad-fr/auto-release-on-version-bump-actionp@v1.0.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: "v$newVersion"
+          body: "**Full Changelog**: https://github.com/gebeto/telegram-charts/compare/v$oldVersion...v$newVersion"
+          draft: "false"
+          pre-release: auto
+          generate-release-note: "true"
+          tag-name: "v$newVersion"
