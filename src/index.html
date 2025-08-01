@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
 	<meta name="mobile-web-app-capable" content="yes">
 	<title>Telegram Charts</title>
-	<link rel="stylesheet" href="node_modules/telegram-charts/dist/TelegramCharts.css">
+	<link rel="stylesheet" href="./styles/index.scss">
 	<style>
 		body {
 			padding: 0;
@@ -50,7 +50,7 @@
 	</div>
 
 	<script	type="module">
-		import Graph from 'telegram-charts';
+		import Graph from './index.js';
 
 		const html = document.querySelector('html');
 		document.getElementById('dark-mode').addEventListener('click', function handleChangeTheme() {
@@ -107,7 +107,6 @@
 		});
 
 		fetch('assets/stage_2_data/5/overview.json').then(res => res.json()).then(chartData => Graph.render(chartsContainer, chartData))
-
 	</script>
 </body>
 </html>

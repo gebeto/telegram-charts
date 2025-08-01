@@ -1,20 +1,21 @@
 import { defineConfig } from "vite";
+import path from "path";
 
 export default defineConfig({
-  root: __dirname,
+  root: path.join(__dirname, "src"),
   server: {
     port: 3000,
     strictPort: true,
   },
   build: {
-    outDir: "dist",
+    outDir: path.join(__dirname, "dist"),
     target: "es2015",
     emptyOutDir: true,
     sourcemap: true,
     lib: {
-      entry: "src/index.js",
+      entry: "index.js",
       name: "TelegramCharts",
-      // formats: ["es", "cjs"],
+      formats: ["es", "cjs", "umd", "iife"],
       fileName: "TelegramCharts",
     },
   },
