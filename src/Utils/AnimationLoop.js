@@ -1,36 +1,31 @@
-import Globals from '../Globals';
-
-
 function createAnimationLoop() {
-	const animationHandlers = [];
+  const animationHandlers = [];
 
-	const publicInterface = {
-		time: 0,
-		add(handler) {
-			animationHandlers.push(handler);
-		},
-		remove(handler) {
-			const index = animationHandlers.indexOf(handler);
-			if (index > -1) {
-				animationHandlers.splice(index, 1);
-			}
-		},
-	};
+  const publicInterface = {
+    time: 0,
+    add(handler) {
+      animationHandlers.push(handler);
+    },
+    remove(handler) {
+      const index = animationHandlers.indexOf(handler);
+      if (index > -1) {
+        animationHandlers.splice(index, 1);
+      }
+    },
+  };
 
-	function loop(loopTime) {
-		publicInterface.time = loopTime;
-		for (let i = 0; i < animationHandlers.length; i++) {
-			animationHandlers[i](loopTime);
-		}
-		requestAnimationFrame(loop);
-	};
-	requestAnimationFrame(loop);
+  function loop(loopTime) {
+    publicInterface.time = loopTime;
+    for (let i = 0; i < animationHandlers.length; i++) {
+      animationHandlers[i](loopTime);
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
 
-	return publicInterface;
+  return publicInterface;
 }
 
-
 const animationLoop = createAnimationLoop();
-
 
 export default animationLoop;

@@ -1,3 +1,4 @@
+@mixin popup {
 &__popup {
 	z-index: 1000;
 	display: table;
@@ -68,4 +69,5 @@
 		}
 	}
 
+}
 }

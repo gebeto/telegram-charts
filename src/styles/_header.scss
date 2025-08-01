@@ -1,3 +1,4 @@
+@mixin header {
 &__header {
 	padding: 0px 1em;
 	height: 64px;
@@ -27,4 +28,5 @@
 		font-size: 14px;
 		margin: 0;
 	}
+}
 }
