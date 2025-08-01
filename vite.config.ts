@@ -7,15 +7,15 @@ export default defineConfig({
     strictPort: true,
   },
   build: {
-    outDir: "app",
+    outDir: "dist",
     target: "es2015",
     emptyOutDir: true,
     sourcemap: true,
     lib: {
-      entry: "src/main.js",
-      name: "telegram-charts",
-      formats: ["es", "cjs"],
-      fileName: "telegram-charts",
+      entry: "src/index.js",
+      name: "TelegramCharts",
+      // formats: ["es", "cjs"],
+      fileName: "TelegramCharts",
     },
   },
 });
