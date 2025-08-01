@@ -21,7 +21,11 @@
     "type": "git",
     "url": "git+https://github.com/gebeto/telegram-charts.git"
   },
-  "author": "",
+  "author": {
+    "name": "Yaroslav Nychkalo",
+    "email": "slavik.nychkalo@gmail.com",
+    "url": "https://gebeto.github.io/"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/gebeto/telegram-charts/issues"
