@@ -14,7 +14,6 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
-    "watch": "npm run dev -- --watch",
     "dev": "vite",
     "build": "vite build"
   },
