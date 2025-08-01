@@ -8,7 +8,7 @@
     "charting",
     "library"
   ],
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "main": "./dist/TelegramCharts.umd.cjs",
   "module": "./dist/TelegramCharts.js",
