@@ -3,9 +3,9 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
-	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="mobile-web-app-capable" content="yes">
 	<title>Telegram Charts</title>
-	<link rel="stylesheet" href="dist/chart.css">
+	<link rel="stylesheet" href="./dist/chart.css">
 	<style>
 		body {
 			padding: 0;
@@ -49,9 +49,11 @@
 		<button class="change-theme" id="light-mode">Light theme</button>
 
 	</div>
-	<script src="dist/chart.js"></script>
+	<!-- <script type="module" src="./src/index.js"></script> -->
 
-	<script>
+	<script	type="module">
+		import Graph from './src/index.js';
+
 		const html = document.querySelector('html');
 		document.getElementById('dark-mode').addEventListener('click', function handleChangeTheme() {
 			const splitted = html.className ? html.className.split(' ') : [];

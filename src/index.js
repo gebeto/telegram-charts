@@ -33,5 +33,6 @@ function initGraphModule() {
   };
 }
 
-console.log(" >>> GRAPH");
-// window.Graph = initGraphModule();
+const Graph = initGraphModule();
+
+export default Graph;

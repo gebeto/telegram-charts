@@ -69,12 +69,12 @@ export default function DualLineChartDrawer(drawersArgs) {
 			drawYLine = false;
 		}
 
+		const activeIndex = calculateLineActivePopupIndex(xAxis, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		for (let i = 0; i < yAxis.items.length; i++ ) {
 			drawLineLayers[i].calculate(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 			drawLineLayers[i].draw(yAxis.items[i], xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT, activeIndex);
 		}
 
-		const activeIndex = calculateLineActivePopupIndex(xAxis, xRanged, Y, widthRanged, HEIGHT - X_AXIS_HEIGHT);
 		drawDotsForLines(drawersArgs, y, height, activeIndex, drawLineLayers);
 	}
 
