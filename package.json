@@ -8,7 +8,7 @@
     "charting",
     "library"
   ],
-  "version": "1.0.5",
+  "version": "1.0.6",
   "type": "module",
   "main": "./dist/TelegramCharts.umd.cjs",
   "module": "./dist/TelegramCharts.js",
@@ -37,7 +37,7 @@
   "bugs": {
     "url": "https://github.com/gebeto/telegram-charts/issues"
   },
-  "dependencies": {
+  "devDependencies": {
     "vite": "^7.0.6"
   }
 }
