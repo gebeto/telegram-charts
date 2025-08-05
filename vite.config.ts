@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => ({
     emptyOutDir: true,
     sourcemap: true,
     lib: {
-      entry: "index.js",
+      entry: "index.ts",
       name: "TelegramCharts",
       formats: ["es", "cjs", "umd", "iife"],
       fileName: "TelegramCharts",

@@ -1,112 +1,137 @@
 <!DOCTYPE html>
 <html class="dark" lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
-	<meta name="mobile-web-app-capable" content="yes">
-	<title>Telegram Charts</title>
-	<link rel="stylesheet" href="./styles/index.scss">
-	<style>
-		body {
-			padding: 0;
-			margin: 0;
-			font-family: Helvetica, Arial, sans-serif;
-		}
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Telegram Charts</title>
+    <link rel="stylesheet" href="./styles/index.scss" />
+    <style>
+      body {
+        padding: 0;
+        margin: 0;
+        font-family: Helvetica, Arial, sans-serif;
+      }
 
-		.container {
-			max-width: 600px;
-			width: 100%;
-			margin: 0 auto;
-		}
+      .container {
+        max-width: 600px;
+        width: 100%;
+        margin: 0 auto;
+      }
 
-		.change-theme {
-			width: 50%;
-			height: 100px;
-			border: none;
-			outline: none;
-			font-weight: 700;
-			font-size: 1.6em;
-			color: #108BE3;
+      .change-theme {
+        width: 50%;
+        height: 100px;
+        border: none;
+        outline: none;
+        font-weight: 700;
+        font-size: 1.6em;
+        color: #108be3;
 
-			cursor: pointer;
-			background: transparent;
+        cursor: pointer;
+        background: transparent;
 
-			float: left;
-		}
+        float: left;
+      }
 
-		html.dark .change-theme {
-			color: #48AAF0;
-		}
+      html.dark .change-theme {
+        color: #48aaf0;
+      }
 
-		p {
-			padding: 0px 10px;
-		}
-	</style>
-</head>
-<body>
-	<div class="container" id="container">
-		<button class="change-theme" id="dark-mode">Dark theme</button>
-		<button class="change-theme" id="light-mode">Light theme</button>
-	</div>
+      p {
+        padding: 0px 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="container">
+      <button class="change-theme" id="dark-mode">Dark theme</button>
+      <button class="change-theme" id="light-mode">Light theme</button>
+    </div>
 
-	<script	type="module">
-		import Graph from './index.js';
+    <script type="module">
+      import Graph from "./index.ts";
 
-		const html = document.querySelector('html');
-		document.getElementById('dark-mode').addEventListener('click', function handleChangeTheme() {
-			const splitted = html.className ? html.className.split(' ') : [];
-			const darkIndex = splitted.indexOf('dark');
-			if (darkIndex == -1) {
-				splitted.push('dark');
-				html.className = splitted.join(' ');
-				document.dispatchEvent(new Event('darkmode'))
-			}
-		});
-		document.getElementById('light-mode').addEventListener('click', function handleChangeTheme() {
-			const splitted = html.className ? html.className.split(' ') : [];
-			const darkIndex = splitted.indexOf('dark');
-			if (darkIndex > -1) {
-				splitted.splice(darkIndex, 1);
-				html.className = splitted.join(' ');
-				document.dispatchEvent(new Event('darkmode'))
-			}
-		});
+      const html = document.querySelector("html");
+      document
+        .getElementById("dark-mode")
+        .addEventListener("click", function handleChangeTheme() {
+          const splitted = html.className ? html.className.split(" ") : [];
+          const darkIndex = splitted.indexOf("dark");
+          if (darkIndex == -1) {
+            splitted.push("dark");
+            html.className = splitted.join(" ");
+            document.dispatchEvent(new Event("darkmode"));
+          }
+        });
+      document
+        .getElementById("light-mode")
+        .addEventListener("click", function handleChangeTheme() {
+          const splitted = html.className ? html.className.split(" ") : [];
+          const darkIndex = splitted.indexOf("dark");
+          if (darkIndex > -1) {
+            splitted.splice(darkIndex, 1);
+            html.className = splitted.join(" ");
+            document.dispatchEvent(new Event("darkmode"));
+          }
+        });
 
-		var chartsContainer = document.querySelector('#container');
+      var chartsContainer = document.querySelector("#container");
 
-		fetch('stage_2_data/1/overview.json').then(res => res.json()).then(chartData => {
-			chartData.x_on_zoom = (timestamp) => {
-				const response = fetch('stage_2_data_extended/1/2018-04/07.json').then(res => res.json())
-				return response;
-			};
-			Graph.render(chartsContainer, chartData);
-		})
+      fetch("stage_2_data/1/overview.json")
+        .then((res) => res.json())
+        .then((chartData) => {
+          chartData.x_on_zoom = (timestamp) => {
+            const response = fetch(
+              "stage_2_data_extended/1/2018-04/07.json"
+            ).then((res) => res.json());
+            return response;
+          };
+          Graph.render(chartsContainer, chartData);
+        });
 
-		fetch('stage_2_data/2/overview.json').then(res => res.json()).then(chartData => {
-			chartData.x_on_zoom = (timestamp) => {
-				const response = fetch('stage_2_data_extended/2/2018-04/07.json').then(res => res.json())
-				return response;
-			};
-			Graph.render(chartsContainer, chartData);
-		})
+      fetch("stage_2_data/2/overview.json")
+        .then((res) => res.json())
+        .then((chartData) => {
+          chartData.x_on_zoom = (timestamp) => {
+            const response = fetch(
+              "stage_2_data_extended/2/2018-04/07.json"
+            ).then((res) => res.json());
+            return response;
+          };
+          Graph.render(chartsContainer, chartData);
+        });
 
-		fetch('stage_2_data/3/overview.json').then(res => res.json()).then(chartData => {
-			chartData.x_on_zoom = (timestamp) => {
-				const response = fetch('stage_2_data_extended/3/2018-04/07.json').then(res => res.json())
-				return response;
-			};
-			Graph.render(chartsContainer, chartData);
-		});
+      fetch("stage_2_data/3/overview.json")
+        .then((res) => res.json())
+        .then((chartData) => {
+          chartData.x_on_zoom = (timestamp) => {
+            const response = fetch(
+              "stage_2_data_extended/3/2018-04/07.json"
+            ).then((res) => res.json());
+            return response;
+          };
+          Graph.render(chartsContainer, chartData);
+        });
 
-		fetch('stage_2_data/4/overview.json').then(res => res.json()).then(chartData => {
-			chartData.x_on_zoom = (timestamp) => {
-				const response = fetch('stage_2_data_extended/4/2018-04/07.json').then(res => res.json())
-				return response;
-			};
-			Graph.render(chartsContainer, chartData);
-		});
+      fetch("stage_2_data/4/overview.json")
+        .then((res) => res.json())
+        .then((chartData) => {
+          chartData.x_on_zoom = (timestamp) => {
+            const response = fetch(
+              "stage_2_data_extended/4/2018-04/07.json"
+            ).then((res) => res.json());
+            return response;
+          };
+          Graph.render(chartsContainer, chartData);
+        });
 
-		fetch('stage_2_data/5/overview.json').then(res => res.json()).then(chartData => Graph.render(chartsContainer, chartData))
-	</script>
-</body>
+      fetch("stage_2_data/5/overview.json")
+        .then((res) => res.json())
+        .then((chartData) => Graph.render(chartsContainer, chartData));
+    </script>
+  </body>
 </html>
